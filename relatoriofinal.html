@@ -1,0 +1,3479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>VENANC Tools - Passagem de turno</title>
+
+<style>
+:root{
+    --bg:#071022;
+    --bg-deep:#030816;
+    --glass:rgba(255,255,255,.095);
+    --line:rgba(255,255,255,.15);
+    --line-soft:rgba(255,255,255,.09);
+    --text:#f8fafc;
+    --muted:#b6c3d6;
+    --purple:#7c3aed;
+    --blue:#2563eb;
+    --green:#16a34a;
+    --amber:#d97706;
+    --red:#dc2626;
+    --dark:#293044;
+    --shadow:0 20px 65px rgba(0,0,0,.36);
+    --radius-xl:30px;
+    --radius-md:17px;
+    --title:clamp(2.1rem,8vw,4rem);
+    --h2:clamp(1.25rem,4.8vw,1.75rem);
+    --small:clamp(.78rem,2.6vw,.92rem);
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+    padding:16px 16px calc(30px + env(safe-area-inset-bottom));
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:
+        radial-gradient(circle at 4% 0%,rgba(124,58,237,.46),transparent 29%),
+        radial-gradient(circle at 100% 18%,rgba(37,99,235,.30),transparent 26%),
+        radial-gradient(circle at 50% 100%,rgba(14,116,144,.18),transparent 32%),
+        linear-gradient(145deg,var(--bg-deep),var(--bg));
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+}
+
+button,
+input,
+textarea,
+select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.app{
+    width:min(100%,1180px);
+    margin:0 auto;
+    display:grid;
+    gap:16px;
+}
+
+.glass{
+    background:var(--glass);
+    border:1px solid var(--line);
+    border-radius:var(--radius-xl);
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+}
+
+.hero{
+    position:relative;
+    overflow:hidden;
+    padding:27px 20px 20px;
+}
+
+.hero::after{
+    content:"";
+    position:absolute;
+    width:220px;
+    height:220px;
+    right:-86px;
+    bottom:-118px;
+    border-radius:50%;
+    background:rgba(139,92,246,.24);
+    filter:blur(5px);
+}
+
+.hero h1{
+    position:relative;
+    z-index:1;
+    max-width:800px;
+    font-size:var(--title);
+    line-height:.94;
+    letter-spacing:-.065em;
+    font-weight:950;
+}
+
+.hero h1 span{
+    display:block;
+}
+
+.hero p{
+    position:relative;
+    z-index:1;
+    margin-top:14px;
+    color:#d8e5f5;
+    font-weight:750;
+}
+
+.hero-chips{
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:9px;
+    margin-top:18px;
+}
+
+.hero-chip{
+    min-height:74px;
+    padding:12px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    border:1px solid var(--line-soft);
+    border-radius:19px;
+    background:rgba(2,6,23,.42);
+}
+
+.hero-chip .name{
+    color:var(--muted);
+    font-size:var(--small);
+    font-weight:850;
+}
+
+.hero-chip .value{
+    margin-top:4px;
+    font-size:clamp(1.35rem,5vw,1.85rem);
+    line-height:1;
+    font-weight:950;
+}
+
+.card{
+    padding:18px;
+}
+
+.card h2{
+    margin-bottom:14px;
+    font-size:var(--h2);
+    line-height:1.08;
+    letter-spacing:-.03em;
+    font-weight:950;
+}
+
+.grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:11px;
+}
+
+.field{
+    display:grid;
+    gap:7px;
+}
+
+.field + .field{
+    margin-top:12px;
+}
+
+.label{
+    color:#d6e0f0;
+    font-size:var(--small);
+    font-weight:850;
+}
+
+.input,
+.select,
+.textarea,
+.output{
+    width:100%;
+    color:#fff;
+    border:1px solid var(--line-soft);
+    outline:none;
+    border-radius:var(--radius-md);
+    background:rgba(2,6,23,.80);
+    transition:.16s ease;
+}
+
+.input,
+.select{
+    min-height:54px;
+    padding:0 14px;
+    font-size:1rem;
+}
+
+.textarea{
+    min-height:270px;
+    padding:15px;
+    line-height:1.55;
+    resize:vertical;
+    font-size:1rem;
+}
+
+.textarea.medium{
+    min-height:116px;
+}
+
+.textarea.small{
+    min-height:94px;
+}
+
+.output{
+    min-height:560px;
+    padding:15px;
+    line-height:1.6;
+    resize:vertical;
+    white-space:pre-wrap;
+    font-size:.98rem;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus,
+.output:focus{
+    border-color:rgba(96,165,250,.72);
+    box-shadow:0 0 0 4px rgba(59,130,246,.14);
+}
+
+.btn{
+    min-height:54px;
+    width:100%;
+    padding:10px 14px;
+    border:none;
+    border-radius:17px;
+    color:#fff;
+    font-size:.98rem;
+    font-weight:950;
+    transition:.16s ease;
+}
+
+.btn:hover,
+.action-btn:hover,
+.conflict-option:hover{
+    transform:translateY(-1px);
+    filter:brightness(1.04);
+}
+
+.btn:active,
+.action-btn:active,
+.conflict-option:active{
+    transform:scale(.988);
+}
+
+.btn-primary{
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
+}
+
+.btn-green{
+    background:linear-gradient(135deg,#15803d,#16a34a);
+}
+
+.btn-red{
+    background:linear-gradient(135deg,#b91c1c,#dc2626);
+}
+
+.btn-soft{
+    background:rgba(255,255,255,.10);
+    border:1px solid var(--line-soft);
+}
+
+.actions-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    margin-top:12px;
+}
+
+.note{
+    margin-top:11px;
+    color:var(--muted);
+    font-size:.86rem;
+    line-height:1.42;
+}
+
+.toolbar{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:11px;
+}
+
+.cell-progress{
+    display:grid;
+    gap:8px;
+    margin-top:13px;
+}
+
+.progress-bar{
+    overflow:hidden;
+    height:9px;
+    border-radius:999px;
+    background:rgba(255,255,255,.09);
+}
+
+.progress-fill{
+    width:0;
+    height:100%;
+    border-radius:999px;
+    background:linear-gradient(90deg,#22c55e,#3b82f6);
+    transition:.22s ease;
+}
+
+.progress-label{
+    color:#d9e4f4;
+    font-size:.88rem;
+    font-weight:800;
+}
+
+.machine-list{
+    display:grid;
+    gap:11px;
+    margin-top:14px;
+}
+
+.empty{
+    padding:16px;
+    color:#cbd5e1;
+    border:1px dashed rgba(255,255,255,.19);
+    border-radius:19px;
+    background:rgba(2,6,23,.38);
+    line-height:1.45;
+    text-align:center;
+    font-size:.92rem;
+    font-weight:800;
+}
+
+.machine-card{
+    display:grid;
+    gap:11px;
+    padding:14px;
+    border:1px solid rgba(255,255,255,.11);
+    border-radius:22px;
+    background:rgba(2,6,23,.76);
+}
+
+.machine-card.conflict{
+    border-color:rgba(245,158,11,.56);
+    background:
+        linear-gradient(145deg,rgba(120,53,15,.26),rgba(2,6,23,.82));
+}
+
+.machine-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.machine-number{
+    font-size:1.16rem;
+    font-weight:950;
+}
+
+.machine-lines{
+    display:grid;
+    gap:6px;
+}
+
+.machine-line{
+    padding:9px 10px;
+    color:#dae7f7;
+    border:1px solid rgba(255,255,255,.09);
+    border-radius:14px;
+    background:rgba(255,255,255,.045);
+    font-size:.9rem;
+    line-height:1.42;
+}
+
+.machine-line strong{
+    color:#fff;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:7px 10px;
+    border:1px solid rgba(255,255,255,.11);
+    border-radius:999px;
+    font-size:.72rem;
+    line-height:1;
+    font-weight:950;
+    white-space:nowrap;
+}
+
+.badge.blue{
+    color:#bfdbfe;
+    background:rgba(37,99,235,.16);
+}
+
+.badge.amber{
+    color:#fde68a;
+    background:rgba(217,119,6,.18);
+}
+
+.badge.red{
+    color:#fecaca;
+    background:rgba(220,38,38,.18);
+}
+
+.machine-actions{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+}
+
+.action-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:48px;
+    padding:10px 12px;
+    color:#fff;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:14px;
+    font-size:.84rem;
+    font-weight:950;
+    text-align:center;
+    transition:.16s ease;
+}
+
+.action-btn.adjust{
+    background:#d97706;
+}
+
+.action-btn.setup{
+    background:#2563eb;
+}
+
+.action-btn.maintenance{
+    background:#dc2626;
+}
+
+.action-btn.release{
+    background:#16a34a;
+}
+
+.conflict-title{
+    color:#fde68a;
+    font-size:.88rem;
+    line-height:1.4;
+    font-weight:900;
+}
+
+.conflict-options{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+}
+
+.conflict-option{
+    min-height:44px;
+    padding:9px 12px;
+    color:#fff;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:14px;
+    background:rgba(255,255,255,.10);
+    font-size:.82rem;
+    font-weight:900;
+    text-align:center;
+    transition:.16s ease;
+}
+
+.conflict-option.keep-all{
+    background:#15803d;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    padding:14px;
+    background:rgba(0,0,0,.62);
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-card{
+    width:min(100%,570px);
+    max-height:88vh;
+    overflow:auto;
+    padding:17px;
+    border:1px solid var(--line);
+    border-radius:27px 27px 20px 20px;
+    background:#10192b;
+    box-shadow:0 22px 70px rgba(0,0,0,.58);
+}
+
+.modal-handle{
+    width:52px;
+    height:5px;
+    margin:0 auto 14px;
+    border-radius:999px;
+    background:rgba(255,255,255,.22);
+}
+
+.modal-title{
+    margin-bottom:7px;
+    font-size:1.25rem;
+    font-weight:950;
+}
+
+.modal-subtitle{
+    margin-bottom:14px;
+    color:var(--muted);
+    font-size:.9rem;
+    line-height:1.42;
+}
+
+.closeout-list{
+    display:grid;
+    gap:11px;
+}
+
+.closeout-item{
+    display:grid;
+    gap:10px;
+    padding:13px;
+    border:1px solid rgba(255,255,255,.11);
+    border-radius:16px;
+    background:rgba(2,6,23,.58);
+}
+
+.closeout-question{
+    color:#fff;
+    font-size:.96rem;
+    font-weight:950;
+}
+
+.closeout-buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.closeout-choice{
+    min-height:44px;
+    color:#fff;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:13px;
+    background:rgba(255,255,255,.10);
+    font-size:.9rem;
+    font-weight:950;
+}
+
+.closeout-choice.yes.selected{
+    background:#16a34a;
+}
+
+.closeout-choice.no.selected{
+    background:#dc2626;
+}
+
+.closeout-note{
+    margin-top:12px;
+    color:#cbd5e1;
+    font-size:.84rem;
+    line-height:1.45;
+}
+
+.toast{
+    position:fixed;
+    top:16px;
+    left:50%;
+    z-index:200;
+    opacity:0;
+    pointer-events:none;
+    transform:translateX(-50%);
+    padding:12px 16px;
+    color:#fff;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:#071022;
+    box-shadow:0 12px 32px rgba(0,0,0,.32);
+    font-size:.9rem;
+    font-weight:900;
+    transition:.18s ease;
+}
+
+.toast.show{
+    opacity:1;
+}
+
+@media(max-width:900px){
+    .grid-2{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:680px){
+    .form-grid,
+    .toolbar,
+    .machine-actions,
+    .conflict-options,
+    .actions-grid{
+        grid-template-columns:1fr;
+    }
+
+    .hero-chips{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="app">
+
+    <section class="hero glass">
+        <h1>
+            <span>VENANC Tools</span>
+            <span>Passagem de turno</span>
+        </h1>
+
+        <p>Checklist por célula e consolidação do relatório final.</p>
+
+        <div class="hero-chips">
+
+            <div class="hero-chip">
+                <div class="name">Pendências</div>
+                <div class="value" id="kpiPending">0</div>
+            </div>
+
+            <div class="hero-chip">
+                <div class="name">Decididas</div>
+                <div class="value" id="kpiReviewed">0</div>
+            </div>
+
+            <div class="hero-chip">
+                <div class="name">Conflitos</div>
+                <div class="value" id="kpiConflicts">0</div>
+            </div>
+
+            <div class="hero-chip">
+                <div class="name">Concluídas</div>
+                <div class="value" id="kpiCompleted">0</div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="grid-2">
+
+        <article class="card glass">
+            <h2>1. Relatório bruto do grupo</h2>
+
+            <div class="field">
+                <textarea
+                    id="rawInput"
+                    class="textarea"
+                    placeholder="Cole aqui o último relatório atualizado do grupo..."
+                ></textarea>
+            </div>
+
+            <div class="actions-grid">
+                <button class="btn btn-primary" id="btnImport">
+                    IMPORTAR RELATÓRIO
+                </button>
+
+                <button class="btn btn-red" id="btnClear">
+                    LIMPAR SESSÃO
+                </button>
+            </div>
+
+            <p class="note">
+                Máquinas não citadas são consideradas em produção normal e permanecem ocultas.
+            </p>
+        </article>
+
+        <article class="card glass">
+            <h2>2. Dados manuais do fechamento</h2>
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label class="label" for="currentShift">
+                        Turno atual
+                    </label>
+
+                    <select id="currentShift" class="select">
+                        <option value="1">1° TURNO</option>
+                        <option value="2" selected>2° TURNO</option>
+                        <option value="3">3° TURNO</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label class="label" for="checkpoint">
+                        Bancada – Check Point
+                    </label>
+
+                    <input id="checkpoint" class="input" value="00">
+                </div>
+
+                <div class="field">
+                    <label class="label" for="sel1">Seleção 1° turno</label>
+                    <input id="sel1" class="input" value="00">
+                </div>
+
+                <div class="field">
+                    <label class="label" for="sel2">Seleção 2° turno</label>
+                    <input id="sel2" class="input" value="00">
+                </div>
+
+                <div class="field">
+                    <label class="label" for="sel3">Seleção 3° turno</label>
+                    <input id="sel3" class="input" value="00">
+                </div>
+
+                <div class="field">
+                    <label class="label" for="selAll">Os 3 turnos</label>
+                    <input id="selAll" class="input" value="00">
+                </div>
+
+                <div class="field">
+                    <label class="label" for="selTnc">Seleção TNC</label>
+                    <input id="selTnc" class="input" value="00">
+                </div>
+
+                <div class="field">
+                    <label class="label" for="cqFechamento">CQ Fechamento</label>
+                    <input id="cqFechamento" class="input" value="00">
+                </div>
+
+                <div class="field">
+                    <label class="label" for="cqReinspecao">CQ Reinspeção</label>
+                    <input id="cqReinspecao" class="input" value="00">
+                </div>
+
+            </div>
+
+            <div class="field">
+                <label class="label" for="development">Desenvolvimento</label>
+
+                <textarea
+                    id="development"
+                    class="textarea medium"
+                    placeholder="Digite somente quando necessário..."
+                ></textarea>
+            </div>
+
+            <div class="field">
+                <label class="label" for="observations">Observações</label>
+
+                <textarea
+                    id="observations"
+                    class="textarea small"
+                    placeholder="Digite somente quando necessário..."
+                ></textarea>
+            </div>
+
+        </article>
+
+    </section>
+
+    <section class="card glass">
+        <h2>3. Passagem por célula</h2>
+
+        <div class="toolbar">
+
+            <div class="field">
+                <label class="label" for="cellSelect">Selecionar célula</label>
+
+                <select id="cellSelect" class="select">
+                    <option value="01">CÉLULA 01</option>
+                    <option value="02">CÉLULA 02</option>
+                    <option value="03">CÉLULA 03</option>
+                    <option value="04">CÉLULA 04</option>
+                    <option value="05">CÉLULA 05</option>
+                    <option value="06">CÉLULA 06</option>
+                    <option value="07">CÉLULA 07</option>
+                    <option value="08">CÉLULA 08</option>
+                    <option value="09">CÉLULA 09</option>
+                    <option value="10">CÉLULA 10</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label class="label">Nova informação durante a ronda</label>
+
+                <button class="btn btn-green" id="btnOpenAdd">
+                    + ADICIONAR MÁQUINA
+                </button>
+            </div>
+
+        </div>
+
+        <div class="cell-progress">
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="cellProgressFill"></div>
+            </div>
+
+            <div class="progress-label" id="cellProgressLabel">
+                Importe o relatório para iniciar.
+            </div>
+
+        </div>
+
+        <div class="machine-list" id="machineList">
+            <div class="empty">Importe o relatório bruto para começar.</div>
+        </div>
+    </section>
+
+    <section class="card glass">
+        <h2>4. Relatório final editável</h2>
+
+        <textarea
+            id="finalOutput"
+            class="output"
+            placeholder="O relatório final aparecerá aqui..."
+        ></textarea>
+
+        <div class="actions-grid">
+
+            <button class="btn btn-primary" id="btnRefreshReport">
+                ATUALIZAR RELATÓRIO
+            </button>
+
+            <button class="btn btn-green" id="btnCopyReport">
+                COPIAR RELATÓRIO FINAL
+            </button>
+
+        </div>
+
+        <p class="note" id="reportSafetyNote">
+            Conflitos não resolvidos bloqueiam a cópia.
+        </p>
+    </section>
+
+</main>
+
+<!-- MODAL: ADICIONAR MÁQUINA -->
+<div class="modal" id="addModal">
+    <div class="modal-card">
+
+        <div class="modal-handle"></div>
+
+        <div class="modal-title">Adicionar máquina</div>
+
+        <div class="modal-subtitle">
+            Use quando surgir uma exceção durante a ronda que ainda não apareceu no grupo.
+        </div>
+
+        <div class="field">
+            <label class="label" for="addMachine">Máquina</label>
+            <select id="addMachine" class="select"></select>
+        </div>
+
+        <div class="field">
+            <label class="label" for="addStatus">Como vai passar?</label>
+
+            <select id="addStatus" class="select">
+                <option value="adjustment">VAI PASSAR EM AJUSTE</option>
+                <option value="setup_active">VAI PASSAR EM SETUP</option>
+                <option value="setup_start">INICIAR SETUP</option>
+                <option value="maintenance">VAI PASSAR EM MANUTENÇÃO</option>
+                <option value="maintenance_prod">MANUTENÇÃO PRODUZINDO</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label class="label" for="addReason">Motivo</label>
+
+            <input
+                id="addReason"
+                class="input"
+                placeholder="Obrigatório para ajuste ou manutenção"
+            >
+        </div>
+
+        <div class="actions-grid">
+
+            <button class="btn btn-primary" id="btnSaveAdd">
+                SALVAR
+            </button>
+
+            <button class="btn btn-soft" id="btnCloseAdd">
+                CANCELAR
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL: INFORMAR MOTIVO -->
+<div class="modal" id="reasonModal">
+    <div class="modal-card">
+
+        <div class="modal-handle"></div>
+
+        <div class="modal-title" id="reasonTitle">
+            Informar motivo
+        </div>
+
+        <div class="modal-subtitle" id="reasonSubtitle">
+            Digite o motivo para continuar.
+        </div>
+
+        <div class="field">
+            <textarea
+                id="reasonInput"
+                class="textarea medium"
+                placeholder="Digite o motivo..."
+            ></textarea>
+        </div>
+
+        <div class="actions-grid">
+
+            <button class="btn btn-primary" id="btnConfirmReason">
+                SALVAR
+            </button>
+
+            <button class="btn btn-soft" id="btnCancelReason">
+                CANCELAR
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL: CONFLITO E ENCERRAMENTO -->
+<div class="modal" id="closeoutModal">
+    <div class="modal-card">
+
+        <div class="modal-handle"></div>
+
+        <div class="modal-title" id="closeoutTitle">
+            Verificar atividades
+        </div>
+
+        <div class="modal-subtitle" id="closeoutSubtitle">
+            Informe se as atividades anteriores foram concluídas.
+        </div>
+
+        <div id="closeoutOptions"></div>
+
+        <div class="closeout-note">
+            Se marcar <strong>SIM</strong>, a atividade sai do bloco ativo e entra na lista de concluídas.
+            <br><br>
+            Se marcar <strong>NÃO</strong>, ela continua ativa junto com o novo status selecionado.
+        </div>
+
+        <div class="actions-grid">
+
+            <button class="btn btn-primary" id="btnConfirmCloseout">
+                CONTINUAR
+            </button>
+
+            <button class="btn btn-soft" id="btnCancelCloseout">
+                CANCELAR
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* =========================================================
+   CONFIGURAÇÃO
+========================================================= */
+
+const STORAGE_KEY = "venanc_tools_passagem_turno_v4";
+
+const CELULAS = {
+    "01":[2,5,15,19,23,24,25,26,27,29,30,35,46,47,48],
+    "02":[3,4,7,8,13,16,17,18,28,31,32,49,50,51,143],
+    "03":[9,10,33,34,36,37,39,40,41,43,44],
+    "04":[42,52,53,57,58,59,60,61,64,65,66],
+    "05":[69,72,83,85,87,88,89,90,91,92,93,94,95],
+    "06":[67,68,73,74,75,76,77,79,81,82,84,86],
+    "07":[45,54,55,56,62,63,70,71,78,80,102,103,110,111],
+    "08":[96,98,104,107,112,113,115,116,118,119,121,122],
+    "09":[97,99,100,101,105,106,108,109,114,117,120,123],
+    "10":[124,125,126,127,128,129,130,134,135,136,137,138,139,140,141,142]
+};
+
+const ACTIVE_TYPES = [
+    "maintenance",
+    "maintenance_prod",
+    "setup_active",
+    "setup_start",
+    "adjustment"
+];
+
+const TYPE_CONFIG = {
+    maintenance:{
+        label:"MANUTENÇÃO PARADA",
+        short:"MANUTENÇÃO",
+        badge:"red"
+    },
+
+    maintenance_prod:{
+        label:"MANUTENÇÃO PRODUZINDO",
+        short:"MANUT. PRODUZINDO",
+        badge:"amber"
+    },
+
+    setup_active:{
+        label:"EM SETUP",
+        short:"SETUP",
+        badge:"blue"
+    },
+
+    setup_start:{
+        label:"INICIAR SETUP",
+        short:"INICIAR SETUP",
+        badge:"blue"
+    },
+
+    adjustment:{
+        label:"EM AJUSTE",
+        short:"AJUSTE",
+        badge:"amber"
+    }
+};
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+function createBlankState(){
+    return {
+        raw:"",
+        records:[],
+        futureBlocks:{},
+        originalMaintenance:{},
+
+        completed:{
+            adjustments:[],
+            setups:[],
+            maintenances:[]
+        },
+
+        reviewedTnls:{},
+        resolvedConflicts:{},
+        nextId:1
+    };
+}
+
+let state = createBlankState();
+
+let pendingReasonAction = null;
+
+let pendingCloseoutAction = null;
+
+/* =========================================================
+   UTILITÁRIOS
+========================================================= */
+
+function el(id){
+    return document.getElementById(id);
+}
+
+function toast(message){
+    const element = el("toast");
+
+    element.textContent = message;
+
+    element.classList.add("show");
+
+    clearTimeout(window.__venancToastTimer);
+
+    window.__venancToastTimer = setTimeout(()=>{
+        element.classList.remove("show");
+    },1600);
+}
+
+function padTnl(number){
+    return String(Number(number)).padStart(3,"0");
+}
+
+function normalizeText(text){
+    return String(text || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g,"");
+}
+
+function normalizeHeader(text){
+    return normalizeText(text)
+        .replace(/[•●]/g," ")
+        .replace(/[*_:]/g," ")
+        .replace(/[º°]/g," ")
+        .replace(/\s+/g," ")
+        .trim()
+        .toUpperCase();
+}
+
+function cleanLine(text){
+    return String(text || "")
+        .replace(/[✅❌]/g,"")
+        .replace(/[•●]/g," ")
+        .replace(/\*/g,"")
+        .replace(/\s+/g," ")
+        .trim();
+}
+
+function extractTnl(text){
+    const match = String(text || "")
+        .match(/TNL\s*0*(\d{1,3})/i);
+
+    return match
+        ? Number(match[1])
+        : null;
+}
+
+function extractEmoji(text){
+    const match = String(text || "")
+        .match(/(🔴|🔵|🟢)/);
+
+    return match
+        ? match[1]
+        : "🔴";
+}
+
+function extractReasonAfterTnl(text){
+    const clean = cleanLine(text);
+
+    const match = clean.match(
+        /TNL\s*0*\d{1,3}\s*-\s*(.+)$/i
+    );
+
+    return match
+        ? match[1].trim()
+        : "";
+}
+
+function normalizeTnlInLine(text){
+    const tnl = extractTnl(text);
+
+    if(!tnl){
+        return cleanLine(text);
+    }
+
+    return cleanLine(text)
+        .replace(
+            /TNL\s*0*\d{1,3}/i,
+            `TNL ${padTnl(tnl)}`
+        );
+}
+
+function uniqueNumbers(list){
+    return [...new Set(
+        list
+            .map(Number)
+            .filter(value=>Number.isFinite(value))
+    )].sort((a,b)=>a-b);
+}
+
+function uniqueStrings(list){
+    return [...new Set(
+        list
+            .map(item=>String(item || "").trim())
+            .filter(Boolean)
+    )];
+}
+
+function sortRecords(records){
+    return [...records].sort((a,b)=>{
+        if(a.tnl !== b.tnl){
+            return a.tnl - b.tnl;
+        }
+
+        return String(a.text)
+            .localeCompare(String(b.text),"pt-BR");
+    });
+}
+
+function recordsOfTnl(tnl){
+    return state.records.filter(record=>
+        Number(record.tnl) === Number(tnl) &&
+        record.report === true
+    );
+}
+
+function activeRecords(){
+    return state.records.filter(record=>
+        record.report === true &&
+        ACTIVE_TYPES.includes(record.type)
+    );
+}
+
+function createRecord({
+    tnl,
+    type,
+    text,
+    emoji="",
+    source="raw",
+    reviewed=false
+}){
+    return {
+        id:state.nextId++,
+        tnl:Number(tnl),
+        type,
+        text:String(text || "").trim(),
+        emoji,
+        source,
+        reviewed:Boolean(reviewed),
+        report:true
+    };
+}
+
+function addRecord(record){
+    const signature = [
+        record.tnl,
+        record.type,
+        record.text
+    ].join("|").toLowerCase();
+
+    const exists = state.records.some(existing=>{
+        const existingSignature = [
+            existing.tnl,
+            existing.type,
+            existing.text
+        ].join("|").toLowerCase();
+
+        return existingSignature === signature;
+    });
+
+    if(!exists){
+        state.records.push(record);
+    }
+}
+
+function removeRecordsByTypes(tnl,types){
+    const allowedTypes = Array.isArray(types)
+        ? types
+        : [types];
+
+    state.records = state.records.filter(record=>{
+        if(Number(record.tnl) !== Number(tnl)){
+            return true;
+        }
+
+        return !allowedTypes.includes(record.type);
+    });
+}
+
+function removeOperationalRecords(tnl){
+    state.records = state.records.filter(record=>
+        Number(record.tnl) !== Number(tnl) ||
+        !ACTIVE_TYPES.includes(record.type)
+    );
+}
+
+function markReviewed(tnl){
+    state.reviewedTnls[String(tnl)] = true;
+
+    state.records.forEach(record=>{
+        if(Number(record.tnl) === Number(tnl)){
+            record.reviewed = true;
+        }
+    });
+}
+
+function isReviewed(tnl){
+    return Boolean(
+        state.reviewedTnls[String(tnl)]
+    );
+}
+
+/* =========================================================
+   CATEGORIAS DE ATIVIDADE
+========================================================= */
+
+function categoryOfType(type){
+    if(
+        type === "maintenance" ||
+        type === "maintenance_prod"
+    ){
+        return "maintenance";
+    }
+
+    if(
+        type === "setup_active" ||
+        type === "setup_start"
+    ){
+        return "setup";
+    }
+
+    if(type === "adjustment"){
+        return "adjustment";
+    }
+
+    return "";
+}
+
+function categoryLabel(category){
+    if(category === "maintenance"){
+        return "MANUTENÇÃO";
+    }
+
+    if(category === "setup"){
+        return "SETUP";
+    }
+
+    if(category === "adjustment"){
+        return "AJUSTE";
+    }
+
+    return category;
+}
+
+function completionQuestion(category){
+    if(category === "maintenance"){
+        return "A MANUTENÇÃO FOI CONCLUÍDA?";
+    }
+
+    if(category === "setup"){
+        return "O SETUP FOI CONCLUÍDO?";
+    }
+
+    if(category === "adjustment"){
+        return "O AJUSTE FOI CONCLUÍDO?";
+    }
+
+    return "A ATIVIDADE FOI CONCLUÍDA?";
+}
+
+function completionKey(category){
+    if(category === "maintenance"){
+        return "maintenances";
+    }
+
+    if(category === "setup"){
+        return "setups";
+    }
+
+    if(category === "adjustment"){
+        return "adjustments";
+    }
+
+    return "";
+}
+
+function addCompletedByCategory(tnl,category){
+    const key = completionKey(category);
+
+    if(!key){
+        return;
+    }
+
+    state.completed[key].push(Number(tnl));
+
+    state.completed[key] =
+        uniqueNumbers(state.completed[key]);
+}
+
+function categoriesOfTnl(tnl){
+    return [...new Set(
+        recordsOfTnl(tnl)
+            .map(record=>
+                categoryOfType(record.type)
+            )
+            .filter(Boolean)
+    )];
+}
+
+/* =========================================================
+   DETECÇÃO DAS SEÇÕES DO RELATÓRIO
+========================================================= */
+
+function detectSection(line){
+    const header = normalizeHeader(line);
+
+    if(header === "MAQUINAS EM MANUTENCAO PARADA"){
+        return {
+            type:"maintenance"
+        };
+    }
+
+    if(header === "MAQUINAS EM MANUTENCAO PRODUZINDO"){
+        return {
+            type:"maintenance_prod"
+        };
+    }
+
+    if(
+        header === "MAQUINAS EM SETUP" ||
+        header === "SETUP"
+    ){
+        return {
+            type:"setup_active"
+        };
+    }
+
+    if(header === "PROXIMOS SETUPS"){
+        return {
+            type:"setup_start"
+        };
+    }
+
+    const futureMatch = header.match(
+        /^SETUPS?\s*([123])\s*T(?:URNO)?$/
+    );
+
+    if(futureMatch){
+        return {
+            type:"future_setup",
+            heading:`SETUPS ${futureMatch[1]}°T`
+        };
+    }
+
+    if(
+        header === "MAQUINAS EM AJUSTES" ||
+        header === "MAQUINAS EM AJUSTE"
+    ){
+        return {
+            type:"adjustment"
+        };
+    }
+
+    if(
+        header === "ORDENS PARA SELECAO" ||
+        header === "BOM TRABALHO" ||
+        header === "OBSERVACOES" ||
+        header === "DESENVOLVIMENTO" ||
+        header === "SITUACAO DO SETOR"
+    ){
+        return {
+            type:"ignore"
+        };
+    }
+
+    return null;
+}
+
+/* =========================================================
+   FORMATADORES
+========================================================= */
+
+function maintenanceText(tnl,reason){
+    return `TNL ${padTnl(tnl)} - ${reason || "MANUTENÇÃO PARADA"}`;
+}
+
+function maintenanceProdText(tnl,reason){
+    return `TNL ${padTnl(tnl)} - ${reason || "MANUTENÇÃO PRODUZINDO"}`;
+}
+
+function setupText(tnl,emoji="🔴"){
+    return `${emoji || "🔴"} TNL ${padTnl(tnl)} - EM SETUP`;
+}
+
+function setupStartText(tnl,emoji="🔴"){
+    return `${emoji || "🔴"} TNL ${padTnl(tnl)} - INICIAR SETUP`;
+}
+
+function adjustmentText(tnl,reason=""){
+    return `TNL ${padTnl(tnl)} - ${reason || "EM AJUSTE"}`;
+}
+
+/* =========================================================
+   IMPORTAÇÃO DO RELATÓRIO BRUTO
+========================================================= */
+
+function importReport(){
+    const raw = el("rawInput").value;
+
+    state = createBlankState();
+
+    state.raw = raw;
+
+    let currentSection = "ignore";
+
+    let currentFutureHeading = "";
+
+    const lines = raw.split("\n");
+
+    for(const rawLine of lines){
+        const line = String(rawLine || "").trim();
+
+        if(!line){
+            continue;
+        }
+
+        const section = detectSection(line);
+
+        if(section){
+            currentSection = section.type;
+
+            if(section.type === "future_setup"){
+                currentFutureHeading = section.heading;
+
+                if(!state.futureBlocks[currentFutureHeading]){
+                    state.futureBlocks[currentFutureHeading] = [];
+                }
+            }
+
+            continue;
+        }
+
+        const tnl = extractTnl(line);
+
+        if(!tnl){
+            continue;
+        }
+
+        const concluded = line.includes("✅");
+
+        const emoji = extractEmoji(line);
+
+        const reason = extractReasonAfterTnl(line);
+
+        if(currentSection === "maintenance"){
+            const text = maintenanceText(tnl,reason);
+
+            if(!state.originalMaintenance[String(tnl)]){
+                state.originalMaintenance[String(tnl)] = [];
+            }
+
+            state.originalMaintenance[String(tnl)].push(text);
+
+            state.originalMaintenance[String(tnl)] =
+                uniqueStrings(
+                    state.originalMaintenance[String(tnl)]
+                );
+
+            if(concluded){
+                state.completed.maintenances.push(tnl);
+
+                continue;
+            }
+
+            addRecord(
+                createRecord({
+                    tnl,
+                    type:"maintenance",
+                    text
+                })
+            );
+
+            continue;
+        }
+
+        if(currentSection === "maintenance_prod"){
+            if(concluded){
+                state.completed.maintenances.push(tnl);
+
+                continue;
+            }
+
+            addRecord(
+                createRecord({
+                    tnl,
+                    type:"maintenance_prod",
+                    text:maintenanceProdText(tnl,reason)
+                })
+            );
+
+            continue;
+        }
+
+        if(currentSection === "setup_active"){
+            if(concluded){
+                state.completed.setups.push(tnl);
+
+                continue;
+            }
+
+            addRecord(
+                createRecord({
+                    tnl,
+                    type:"setup_active",
+                    text:setupText(tnl,emoji),
+                    emoji
+                })
+            );
+
+            continue;
+        }
+
+        if(currentSection === "setup_start"){
+            if(concluded){
+                state.completed.setups.push(tnl);
+
+                continue;
+            }
+
+            addRecord(
+                createRecord({
+                    tnl,
+                    type:"setup_start",
+                    text:setupStartText(tnl,emoji),
+                    emoji
+                })
+            );
+
+            continue;
+        }
+
+        if(currentSection === "future_setup"){
+            if(!state.futureBlocks[currentFutureHeading]){
+                state.futureBlocks[currentFutureHeading] = [];
+            }
+
+            state.futureBlocks[currentFutureHeading].push({
+                tnl,
+                emoji,
+                text:normalizeTnlInLine(line)
+            });
+
+            continue;
+        }
+
+        if(currentSection === "adjustment"){
+            if(concluded){
+                state.completed.adjustments.push(tnl);
+
+                continue;
+            }
+
+            addRecord(
+                createRecord({
+                    tnl,
+                    type:"adjustment",
+                    text:adjustmentText(tnl)
+                })
+            );
+        }
+    }
+
+    state.completed.adjustments =
+        uniqueNumbers(state.completed.adjustments);
+
+    state.completed.setups =
+        uniqueNumbers(state.completed.setups);
+
+    state.completed.maintenances =
+        uniqueNumbers(state.completed.maintenances);
+
+    Object.keys(state.futureBlocks).forEach(heading=>{
+        state.futureBlocks[heading] =
+            sortRecords(
+                state.futureBlocks[heading]
+            )
+            .filter((item,index,array)=>{
+                const signature =
+                    `${item.tnl}|${item.text}`;
+
+                return array.findIndex(other=>
+                    `${other.tnl}|${other.text}` === signature
+                ) === index;
+            });
+    });
+
+    state.records = sortRecords(state.records);
+
+    updateEverything();
+
+    saveSession();
+
+    toast("Relatório importado");
+}
+
+/* =========================================================
+   CONFLITOS
+========================================================= */
+
+function isConflict(tnl){
+    return categoriesOfTnl(tnl).length > 1;
+}
+
+function unresolvedConflictTnls(){
+    const tnls =
+        uniqueNumbers(
+            activeRecords()
+                .map(record=>
+                    record.tnl
+                )
+        );
+
+    return tnls.filter(tnl=>
+        isConflict(tnl) &&
+        !state.resolvedConflicts[String(tnl)]
+    );
+}
+
+function resolveKeepAll(tnl){
+    state.resolvedConflicts[String(tnl)] = true;
+
+    markReviewed(tnl);
+
+    updateEverything();
+
+    saveSession();
+
+    toast(
+        `TNL ${padTnl(tnl)} mantida nos blocos`
+    );
+}
+
+/* =========================================================
+   TRANSIÇÃO COM PERGUNTAS DE CONFLITO
+========================================================= */
+
+function requestConflictTransition({
+    tnl,
+    targetCategory,
+    execute
+}){
+    const allCategories =
+        categoriesOfTnl(tnl);
+
+    const removedCategories =
+        allCategories.filter(category=>
+            category !== targetCategory
+        );
+
+    if(!removedCategories.length){
+        execute([]);
+
+        return;
+    }
+
+    pendingCloseoutAction = {
+        tnl:Number(tnl),
+        targetCategory,
+        execute,
+        answers:{}
+    };
+
+    el("closeoutTitle").textContent =
+        `TNL ${padTnl(tnl)} - verificar atividades`;
+
+    el("closeoutSubtitle").textContent =
+        "Antes de alterar o status, informe o que aconteceu com as atividades anteriores.";
+
+    el("closeoutOptions").innerHTML = `
+        <div class="closeout-list">
+
+            ${removedCategories.map(category=>`
+                <div class="closeout-item">
+
+                    <div class="closeout-question">
+                        ${completionQuestion(category)}
+                    </div>
+
+                    <div class="closeout-buttons">
+
+                        <button
+                            type="button"
+                            class="closeout-choice yes"
+                            data-category="${category}"
+                            data-answer="yes"
+                        >
+                            SIM
+                        </button>
+
+                        <button
+                            type="button"
+                            class="closeout-choice no"
+                            data-category="${category}"
+                            data-answer="no"
+                        >
+                            NÃO
+                        </button>
+
+                    </div>
+
+                </div>
+            `).join("")}
+
+        </div>
+    `;
+
+    el("closeoutOptions")
+        .querySelectorAll(".closeout-choice")
+        .forEach(button=>{
+            button.addEventListener(
+                "click",
+                ()=>{
+                    const category =
+                        button.dataset.category;
+
+                    const answer =
+                        button.dataset.answer;
+
+                    pendingCloseoutAction
+                        .answers[category] =
+                        answer;
+
+                    el("closeoutOptions")
+                        .querySelectorAll(
+                            `.closeout-choice[data-category="${category}"]`
+                        )
+                        .forEach(item=>
+                            item.classList.remove(
+                                "selected"
+                            )
+                        );
+
+                    button.classList.add(
+                        "selected"
+                    );
+                }
+            );
+        });
+
+    el("closeoutModal")
+        .classList
+        .add("show");
+}
+
+function closeCloseoutModal(){
+    pendingCloseoutAction = null;
+
+    el("closeoutOptions").innerHTML = "";
+
+    el("closeoutModal")
+        .classList
+        .remove("show");
+}
+
+function confirmConflictTransition(){
+    if(!pendingCloseoutAction){
+        return;
+    }
+
+    const {
+        tnl,
+        targetCategory,
+        execute,
+        answers
+    } = pendingCloseoutAction;
+
+    const categories =
+        categoriesOfTnl(tnl)
+            .filter(category=>
+                category !== targetCategory
+            );
+
+    const missingAnswer =
+        categories.some(category=>
+            !answers[category]
+        );
+
+    if(missingAnswer){
+        toast(
+            "Responda SIM ou NÃO para continuar"
+        );
+
+        return;
+    }
+
+    const concludedCategories = [];
+
+    categories.forEach(category=>{
+        if(answers[category] === "yes"){
+            concludedCategories.push(category);
+
+            addCompletedByCategory(
+                tnl,
+                category
+            );
+
+            removeRecordsByTypes(
+                tnl,
+                ACTIVE_TYPES.filter(type=>
+                    categoryOfType(type) === category
+                )
+            );
+        }
+    });
+
+    closeCloseoutModal();
+
+    execute(concludedCategories);
+}
+
+/* =========================================================
+   DECISÕES DA PASSAGEM
+========================================================= */
+
+function releaseMachine(tnl){
+    const categories =
+        categoriesOfTnl(tnl);
+
+    categories.forEach(category=>{
+        addCompletedByCategory(
+            tnl,
+            category
+        );
+    });
+
+    removeOperationalRecords(tnl);
+
+    state.resolvedConflicts[String(tnl)] = true;
+
+    markReviewed(tnl);
+
+    updateEverything();
+
+    saveSession();
+
+    toast(
+        `TNL ${padTnl(tnl)} liberada e concluída`
+    );
+}
+
+function applySetup(tnl){
+    const execute = ()=>{
+        const previous =
+            recordsOfTnl(tnl);
+
+        const existingSetup =
+            previous.find(record=>
+                categoryOfType(record.type) === "setup"
+            );
+
+        const emoji =
+            existingSetup?.emoji ||
+            "🔴";
+
+        removeRecordsByTypes(
+            tnl,
+            [
+                "setup_active",
+                "setup_start"
+            ]
+        );
+
+        addRecord(
+            createRecord({
+                tnl,
+                type:"setup_active",
+                text:setupText(
+                    tnl,
+                    emoji
+                ),
+                emoji,
+                source:"decision",
+                reviewed:true
+            })
+        );
+
+        state.resolvedConflicts[String(tnl)] = true;
+
+        markReviewed(tnl);
+
+        updateEverything();
+
+        saveSession();
+
+        toast(
+            `TNL ${padTnl(tnl)} passará em setup`
+        );
+    };
+
+    requestConflictTransition({
+        tnl,
+        targetCategory:"setup",
+        execute
+    });
+}
+
+function requestAdjustment(tnl){
+    openReasonModal({
+        tnl,
+        action:"adjustment",
+        title:`Motivo do ajuste - TNL ${padTnl(tnl)}`,
+        subtitle:"Informe o motivo que deve aparecer no relatório final."
+    });
+}
+
+function applyAdjustment(tnl,reason){
+    const execute = ()=>{
+        removeRecordsByTypes(
+            tnl,
+            [
+                "adjustment"
+            ]
+        );
+
+        addRecord(
+            createRecord({
+                tnl,
+                type:"adjustment",
+                text:adjustmentText(
+                    tnl,
+                    reason
+                ),
+                source:"decision",
+                reviewed:true
+            })
+        );
+
+        state.resolvedConflicts[String(tnl)] = true;
+
+        markReviewed(tnl);
+
+        updateEverything();
+
+        saveSession();
+
+        toast(
+            `TNL ${padTnl(tnl)} passará em ajuste`
+        );
+    };
+
+    requestConflictTransition({
+        tnl,
+        targetCategory:"adjustment",
+        execute
+    });
+}
+
+function requestMaintenance(tnl){
+    const originalLines =
+        state.originalMaintenance[
+            String(tnl)
+        ] || [];
+
+    if(originalLines.length){
+        applyMaintenanceWithOriginalDescription(
+            tnl
+        );
+
+        return;
+    }
+
+    openReasonModal({
+        tnl,
+        action:"maintenance",
+        title:`Motivo da manutenção - TNL ${padTnl(tnl)}`,
+        subtitle:"Informe o motivo que deve aparecer no relatório final."
+    });
+}
+
+function applyMaintenanceWithOriginalDescription(tnl){
+    const execute = ()=>{
+        const originalLines =
+            state.originalMaintenance[
+                String(tnl)
+            ] || [];
+
+        removeRecordsByTypes(
+            tnl,
+            [
+                "maintenance",
+                "maintenance_prod"
+            ]
+        );
+
+        originalLines.forEach(text=>{
+            addRecord(
+                createRecord({
+                    tnl,
+                    type:"maintenance",
+                    text,
+                    source:"decision",
+                    reviewed:true
+                })
+            );
+        });
+
+        state.resolvedConflicts[String(tnl)] = true;
+
+        markReviewed(tnl);
+
+        updateEverything();
+
+        saveSession();
+
+        toast(
+            `TNL ${padTnl(tnl)} passará em manutenção`
+        );
+    };
+
+    requestConflictTransition({
+        tnl,
+        targetCategory:"maintenance",
+        execute
+    });
+}
+
+function applyMaintenanceWithReason(tnl,reason){
+    const execute = ()=>{
+        removeRecordsByTypes(
+            tnl,
+            [
+                "maintenance",
+                "maintenance_prod"
+            ]
+        );
+
+        const text =
+            maintenanceText(
+                tnl,
+                reason
+            );
+
+        state.originalMaintenance[
+            String(tnl)
+        ] = [
+            text
+        ];
+
+        addRecord(
+            createRecord({
+                tnl,
+                type:"maintenance",
+                text,
+                source:"decision",
+                reviewed:true
+            })
+        );
+
+        state.resolvedConflicts[String(tnl)] = true;
+
+        markReviewed(tnl);
+
+        updateEverything();
+
+        saveSession();
+
+        toast(
+            `TNL ${padTnl(tnl)} passará em manutenção`
+        );
+    };
+
+    requestConflictTransition({
+        tnl,
+        targetCategory:"maintenance",
+        execute
+    });
+}
+
+/* =========================================================
+   MODAL DE MOTIVO
+========================================================= */
+
+function openReasonModal({
+    tnl,
+    action,
+    title,
+    subtitle
+}){
+    pendingReasonAction = {
+        tnl:Number(tnl),
+        action
+    };
+
+    el("reasonTitle").textContent =
+        title;
+
+    el("reasonSubtitle").textContent =
+        subtitle;
+
+    el("reasonInput").value = "";
+
+    el("reasonModal")
+        .classList
+        .add("show");
+
+    setTimeout(()=>{
+        el("reasonInput").focus();
+    },80);
+}
+
+function closeReasonModal(){
+    pendingReasonAction = null;
+
+    el("reasonInput").value = "";
+
+    el("reasonModal")
+        .classList
+        .remove("show");
+}
+
+function confirmReason(){
+    if(!pendingReasonAction){
+        return;
+    }
+
+    const reason =
+        el("reasonInput")
+            .value
+            .trim();
+
+    if(!reason){
+        toast("Digite o motivo");
+
+        el("reasonInput").focus();
+
+        return;
+    }
+
+    const {
+        tnl,
+        action
+    } = pendingReasonAction;
+
+    closeReasonModal();
+
+    if(action === "adjustment"){
+        applyAdjustment(
+            tnl,
+            reason
+        );
+
+        return;
+    }
+
+    if(action === "maintenance"){
+        applyMaintenanceWithReason(
+            tnl,
+            reason
+        );
+    }
+}
+
+/* =========================================================
+   ADICIONAR MÁQUINA MANUALMENTE
+========================================================= */
+
+function refreshManualMachineSelect(){
+    const selectedCell =
+        el("cellSelect").value;
+
+    const machines =
+        CELULAS[selectedCell] || [];
+
+    el("addMachine").innerHTML =
+        machines
+            .map(tnl=>`
+                <option value="${tnl}">
+                    TNL ${padTnl(tnl)}
+                </option>
+            `)
+            .join("");
+}
+
+function openAddModal(){
+    refreshManualMachineSelect();
+
+    el("addReason").value = "";
+
+    el("addModal")
+        .classList
+        .add("show");
+}
+
+function closeAddModal(){
+    el("addReason").value = "";
+
+    el("addModal")
+        .classList
+        .remove("show");
+}
+
+function saveManualMachine(){
+    const tnl =
+        Number(
+            el("addMachine").value
+        );
+
+    const status =
+        el("addStatus").value;
+
+    const reason =
+        el("addReason")
+            .value
+            .trim();
+
+    if(status === "adjustment"){
+        if(!reason){
+            toast(
+                "Digite o motivo do ajuste"
+            );
+
+            el("addReason").focus();
+
+            return;
+        }
+
+        applyAdjustment(
+            tnl,
+            reason
+        );
+
+        closeAddModal();
+
+        return;
+    }
+
+    if(status === "maintenance"){
+        if(!reason){
+            toast(
+                "Digite o motivo da manutenção"
+            );
+
+            el("addReason").focus();
+
+            return;
+        }
+
+        applyMaintenanceWithReason(
+            tnl,
+            reason
+        );
+
+        closeAddModal();
+
+        return;
+    }
+
+    if(status === "maintenance_prod"){
+        if(!reason){
+            toast(
+                "Digite o motivo da manutenção"
+            );
+
+            el("addReason").focus();
+
+            return;
+        }
+
+        removeRecordsByTypes(
+            tnl,
+            [
+                "maintenance",
+                "maintenance_prod"
+            ]
+        );
+
+        addRecord(
+            createRecord({
+                tnl,
+                type:"maintenance_prod",
+                text:maintenanceProdText(
+                    tnl,
+                    reason
+                ),
+                source:"manual",
+                reviewed:true
+            })
+        );
+
+        markReviewed(tnl);
+
+        closeAddModal();
+
+        updateEverything();
+
+        saveSession();
+
+        toast(
+            `TNL ${padTnl(tnl)} adicionada`
+        );
+
+        return;
+    }
+
+    if(status === "setup_active"){
+        applySetup(tnl);
+
+        closeAddModal();
+
+        return;
+    }
+
+    if(status === "setup_start"){
+        removeRecordsByTypes(
+            tnl,
+            [
+                "setup_active",
+                "setup_start"
+            ]
+        );
+
+        addRecord(
+            createRecord({
+                tnl,
+                type:"setup_start",
+                text:setupStartText(
+                    tnl,
+                    "🔴"
+                ),
+                emoji:"🔴",
+                source:"manual",
+                reviewed:true
+            })
+        );
+
+        markReviewed(tnl);
+
+        closeAddModal();
+
+        updateEverything();
+
+        saveSession();
+
+        toast(
+            `TNL ${padTnl(tnl)} adicionada`
+        );
+    }
+}
+
+/* =========================================================
+   RENDERIZAÇÃO DA CÉLULA
+========================================================= */
+
+function typeLabel(type){
+    return TYPE_CONFIG[type]?.short || type;
+}
+
+function groupedPendingForSelectedCell(){
+    const selectedCell =
+        el("cellSelect").value;
+
+    const cellMachines =
+        CELULAS[selectedCell] || [];
+
+    const groups =
+        new Map();
+
+    activeRecords()
+        .filter(record=>
+            cellMachines.includes(
+                Number(record.tnl)
+            )
+        )
+        .forEach(record=>{
+            if(!groups.has(record.tnl)){
+                groups.set(
+                    record.tnl,
+                    []
+                );
+            }
+
+            groups
+                .get(record.tnl)
+                .push(record);
+        });
+
+    return [...groups.entries()]
+        .map(([tnl,records])=>({
+            tnl:Number(tnl),
+            records:sortRecords(records)
+        }))
+        .filter(group=>{
+            const unresolved =
+                isConflict(group.tnl) &&
+                !state.resolvedConflicts[
+                    String(group.tnl)
+                ];
+
+            return (
+                !isReviewed(group.tnl) ||
+                unresolved
+            );
+        })
+        .sort((a,b)=>
+            a.tnl - b.tnl
+        );
+}
+
+function groupBadge(group){
+    const unresolved =
+        isConflict(group.tnl) &&
+        !state.resolvedConflicts[
+            String(group.tnl)
+        ];
+
+    if(unresolved){
+        return {
+            text:"CONFLITO",
+            css:"red"
+        };
+    }
+
+    const type =
+        group.records[0]?.type ||
+        "adjustment";
+
+    const config =
+        TYPE_CONFIG[type] ||
+        TYPE_CONFIG.adjustment;
+
+    return {
+        text:config.label,
+        css:config.badge
+    };
+}
+
+function renderConflictOptions(group){
+    return `
+        <div class="conflict-title">
+            A mesma máquina aparece em mais de um bloco ativo. Escolha como ela passará para o próximo turno.
+        </div>
+
+        <div class="conflict-options">
+
+            <button
+                class="conflict-option keep-all"
+                onclick="resolveKeepAll(${group.tnl})"
+            >
+                MANTER NOS BLOCOS
+            </button>
+
+        </div>
+
+        <div class="machine-actions">
+
+            <button
+                class="action-btn adjust"
+                onclick="requestAdjustment(${group.tnl})"
+            >
+                VAI PASSAR EM AJUSTE
+            </button>
+
+            <button
+                class="action-btn setup"
+                onclick="applySetup(${group.tnl})"
+            >
+                VAI PASSAR EM SETUP
+            </button>
+
+            <button
+                class="action-btn maintenance"
+                onclick="requestMaintenance(${group.tnl})"
+            >
+                VAI PASSAR EM MANUTENÇÃO
+            </button>
+
+            <button
+                class="action-btn release"
+                onclick="releaseMachine(${group.tnl})"
+            >
+                LIBERADA
+            </button>
+
+        </div>
+    `;
+}
+
+function renderNormalActions(group){
+    return `
+        <div class="machine-actions">
+
+            <button
+                class="action-btn adjust"
+                onclick="requestAdjustment(${group.tnl})"
+            >
+                VAI PASSAR EM AJUSTE
+            </button>
+
+            <button
+                class="action-btn setup"
+                onclick="applySetup(${group.tnl})"
+            >
+                VAI PASSAR EM SETUP
+            </button>
+
+            <button
+                class="action-btn maintenance"
+                onclick="requestMaintenance(${group.tnl})"
+            >
+                VAI PASSAR EM MANUTENÇÃO
+            </button>
+
+            <button
+                class="action-btn release"
+                onclick="releaseMachine(${group.tnl})"
+            >
+                LIBERADA
+            </button>
+
+        </div>
+    `;
+}
+
+function renderSelectedCell(){
+    refreshManualMachineSelect();
+
+    const groups =
+        groupedPendingForSelectedCell();
+
+    const selectedCell =
+        el("cellSelect").value;
+
+    const allCellRecords =
+        activeRecords()
+            .filter(record=>
+                (
+                    CELULAS[selectedCell] ||
+                    []
+                )
+                .includes(
+                    Number(record.tnl)
+                )
+            );
+
+    const allTnls =
+        uniqueNumbers(
+            allCellRecords
+                .map(record=>
+                    record.tnl
+                )
+        );
+
+    const decidedCount =
+        allTnls
+            .filter(isReviewed)
+            .length;
+
+    const total =
+        allTnls.length;
+
+    const percent =
+        total
+            ? Math.round(
+                (
+                    decidedCount /
+                    total
+                ) * 100
+            )
+            : 100;
+
+    el("cellProgressFill")
+        .style
+        .width =
+        `${percent}%`;
+
+    el("cellProgressLabel")
+        .textContent =
+        total
+            ? `Célula ${selectedCell}: ${decidedCount}/${total} pendências decididas`
+            : `Célula ${selectedCell}: nenhuma pendência registrada`;
+
+    const container =
+        el("machineList");
+
+    if(!groups.length){
+        container.innerHTML = `
+            <div class="empty">
+                Nenhuma pendência aguardando decisão nesta célula.
+                <br>
+                Máquinas não citadas são consideradas em produção normal.
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML =
+        groups
+            .map(group=>{
+                const badge =
+                    groupBadge(group);
+
+                const conflict =
+                    isConflict(group.tnl) &&
+                    !state.resolvedConflicts[
+                        String(group.tnl)
+                    ];
+
+                return `
+                    <article class="machine-card ${conflict ? "conflict" : ""}">
+
+                        <div class="machine-head">
+
+                            <div class="machine-number">
+                                TNL ${padTnl(group.tnl)}
+                            </div>
+
+                            <span class="badge ${badge.css}">
+                                ${badge.text}
+                            </span>
+
+                        </div>
+
+                        <div class="machine-lines">
+
+                            ${group.records.map(record=>`
+                                <div class="machine-line">
+                                    <strong>${typeLabel(record.type)}</strong>
+                                    <br>
+                                    ${record.text}
+                                </div>
+                            `).join("")}
+
+                        </div>
+
+                        ${conflict
+                            ? renderConflictOptions(group)
+                            : renderNormalActions(group)
+                        }
+
+                    </article>
+                `;
+            })
+            .join("");
+}
+
+/* =========================================================
+   RELATÓRIO FINAL
+========================================================= */
+
+function formatList(lines){
+    return lines.length
+        ? uniqueStrings(lines).join("\n")
+        : "N/A";
+}
+
+function formatCompleted(numbers){
+    const values =
+        uniqueNumbers(numbers)
+            .map(padTnl);
+
+    return values.length
+        ? `TNL's - ${values.join(" - ")}.`
+        : "N/A";
+}
+
+function renderFutureBlocks(){
+    const headings =
+        Object.keys(
+            state.futureBlocks
+        );
+
+    if(!headings.length){
+        return `*SETUPS 3°T:*
+N/A`;
+    }
+
+    return headings
+        .map(heading=>{
+            const lines =
+                sortRecords(
+                    state.futureBlocks[heading]
+                )
+                .map(item=>
+                    item.text
+                );
+
+            return `*${heading}:*
+${formatList(lines)}`;
+        })
+        .join("\n\n");
+}
+
+function generateReport(){
+    const maintenances =
+        sortRecords(
+            activeRecords()
+                .filter(record=>
+                    record.type === "maintenance"
+                )
+        )
+        .map(record=>
+            record.text
+        );
+
+    const producingMaintenances =
+        sortRecords(
+            activeRecords()
+                .filter(record=>
+                    record.type === "maintenance_prod"
+                )
+        )
+        .map(record=>
+            record.text
+        );
+
+    const setups =
+        sortRecords(
+            activeRecords()
+                .filter(record=>
+                    record.type === "setup_active" ||
+                    record.type === "setup_start"
+                )
+        )
+        .map(record=>
+            record.text
+        );
+
+    const adjustments =
+        sortRecords(
+            activeRecords()
+                .filter(record=>
+                    record.type === "adjustment"
+                )
+        )
+        .map(record=>
+            record.text
+        );
+
+    const development =
+        el("development")
+            .value
+            .trim() ||
+        "N/A";
+
+    const observations =
+        el("observations")
+            .value
+            .trim() ||
+        "N/A";
+
+    const currentShift =
+        `${el("currentShift").value}° TURNO`;
+
+    const report = `*${currentShift}*
+*SITUAÇÃO DO SETOR ⬇️⬇️⬇️*
+
+*BANCADA – CHECK POINT:*
+${el("checkpoint").value || "00"}
+
+*ORDENS PARA SELEÇÃO:*
+
+Seleção 1° turno: ${el("sel1").value || "00"}
+Seleção 2° turno: ${el("sel2").value || "00"}
+Seleção 3° turno: ${el("sel3").value || "00"}
+Os 3 turnos: ${el("selAll").value || "00"}
+Seleção TNC: ${el("selTnc").value || "00"}
+
+*CQ FECHAMENTO:*
+${el("cqFechamento").value || "00"}
+
+*CQ REINSPEÇÃO:*
+${el("cqReinspecao").value || "00"}
+
+*MÁQUINAS EM MANUTENÇÃO PARADA:*
+${formatList(maintenances)}
+
+*MÁQUINAS EM MANUTENÇÃO PRODUZINDO:*
+${formatList(producingMaintenances)}
+
+*SETUP:*
+${formatList(setups)}
+
+*MAQUINAS EM AJUSTES:*
+${formatList(adjustments)}
+
+${renderFutureBlocks()}
+
+*AJUSTES CONCLUÍDOS:*
+${formatCompleted(state.completed.adjustments)}
+
+*SETUPS CONCLUÍDOS:*
+${formatCompleted(state.completed.setups)}
+
+*MANUTENÇÕES CONCLUÍDAS:*
+${formatCompleted(state.completed.maintenances)}
+
+*DESENVOLVIMENTO:*
+${development}
+
+*OBSERVAÇÕES:*
+${observations}
+
+*RESTANTE OK !*`;
+
+    el("finalOutput").value =
+        report;
+
+    updateKpis();
+
+    saveSession();
+
+    return report;
+}
+
+function copyReport(){
+    const unresolved =
+        unresolvedConflictTnls();
+
+    if(unresolved.length){
+        toast(
+            `Resolva ${unresolved.length} conflito(s) antes de copiar`
+        );
+
+        return;
+    }
+
+    const text =
+        el("finalOutput")
+            .value
+            .trim();
+
+    if(!text){
+        toast(
+            "Atualize o relatório antes de copiar"
+        );
+
+        return;
+    }
+
+    if(
+        navigator.clipboard &&
+        window.isSecureContext
+    ){
+        navigator.clipboard
+            .writeText(text)
+            .then(()=>{
+                toast(
+                    "Relatório copiado"
+                );
+            })
+            .catch(()=>{
+                fallbackCopy(text);
+            });
+
+        return;
+    }
+
+    fallbackCopy(text);
+}
+
+function fallbackCopy(text){
+    const textarea =
+        document.createElement(
+            "textarea"
+        );
+
+    textarea.value =
+        text;
+
+    textarea.style.position =
+        "fixed";
+
+    textarea.style.opacity =
+        "0";
+
+    document.body.appendChild(
+        textarea
+    );
+
+    textarea.select();
+
+    try{
+        document.execCommand(
+            "copy"
+        );
+
+        toast(
+            "Relatório copiado"
+        );
+    }catch(error){
+        toast(
+            "Não foi possível copiar"
+        );
+    }
+
+    document.body.removeChild(
+        textarea
+    );
+}
+
+/* =========================================================
+   KPIs
+========================================================= */
+
+function updateKpis(){
+    const pendingTnls =
+        uniqueNumbers(
+            activeRecords()
+                .filter(record=>
+                    !isReviewed(record.tnl)
+                )
+                .map(record=>
+                    record.tnl
+                )
+        );
+
+    const reviewedCount =
+        Object
+            .values(
+                state.reviewedTnls
+            )
+            .filter(Boolean)
+            .length;
+
+    const conflictCount =
+        unresolvedConflictTnls()
+            .length;
+
+    const completedCount =
+        uniqueNumbers(
+            state.completed.adjustments
+        ).length +
+        uniqueNumbers(
+            state.completed.setups
+        ).length +
+        uniqueNumbers(
+            state.completed.maintenances
+        ).length;
+
+    el("kpiPending")
+        .textContent =
+        String(
+            pendingTnls.length
+        );
+
+    el("kpiReviewed")
+        .textContent =
+        String(
+            reviewedCount
+        );
+
+    el("kpiConflicts")
+        .textContent =
+        String(
+            conflictCount
+        );
+
+    el("kpiCompleted")
+        .textContent =
+        String(
+            completedCount
+        );
+
+    el("reportSafetyNote")
+        .textContent =
+        conflictCount
+            ? `${conflictCount} conflito(s) aguardando decisão. A cópia permanece bloqueada.`
+            : "Nenhum conflito pendente. O relatório pode ser copiado.";
+}
+
+/* =========================================================
+   SALVAMENTO LOCAL
+========================================================= */
+
+function manualFieldsSnapshot(){
+    return {
+        currentShift:
+            el("currentShift").value,
+
+        checkpoint:
+            el("checkpoint").value,
+
+        sel1:
+            el("sel1").value,
+
+        sel2:
+            el("sel2").value,
+
+        sel3:
+            el("sel3").value,
+
+        selAll:
+            el("selAll").value,
+
+        selTnc:
+            el("selTnc").value,
+
+        cqFechamento:
+            el("cqFechamento").value,
+
+        cqReinspecao:
+            el("cqReinspecao").value,
+
+        development:
+            el("development").value,
+
+        observations:
+            el("observations").value,
+
+        finalOutput:
+            el("finalOutput").value,
+
+        selectedCell:
+            el("cellSelect").value
+    };
+}
+
+function applyManualFields(snapshot){
+    if(!snapshot){
+        return;
+    }
+
+    const ids = [
+        "currentShift",
+        "checkpoint",
+        "sel1",
+        "sel2",
+        "sel3",
+        "selAll",
+        "selTnc",
+        "cqFechamento",
+        "cqReinspecao",
+        "development",
+        "observations",
+        "finalOutput"
+    ];
+
+    ids.forEach(id=>{
+        if(snapshot[id] !== undefined){
+            el(id).value =
+                snapshot[id];
+        }
+    });
+
+    if(snapshot.selectedCell !== undefined){
+        el("cellSelect").value =
+            snapshot.selectedCell;
+    }
+}
+
+function saveSession(){
+    state.raw =
+        el("rawInput").value;
+
+    const payload = {
+        state,
+        fields:
+            manualFieldsSnapshot()
+    };
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(payload)
+    );
+}
+
+function restoreSession(){
+    try{
+        const raw =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
+        if(!raw){
+            return false;
+        }
+
+        const payload =
+            JSON.parse(raw);
+
+        state = {
+            ...createBlankState(),
+            ...(payload.state || {}),
+
+            completed:{
+                ...createBlankState().completed,
+                ...(
+                    payload.state?.completed ||
+                    {}
+                )
+            },
+
+            futureBlocks:{
+                ...(
+                    payload.state?.futureBlocks ||
+                    {}
+                )
+            },
+
+            originalMaintenance:{
+                ...(
+                    payload.state?.originalMaintenance ||
+                    {}
+                )
+            },
+
+            reviewedTnls:{
+                ...(
+                    payload.state?.reviewedTnls ||
+                    {}
+                )
+            },
+
+            resolvedConflicts:{
+                ...(
+                    payload.state?.resolvedConflicts ||
+                    {}
+                )
+            }
+        };
+
+        el("rawInput").value =
+            state.raw ||
+            "";
+
+        applyManualFields(
+            payload.fields
+        );
+
+        return true;
+    }catch(error){
+        console.error(
+            error
+        );
+
+        return false;
+    }
+}
+
+function clearSession(){
+    const confirmed =
+        window.confirm(
+            "Deseja limpar toda a sessão atual?"
+        );
+
+    if(!confirmed){
+        return;
+    }
+
+    localStorage.removeItem(
+        STORAGE_KEY
+    );
+
+    state =
+        createBlankState();
+
+    el("rawInput").value = "";
+    el("currentShift").value = "2";
+    el("checkpoint").value = "00";
+    el("sel1").value = "00";
+    el("sel2").value = "00";
+    el("sel3").value = "00";
+    el("selAll").value = "00";
+    el("selTnc").value = "00";
+    el("cqFechamento").value = "00";
+    el("cqReinspecao").value = "00";
+    el("development").value = "";
+    el("observations").value = "";
+    el("finalOutput").value = "";
+    el("cellSelect").value = "01";
+
+    updateEverything();
+
+    toast(
+        "Sessão limpa"
+    );
+}
+
+/* =========================================================
+   ATUALIZAÇÃO CENTRAL
+========================================================= */
+
+function updateEverything(){
+    renderSelectedCell();
+
+    generateReport();
+
+    updateKpis();
+}
+
+/* =========================================================
+   EVENTOS
+========================================================= */
+
+function bindEvents(){
+    el("btnImport")
+        .addEventListener(
+            "click",
+            importReport
+        );
+
+    el("btnClear")
+        .addEventListener(
+            "click",
+            clearSession
+        );
+
+    el("btnOpenAdd")
+        .addEventListener(
+            "click",
+            openAddModal
+        );
+
+    el("btnCloseAdd")
+        .addEventListener(
+            "click",
+            closeAddModal
+        );
+
+    el("btnSaveAdd")
+        .addEventListener(
+            "click",
+            saveManualMachine
+        );
+
+    el("btnCancelReason")
+        .addEventListener(
+            "click",
+            closeReasonModal
+        );
+
+    el("btnConfirmReason")
+        .addEventListener(
+            "click",
+            confirmReason
+        );
+
+    el("btnConfirmCloseout")
+        .addEventListener(
+            "click",
+            confirmConflictTransition
+        );
+
+    el("btnCancelCloseout")
+        .addEventListener(
+            "click",
+            closeCloseoutModal
+        );
+
+    el("btnRefreshReport")
+        .addEventListener(
+            "click",
+            ()=>{
+                generateReport();
+
+                toast(
+                    "Relatório atualizado"
+                );
+            }
+        );
+
+    el("btnCopyReport")
+        .addEventListener(
+            "click",
+            copyReport
+        );
+
+    el("cellSelect")
+        .addEventListener(
+            "change",
+            ()=>{
+                renderSelectedCell();
+
+                saveSession();
+            }
+        );
+
+    el("rawInput")
+        .addEventListener(
+            "input",
+            saveSession
+        );
+
+    [
+        "currentShift",
+        "checkpoint",
+        "sel1",
+        "sel2",
+        "sel3",
+        "selAll",
+        "selTnc",
+        "cqFechamento",
+        "cqReinspecao",
+        "development",
+        "observations"
+    ].forEach(id=>{
+        el(id)
+            .addEventListener(
+                "input",
+                ()=>{
+                    generateReport();
+
+                    saveSession();
+                }
+            );
+
+        el(id)
+            .addEventListener(
+                "change",
+                ()=>{
+                    generateReport();
+
+                    saveSession();
+                }
+            );
+    });
+
+    el("finalOutput")
+        .addEventListener(
+            "input",
+            saveSession
+        );
+
+    el("addModal")
+        .addEventListener(
+            "click",
+            event=>{
+                if(
+                    event.target.id ===
+                    "addModal"
+                ){
+                    closeAddModal();
+                }
+            }
+        );
+
+    el("reasonModal")
+        .addEventListener(
+            "click",
+            event=>{
+                if(
+                    event.target.id ===
+                    "reasonModal"
+                ){
+                    closeReasonModal();
+                }
+            }
+        );
+
+    el("closeoutModal")
+        .addEventListener(
+            "click",
+            event=>{
+                if(
+                    event.target.id ===
+                    "closeoutModal"
+                ){
+                    closeCloseoutModal();
+                }
+            }
+        );
+}
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+function init(){
+    bindEvents();
+
+    if(restoreSession()){
+        updateEverything();
+
+        toast(
+            "Sessão restaurada"
+        );
+
+        return;
+    }
+
+    updateEverything();
+}
+
+init();
+</script>
+
+</body>
+</html>
