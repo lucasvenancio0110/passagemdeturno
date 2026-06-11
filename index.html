@@ -2,9 +2,12 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
 
-<title>VENANC Tools - Passagem de turno</title>
+<title>Passagem de turno</title>
 
 <style>
 :root{
@@ -259,14 +262,16 @@ button{
 
 .btn:hover,
 .action-btn:hover,
-.conflict-option:hover{
+.future-action:hover,
+.transition-btn:hover{
     transform:translateY(-1px);
     filter:brightness(1.04);
 }
 
 .btn:active,
 .action-btn:active,
-.conflict-option:active{
+.future-action:active,
+.transition-btn:active{
     transform:scale(.988);
 }
 
@@ -367,6 +372,12 @@ button{
         linear-gradient(145deg,rgba(120,53,15,.26),rgba(2,6,23,.82));
 }
 
+.machine-card.future{
+    border-color:rgba(59,130,246,.42);
+    background:
+        linear-gradient(145deg,rgba(30,64,175,.20),rgba(2,6,23,.82));
+}
+
 .machine-head{
     display:flex;
     align-items:flex-start;
@@ -426,13 +437,20 @@ button{
     background:rgba(220,38,38,.18);
 }
 
-.machine-actions{
+.badge.green{
+    color:#bbf7d0;
+    background:rgba(22,163,74,.18);
+}
+
+.machine-actions,
+.future-actions{
     display:grid;
     grid-template-columns:repeat(2,minmax(0,1fr));
     gap:8px;
 }
 
-.action-btn{
+.action-btn,
+.future-action{
     display:flex;
     align-items:center;
     justify-content:center;
@@ -455,6 +473,10 @@ button{
     background:#2563eb;
 }
 
+.action-btn.start{
+    background:#0f766e;
+}
+
 .action-btn.maintenance{
     background:#dc2626;
 }
@@ -463,34 +485,27 @@ button{
     background:#16a34a;
 }
 
+.future-action.keep{
+    background:#16a34a;
+}
+
+.future-action.start{
+    background:#0f766e;
+}
+
+.future-action.setup{
+    background:#2563eb;
+}
+
+.future-action.remove{
+    background:#475569;
+}
+
 .conflict-title{
     color:#fde68a;
     font-size:.88rem;
     line-height:1.4;
     font-weight:900;
-}
-
-.conflict-options{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:8px;
-}
-
-.conflict-option{
-    min-height:44px;
-    padding:9px 12px;
-    color:#fff;
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:14px;
-    background:rgba(255,255,255,.10);
-    font-size:.82rem;
-    font-weight:900;
-    text-align:center;
-    transition:.16s ease;
-}
-
-.conflict-option.keep-all{
-    background:#15803d;
 }
 
 .modal{
@@ -540,55 +555,41 @@ button{
     line-height:1.42;
 }
 
-.closeout-list{
+.transition-options{
     display:grid;
-    gap:11px;
+    gap:9px;
 }
 
-.closeout-item{
-    display:grid;
-    gap:10px;
-    padding:13px;
-    border:1px solid rgba(255,255,255,.11);
-    border-radius:16px;
-    background:rgba(2,6,23,.58);
-}
-
-.closeout-question{
-    color:#fff;
-    font-size:.96rem;
-    font-weight:950;
-}
-
-.closeout-buttons{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-}
-
-.closeout-choice{
-    min-height:44px;
+.transition-btn{
+    min-height:48px;
+    padding:10px 12px;
     color:#fff;
     border:1px solid rgba(255,255,255,.12);
-    border-radius:13px;
+    border-radius:14px;
     background:rgba(255,255,255,.10);
     font-size:.9rem;
     font-weight:950;
+    transition:.16s ease;
 }
 
-.closeout-choice.yes.selected{
+.transition-btn.yes{
     background:#16a34a;
 }
 
-.closeout-choice.no.selected{
+.transition-btn.no{
     background:#dc2626;
 }
 
-.closeout-note{
-    margin-top:12px;
-    color:#cbd5e1;
-    font-size:.84rem;
-    line-height:1.45;
+.transition-btn.special{
+    background:#2563eb;
+}
+
+.transition-btn.remove{
+    background:#475569;
+}
+
+.transition-btn.keep{
+    background:#0f766e;
 }
 
 .toast{
@@ -624,7 +625,7 @@ button{
     .form-grid,
     .toolbar,
     .machine-actions,
-    .conflict-options,
+    .future-actions,
     .actions-grid{
         grid-template-columns:1fr;
     }
@@ -646,7 +647,7 @@ button{
             <span>Passagem de turno</span>
         </h1>
 
-        <p>Checklist por célula e consolidação do relatório final.</p>
+        <p>Checklist inteligente por célula e consolidação do relatório final.</p>
 
         <div class="hero-chips">
 
@@ -687,6 +688,7 @@ button{
             </div>
 
             <div class="actions-grid">
+
                 <button class="btn btn-primary" id="btnImport">
                     IMPORTAR RELATÓRIO
                 </button>
@@ -694,6 +696,7 @@ button{
                 <button class="btn btn-red" id="btnClear">
                     LIMPAR SESSÃO
                 </button>
+
             </div>
 
             <p class="note">
@@ -707,9 +710,7 @@ button{
             <div class="form-grid">
 
                 <div class="field">
-                    <label class="label" for="currentShift">
-                        Turno atual
-                    </label>
+                    <label class="label" for="currentShift">Turno atual</label>
 
                     <select id="currentShift" class="select">
                         <option value="1">1° TURNO</option>
@@ -918,7 +919,7 @@ button{
     </div>
 </div>
 
-<!-- MODAL: INFORMAR MOTIVO -->
+<!-- MODAL: MOTIVO -->
 <div class="modal" id="reasonModal">
     <div class="modal-card">
 
@@ -955,38 +956,26 @@ button{
     </div>
 </div>
 
-<!-- MODAL: CONFLITO E ENCERRAMENTO -->
-<div class="modal" id="closeoutModal">
+<!-- MODAL: TRANSIÇÃO DO CONFLITO -->
+<div class="modal" id="transitionModal">
     <div class="modal-card">
 
         <div class="modal-handle"></div>
 
-        <div class="modal-title" id="closeoutTitle">
-            Verificar atividades
+        <div class="modal-title" id="transitionTitle">
+            Resolver conflito
         </div>
 
-        <div class="modal-subtitle" id="closeoutSubtitle">
-            Informe se as atividades anteriores foram concluídas.
+        <div class="modal-subtitle" id="transitionSubtitle">
+            Confirme o que ocorreu com a atividade anterior.
         </div>
 
-        <div id="closeoutOptions"></div>
-
-        <div class="closeout-note">
-            Se marcar <strong>SIM</strong>, a atividade sai do bloco ativo e entra na lista de concluídas.
-            <br><br>
-            Se marcar <strong>NÃO</strong>, ela continua ativa junto com o novo status selecionado.
-        </div>
+        <div class="transition-options" id="transitionOptions"></div>
 
         <div class="actions-grid">
-
-            <button class="btn btn-primary" id="btnConfirmCloseout">
-                CONTINUAR
-            </button>
-
-            <button class="btn btn-soft" id="btnCancelCloseout">
+            <button class="btn btn-soft" id="btnCancelTransition">
                 CANCELAR
             </button>
-
         </div>
 
     </div>
@@ -1001,7 +990,7 @@ button{
    CONFIGURAÇÃO
 ========================================================= */
 
-const STORAGE_KEY = "venanc_tools_passagem_turno_v4";
+const STORAGE_KEY = "venanc_tools_passagem_turno_v6";
 
 const CELULAS = {
     "01":[2,5,15,19,23,24,25,26,27,29,30,35,46,47,48],
@@ -1075,7 +1064,8 @@ function createBlankState(){
 
         reviewedTnls:{},
         resolvedConflicts:{},
-        nextId:1
+        nextId:1,
+        nextFutureId:1
     };
 }
 
@@ -1083,7 +1073,7 @@ let state = createBlankState();
 
 let pendingReasonAction = null;
 
-let pendingCloseoutAction = null;
+let pendingTransition = null;
 
 /* =========================================================
    UTILITÁRIOS
@@ -1198,8 +1188,8 @@ function uniqueStrings(list){
 
 function sortRecords(records){
     return [...records].sort((a,b)=>{
-        if(a.tnl !== b.tnl){
-            return a.tnl - b.tnl;
+        if(Number(a.tnl) !== Number(b.tnl)){
+            return Number(a.tnl) - Number(b.tnl);
         }
 
         return String(a.text)
@@ -1263,25 +1253,21 @@ function addRecord(record){
     }
 }
 
-function removeRecordsByTypes(tnl,types){
-    const allowedTypes = Array.isArray(types)
-        ? types
-        : [types];
-
-    state.records = state.records.filter(record=>{
-        if(Number(record.tnl) !== Number(tnl)){
-            return true;
-        }
-
-        return !allowedTypes.includes(record.type);
-    });
-}
-
 function removeOperationalRecords(tnl){
     state.records = state.records.filter(record=>
         Number(record.tnl) !== Number(tnl) ||
         !ACTIVE_TYPES.includes(record.type)
     );
+}
+
+function removeCategoryRecords(tnl,category){
+    state.records = state.records.filter(record=>{
+        if(Number(record.tnl) !== Number(tnl)){
+            return true;
+        }
+
+        return categoryOfType(record.type) !== category;
+    });
 }
 
 function markReviewed(tnl){
@@ -1301,7 +1287,7 @@ function isReviewed(tnl){
 }
 
 /* =========================================================
-   CATEGORIAS DE ATIVIDADE
+   CATEGORIAS
 ========================================================= */
 
 function categoryOfType(type){
@@ -1358,6 +1344,16 @@ function completionQuestion(category){
     return "A ATIVIDADE FOI CONCLUÍDA?";
 }
 
+function categoriesOfTnl(tnl){
+    return [...new Set(
+        recordsOfTnl(tnl)
+            .map(record=>
+                categoryOfType(record.type)
+            )
+            .filter(Boolean)
+    )];
+}
+
 function completionKey(category){
     if(category === "maintenance"){
         return "maintenances";
@@ -1387,18 +1383,50 @@ function addCompletedByCategory(tnl,category){
         uniqueNumbers(state.completed[key]);
 }
 
-function categoriesOfTnl(tnl){
-    return [...new Set(
-        recordsOfTnl(tnl)
-            .map(record=>
-                categoryOfType(record.type)
-            )
-            .filter(Boolean)
-    )];
+function hasMaintenanceActive(tnl){
+    return recordsOfTnl(tnl)
+        .some(record=>
+            categoryOfType(record.type) === "maintenance"
+        );
+}
+
+function hasSetupActive(tnl){
+    return recordsOfTnl(tnl)
+        .some(record=>
+            categoryOfType(record.type) === "setup"
+        );
 }
 
 /* =========================================================
-   DETECÇÃO DAS SEÇÕES DO RELATÓRIO
+   FORMATADORES
+========================================================= */
+
+function maintenanceText(tnl,reason){
+    return `TNL ${padTnl(tnl)} - ${reason || "MANUTENÇÃO PARADA"}`;
+}
+
+function maintenanceProdText(tnl,reason){
+    return `TNL ${padTnl(tnl)} - ${reason || "MANUTENÇÃO PRODUZINDO"}`;
+}
+
+function setupText(tnl,emoji="🔴"){
+    return `${emoji || "🔴"} TNL ${padTnl(tnl)} - EM SETUP`;
+}
+
+function setupStartText(tnl,emoji="🔴"){
+    return `${emoji || "🔴"} TNL ${padTnl(tnl)} - INICIAR SETUP`;
+}
+
+function setupAfterMaintenanceText(tnl,emoji="🔴"){
+    return `${emoji || "🔴"} TNL ${padTnl(tnl)} - APÓS MANUTENÇÃO`;
+}
+
+function adjustmentText(tnl,reason=""){
+    return `TNL ${padTnl(tnl)} - ${reason || "EM AJUSTE"}`;
+}
+
+/* =========================================================
+   DETECÇÃO DE SEÇÕES
 ========================================================= */
 
 function detectSection(line){
@@ -1467,31 +1495,7 @@ function detectSection(line){
 }
 
 /* =========================================================
-   FORMATADORES
-========================================================= */
-
-function maintenanceText(tnl,reason){
-    return `TNL ${padTnl(tnl)} - ${reason || "MANUTENÇÃO PARADA"}`;
-}
-
-function maintenanceProdText(tnl,reason){
-    return `TNL ${padTnl(tnl)} - ${reason || "MANUTENÇÃO PRODUZINDO"}`;
-}
-
-function setupText(tnl,emoji="🔴"){
-    return `${emoji || "🔴"} TNL ${padTnl(tnl)} - EM SETUP`;
-}
-
-function setupStartText(tnl,emoji="🔴"){
-    return `${emoji || "🔴"} TNL ${padTnl(tnl)} - INICIAR SETUP`;
-}
-
-function adjustmentText(tnl,reason=""){
-    return `TNL ${padTnl(tnl)} - ${reason || "EM AJUSTE"}`;
-}
-
-/* =========================================================
-   IMPORTAÇÃO DO RELATÓRIO BRUTO
+   IMPORTAÇÃO
 ========================================================= */
 
 function importReport(){
@@ -1630,14 +1634,21 @@ function importReport(){
         }
 
         if(currentSection === "future_setup"){
+            if(concluded){
+                continue;
+            }
+
             if(!state.futureBlocks[currentFutureHeading]){
                 state.futureBlocks[currentFutureHeading] = [];
             }
 
             state.futureBlocks[currentFutureHeading].push({
+                id:state.nextFutureId++,
+                heading:currentFutureHeading,
                 tnl,
                 emoji,
-                text:normalizeTnlInLine(line)
+                text:normalizeTnlInLine(line),
+                reviewed:false
             });
 
             continue;
@@ -1671,20 +1682,22 @@ function importReport(){
 
     Object.keys(state.futureBlocks).forEach(heading=>{
         state.futureBlocks[heading] =
-            sortRecords(
-                state.futureBlocks[heading]
-            )
-            .filter((item,index,array)=>{
-                const signature =
-                    `${item.tnl}|${item.text}`;
+            state.futureBlocks[heading]
+                .sort((a,b)=>
+                    Number(a.tnl) - Number(b.tnl)
+                )
+                .filter((item,index,array)=>{
+                    const signature =
+                        `${item.tnl}|${item.text}`;
 
-                return array.findIndex(other=>
-                    `${other.tnl}|${other.text}` === signature
-                ) === index;
-            });
+                    return array.findIndex(other=>
+                        `${other.tnl}|${other.text}` === signature
+                    ) === index;
+                });
     });
 
-    state.records = sortRecords(state.records);
+    state.records =
+        sortRecords(state.records);
 
     updateEverything();
 
@@ -1716,201 +1729,536 @@ function unresolvedConflictTnls(){
     );
 }
 
-function resolveKeepAll(tnl){
-    state.resolvedConflicts[String(tnl)] = true;
+/* =========================================================
+   TRANSIÇÕES EM CAMADAS
+========================================================= */
+
+function startTransition({
+    tnl,
+    targetCategory,
+    applyTarget
+}){
+    const otherCategories =
+        categoriesOfTnl(tnl)
+            .filter(category=>
+                category !== targetCategory
+            );
+
+    if(!otherCategories.length){
+        applyTarget();
+
+        finalizeDecision(tnl);
+
+        return;
+    }
+
+    pendingTransition = {
+        tnl:Number(tnl),
+        targetCategory,
+        applyTarget,
+        otherCategories,
+        currentIndex:0,
+        decisions:{}
+    };
+
+    askCurrentCategoryConclusion();
+}
+
+function askCurrentCategoryConclusion(){
+    if(!pendingTransition){
+        return;
+    }
+
+    const {
+        tnl,
+        otherCategories,
+        currentIndex
+    } = pendingTransition;
+
+    if(currentIndex >= otherCategories.length){
+        finalizeTransition();
+
+        return;
+    }
+
+    const category =
+        otherCategories[currentIndex];
+
+    el("transitionTitle").textContent =
+        `TNL ${padTnl(tnl)} - ${categoryLabel(category)}`;
+
+    el("transitionSubtitle").textContent =
+        completionQuestion(category);
+
+    el("transitionOptions").innerHTML = `
+        <button
+            class="transition-btn yes"
+            onclick="answerConclusion('yes')"
+        >
+            SIM
+        </button>
+
+        <button
+            class="transition-btn no"
+            onclick="answerConclusion('no')"
+        >
+            NÃO
+        </button>
+    `;
+
+    el("transitionModal")
+        .classList
+        .add("show");
+}
+
+function answerConclusion(answer){
+    if(!pendingTransition){
+        return;
+    }
+
+    const {
+        otherCategories,
+        currentIndex
+    } = pendingTransition;
+
+    const category =
+        otherCategories[currentIndex];
+
+    if(answer === "yes"){
+        pendingTransition.decisions[category] =
+            "complete";
+
+        goToNextTransitionCategory();
+
+        return;
+    }
+
+    showResidualOptions(category);
+}
+
+function showResidualOptions(category){
+    if(!pendingTransition){
+        return;
+    }
+
+    const targetCategory =
+        pendingTransition.targetCategory;
+
+    el("transitionSubtitle").textContent =
+        `O que deseja fazer com ${categoryLabel(category)}?`;
+
+    if(
+        category === "setup" &&
+        targetCategory === "maintenance"
+    ){
+        el("transitionOptions").innerHTML = `
+            <button
+                class="transition-btn special"
+                onclick="answerResidual('setup_after_maintenance')"
+            >
+                SETUP APÓS MANUTENÇÃO
+            </button>
+
+            <button
+                class="transition-btn remove"
+                onclick="answerResidual('remove')"
+            >
+                REMOVER DE SETUP
+            </button>
+        `;
+
+        return;
+    }
+
+    el("transitionOptions").innerHTML = `
+        <button
+            class="transition-btn keep"
+            onclick="answerResidual('keep')"
+        >
+            MANTER EM ${categoryLabel(category)}
+        </button>
+
+        <button
+            class="transition-btn remove"
+            onclick="answerResidual('remove')"
+        >
+            REMOVER DE ${categoryLabel(category)}
+        </button>
+    `;
+}
+
+function answerResidual(decision){
+    if(!pendingTransition){
+        return;
+    }
+
+    const {
+        otherCategories,
+        currentIndex
+    } = pendingTransition;
+
+    const category =
+        otherCategories[currentIndex];
+
+    pendingTransition.decisions[category] =
+        decision;
+
+    goToNextTransitionCategory();
+}
+
+function goToNextTransitionCategory(){
+    if(!pendingTransition){
+        return;
+    }
+
+    pendingTransition.currentIndex += 1;
+
+    askCurrentCategoryConclusion();
+}
+
+function finalizeTransition(){
+    if(!pendingTransition){
+        return;
+    }
+
+    const {
+        tnl,
+        applyTarget,
+        decisions
+    } = pendingTransition;
+
+    Object.entries(decisions)
+        .forEach(([category,decision])=>{
+            if(decision === "complete"){
+                addCompletedByCategory(
+                    tnl,
+                    category
+                );
+
+                removeCategoryRecords(
+                    tnl,
+                    category
+                );
+
+                return;
+            }
+
+            if(decision === "remove"){
+                removeCategoryRecords(
+                    tnl,
+                    category
+                );
+            }
+        });
+
+    applyTarget();
+
+    const mustConvertSetup =
+        Object.values(decisions)
+            .includes("setup_after_maintenance") ||
+        (
+            hasMaintenanceActive(tnl) &&
+            hasSetupActive(tnl)
+        );
+
+    if(mustConvertSetup){
+        convertSetupToAfterMaintenance(tnl);
+    }
+
+    pendingTransition = null;
+
+    closeTransitionModal();
+
+    finalizeDecision(tnl);
+}
+
+function closeTransitionModal(){
+    el("transitionModal")
+        .classList
+        .remove("show");
+
+    el("transitionOptions")
+        .innerHTML = "";
+
+    pendingTransition = null;
+}
+
+function finalizeDecision(tnl){
+    state.resolvedConflicts[String(tnl)] =
+        true;
 
     markReviewed(tnl);
 
     updateEverything();
 
     saveSession();
+}
 
-    toast(
-        `TNL ${padTnl(tnl)} mantida nos blocos`
+/* =========================================================
+   ALTERAÇÃO DE REGISTROS ATIVOS
+========================================================= */
+
+function convertSetupToAfterMaintenance(tnl){
+    const setupRecords =
+        recordsOfTnl(tnl)
+            .filter(record=>
+                categoryOfType(record.type) === "setup"
+            );
+
+    const emoji =
+        setupRecords[0]?.emoji ||
+        "🔴";
+
+    removeCategoryRecords(
+        tnl,
+        "setup"
+    );
+
+    addRecord(
+        createRecord({
+            tnl,
+            type:"setup_active",
+            text:setupAfterMaintenanceText(
+                tnl,
+                emoji
+            ),
+            emoji,
+            source:"decision",
+            reviewed:true
+        })
+    );
+}
+
+function setSetupStatus(
+    tnl,
+    mode,
+    emoji="🔴"
+){
+    removeCategoryRecords(
+        tnl,
+        "setup"
+    );
+
+    let text =
+        setupText(
+            tnl,
+            emoji
+        );
+
+    let type =
+        "setup_active";
+
+    if(mode === "start"){
+        text =
+            setupStartText(
+                tnl,
+                emoji
+            );
+
+        type =
+            "setup_start";
+    }
+
+    if(mode === "after_maintenance"){
+        text =
+            setupAfterMaintenanceText(
+                tnl,
+                emoji
+            );
+
+        type =
+            "setup_active";
+    }
+
+    addRecord(
+        createRecord({
+            tnl,
+            type,
+            text,
+            emoji,
+            source:"decision",
+            reviewed:true
+        })
+    );
+}
+
+function setAdjustment(
+    tnl,
+    reason
+){
+    removeCategoryRecords(
+        tnl,
+        "adjustment"
+    );
+
+    addRecord(
+        createRecord({
+            tnl,
+            type:"adjustment",
+            text:adjustmentText(
+                tnl,
+                reason
+            ),
+            source:"decision",
+            reviewed:true
+        })
+    );
+}
+
+function getExistingMaintenanceReason(tnl){
+    const original =
+        state.originalMaintenance[
+            String(tnl)
+        ] || [];
+
+    if(original.length){
+        return original;
+    }
+
+    return recordsOfTnl(tnl)
+        .filter(record=>
+            categoryOfType(record.type) === "maintenance"
+        )
+        .map(record=>
+            record.text
+        );
+}
+
+function setMaintenanceWithLines(
+    tnl,
+    lines,
+    producing=false
+){
+    removeCategoryRecords(
+        tnl,
+        "maintenance"
+    );
+
+    const validLines =
+        uniqueStrings(lines);
+
+    validLines.forEach(line=>{
+        addRecord(
+            createRecord({
+                tnl,
+                type:producing
+                    ? "maintenance_prod"
+                    : "maintenance",
+                text:line,
+                source:"decision",
+                reviewed:true
+            })
+        );
+    });
+}
+
+function setMaintenanceWithReason(
+    tnl,
+    reason,
+    producing=false
+){
+    const text =
+        producing
+            ? maintenanceProdText(
+                tnl,
+                reason
+            )
+            : maintenanceText(
+                tnl,
+                reason
+            );
+
+    state.originalMaintenance[
+        String(tnl)
+    ] = [
+        text
+    ];
+
+    setMaintenanceWithLines(
+        tnl,
+        [
+            text
+        ],
+        producing
     );
 }
 
 /* =========================================================
-   TRANSIÇÃO COM PERGUNTAS DE CONFLITO
+   AÇÕES DOS CARDS ATIVOS
 ========================================================= */
 
-function requestConflictTransition({
+function chooseSetup(
     tnl,
-    targetCategory,
-    execute
-}){
-    const allCategories =
-        categoriesOfTnl(tnl);
-
-    const removedCategories =
-        allCategories.filter(category=>
-            category !== targetCategory
-        );
-
-    if(!removedCategories.length){
-        execute([]);
-
-        return;
-    }
-
-    pendingCloseoutAction = {
-        tnl:Number(tnl),
-        targetCategory,
-        execute,
-        answers:{}
-    };
-
-    el("closeoutTitle").textContent =
-        `TNL ${padTnl(tnl)} - verificar atividades`;
-
-    el("closeoutSubtitle").textContent =
-        "Antes de alterar o status, informe o que aconteceu com as atividades anteriores.";
-
-    el("closeoutOptions").innerHTML = `
-        <div class="closeout-list">
-
-            ${removedCategories.map(category=>`
-                <div class="closeout-item">
-
-                    <div class="closeout-question">
-                        ${completionQuestion(category)}
-                    </div>
-
-                    <div class="closeout-buttons">
-
-                        <button
-                            type="button"
-                            class="closeout-choice yes"
-                            data-category="${category}"
-                            data-answer="yes"
-                        >
-                            SIM
-                        </button>
-
-                        <button
-                            type="button"
-                            class="closeout-choice no"
-                            data-category="${category}"
-                            data-answer="no"
-                        >
-                            NÃO
-                        </button>
-
-                    </div>
-
-                </div>
-            `).join("")}
-
-        </div>
-    `;
-
-    el("closeoutOptions")
-        .querySelectorAll(".closeout-choice")
-        .forEach(button=>{
-            button.addEventListener(
-                "click",
-                ()=>{
-                    const category =
-                        button.dataset.category;
-
-                    const answer =
-                        button.dataset.answer;
-
-                    pendingCloseoutAction
-                        .answers[category] =
-                        answer;
-
-                    el("closeoutOptions")
-                        .querySelectorAll(
-                            `.closeout-choice[data-category="${category}"]`
-                        )
-                        .forEach(item=>
-                            item.classList.remove(
-                                "selected"
-                            )
-                        );
-
-                    button.classList.add(
-                        "selected"
-                    );
-                }
+    mode="active",
+    emojiOverride="",
+    beforeApply=null
+){
+    const existingSetup =
+        recordsOfTnl(tnl)
+            .find(record=>
+                categoryOfType(record.type) === "setup"
             );
-        });
 
-    el("closeoutModal")
-        .classList
-        .add("show");
-}
+    const emoji =
+        emojiOverride ||
+        existingSetup?.emoji ||
+        "🔴";
 
-function closeCloseoutModal(){
-    pendingCloseoutAction = null;
-
-    el("closeoutOptions").innerHTML = "";
-
-    el("closeoutModal")
-        .classList
-        .remove("show");
-}
-
-function confirmConflictTransition(){
-    if(!pendingCloseoutAction){
-        return;
-    }
-
-    const {
+    startTransition({
         tnl,
-        targetCategory,
-        execute,
-        answers
-    } = pendingCloseoutAction;
+        targetCategory:"setup",
 
-    const categories =
-        categoriesOfTnl(tnl)
-            .filter(category=>
-                category !== targetCategory
-            );
+        applyTarget:()=>{
+            if(typeof beforeApply === "function"){
+                beforeApply();
+            }
 
-    const missingAnswer =
-        categories.some(category=>
-            !answers[category]
-        );
-
-    if(missingAnswer){
-        toast(
-            "Responda SIM ou NÃO para continuar"
-        );
-
-        return;
-    }
-
-    const concludedCategories = [];
-
-    categories.forEach(category=>{
-        if(answers[category] === "yes"){
-            concludedCategories.push(category);
-
-            addCompletedByCategory(
+            setSetupStatus(
                 tnl,
-                category
-            );
-
-            removeRecordsByTypes(
-                tnl,
-                ACTIVE_TYPES.filter(type=>
-                    categoryOfType(type) === category
-                )
+                mode,
+                emoji
             );
         }
     });
-
-    closeCloseoutModal();
-
-    execute(concludedCategories);
 }
 
-/* =========================================================
-   DECISÕES DA PASSAGEM
-========================================================= */
+function chooseAdjustment(tnl){
+    openReasonModal({
+        tnl,
+        action:"adjustment",
+        title:`Motivo do ajuste - TNL ${padTnl(tnl)}`,
+        subtitle:"Informe o motivo que deve aparecer no relatório final."
+    });
+}
+
+function chooseMaintenance(tnl){
+    const existingLines =
+        getExistingMaintenanceReason(tnl);
+
+    if(existingLines.length){
+        startTransition({
+            tnl,
+            targetCategory:"maintenance",
+
+            applyTarget:()=>{
+                setMaintenanceWithLines(
+                    tnl,
+                    existingLines,
+                    false
+                );
+            }
+        });
+
+        return;
+    }
+
+    openReasonModal({
+        tnl,
+        action:"maintenance",
+        title:`Motivo da manutenção - TNL ${padTnl(tnl)}`,
+        subtitle:"Informe o motivo que deve aparecer no relatório final."
+    });
+}
 
 function releaseMachine(tnl){
     const categories =
@@ -1925,7 +2273,8 @@ function releaseMachine(tnl){
 
     removeOperationalRecords(tnl);
 
-    state.resolvedConflicts[String(tnl)] = true;
+    state.resolvedConflicts[String(tnl)] =
+        true;
 
     markReviewed(tnl);
 
@@ -1936,234 +2285,6 @@ function releaseMachine(tnl){
     toast(
         `TNL ${padTnl(tnl)} liberada e concluída`
     );
-}
-
-function applySetup(tnl){
-    const execute = ()=>{
-        const previous =
-            recordsOfTnl(tnl);
-
-        const existingSetup =
-            previous.find(record=>
-                categoryOfType(record.type) === "setup"
-            );
-
-        const emoji =
-            existingSetup?.emoji ||
-            "🔴";
-
-        removeRecordsByTypes(
-            tnl,
-            [
-                "setup_active",
-                "setup_start"
-            ]
-        );
-
-        addRecord(
-            createRecord({
-                tnl,
-                type:"setup_active",
-                text:setupText(
-                    tnl,
-                    emoji
-                ),
-                emoji,
-                source:"decision",
-                reviewed:true
-            })
-        );
-
-        state.resolvedConflicts[String(tnl)] = true;
-
-        markReviewed(tnl);
-
-        updateEverything();
-
-        saveSession();
-
-        toast(
-            `TNL ${padTnl(tnl)} passará em setup`
-        );
-    };
-
-    requestConflictTransition({
-        tnl,
-        targetCategory:"setup",
-        execute
-    });
-}
-
-function requestAdjustment(tnl){
-    openReasonModal({
-        tnl,
-        action:"adjustment",
-        title:`Motivo do ajuste - TNL ${padTnl(tnl)}`,
-        subtitle:"Informe o motivo que deve aparecer no relatório final."
-    });
-}
-
-function applyAdjustment(tnl,reason){
-    const execute = ()=>{
-        removeRecordsByTypes(
-            tnl,
-            [
-                "adjustment"
-            ]
-        );
-
-        addRecord(
-            createRecord({
-                tnl,
-                type:"adjustment",
-                text:adjustmentText(
-                    tnl,
-                    reason
-                ),
-                source:"decision",
-                reviewed:true
-            })
-        );
-
-        state.resolvedConflicts[String(tnl)] = true;
-
-        markReviewed(tnl);
-
-        updateEverything();
-
-        saveSession();
-
-        toast(
-            `TNL ${padTnl(tnl)} passará em ajuste`
-        );
-    };
-
-    requestConflictTransition({
-        tnl,
-        targetCategory:"adjustment",
-        execute
-    });
-}
-
-function requestMaintenance(tnl){
-    const originalLines =
-        state.originalMaintenance[
-            String(tnl)
-        ] || [];
-
-    if(originalLines.length){
-        applyMaintenanceWithOriginalDescription(
-            tnl
-        );
-
-        return;
-    }
-
-    openReasonModal({
-        tnl,
-        action:"maintenance",
-        title:`Motivo da manutenção - TNL ${padTnl(tnl)}`,
-        subtitle:"Informe o motivo que deve aparecer no relatório final."
-    });
-}
-
-function applyMaintenanceWithOriginalDescription(tnl){
-    const execute = ()=>{
-        const originalLines =
-            state.originalMaintenance[
-                String(tnl)
-            ] || [];
-
-        removeRecordsByTypes(
-            tnl,
-            [
-                "maintenance",
-                "maintenance_prod"
-            ]
-        );
-
-        originalLines.forEach(text=>{
-            addRecord(
-                createRecord({
-                    tnl,
-                    type:"maintenance",
-                    text,
-                    source:"decision",
-                    reviewed:true
-                })
-            );
-        });
-
-        state.resolvedConflicts[String(tnl)] = true;
-
-        markReviewed(tnl);
-
-        updateEverything();
-
-        saveSession();
-
-        toast(
-            `TNL ${padTnl(tnl)} passará em manutenção`
-        );
-    };
-
-    requestConflictTransition({
-        tnl,
-        targetCategory:"maintenance",
-        execute
-    });
-}
-
-function applyMaintenanceWithReason(tnl,reason){
-    const execute = ()=>{
-        removeRecordsByTypes(
-            tnl,
-            [
-                "maintenance",
-                "maintenance_prod"
-            ]
-        );
-
-        const text =
-            maintenanceText(
-                tnl,
-                reason
-            );
-
-        state.originalMaintenance[
-            String(tnl)
-        ] = [
-            text
-        ];
-
-        addRecord(
-            createRecord({
-                tnl,
-                type:"maintenance",
-                text,
-                source:"decision",
-                reviewed:true
-            })
-        );
-
-        state.resolvedConflicts[String(tnl)] = true;
-
-        markReviewed(tnl);
-
-        updateEverything();
-
-        saveSession();
-
-        toast(
-            `TNL ${padTnl(tnl)} passará em manutenção`
-        );
-    };
-
-    requestConflictTransition({
-        tnl,
-        targetCategory:"maintenance",
-        execute
-    });
 }
 
 /* =========================================================
@@ -2234,20 +2355,149 @@ function confirmReason(){
     closeReasonModal();
 
     if(action === "adjustment"){
-        applyAdjustment(
+        startTransition({
             tnl,
-            reason
-        );
+            targetCategory:"adjustment",
+
+            applyTarget:()=>{
+                setAdjustment(
+                    tnl,
+                    reason
+                );
+            }
+        });
 
         return;
     }
 
     if(action === "maintenance"){
-        applyMaintenanceWithReason(
+        startTransition({
             tnl,
-            reason
-        );
+            targetCategory:"maintenance",
+
+            applyTarget:()=>{
+                setMaintenanceWithReason(
+                    tnl,
+                    reason,
+                    false
+                );
+            }
+        });
+
+        return;
     }
+
+    if(action === "maintenance_prod"){
+        startTransition({
+            tnl,
+            targetCategory:"maintenance",
+
+            applyTarget:()=>{
+                setMaintenanceWithReason(
+                    tnl,
+                    reason,
+                    true
+                );
+            }
+        });
+    }
+}
+
+/* =========================================================
+   SETUPS FUTUROS
+========================================================= */
+
+function allFutureItems(){
+    return Object
+        .values(
+            state.futureBlocks
+        )
+        .flat();
+}
+
+function findFutureItem(id){
+    return allFutureItems()
+        .find(item=>
+            Number(item.id) === Number(id)
+        );
+}
+
+function detachFutureItem(id){
+    Object
+        .keys(
+            state.futureBlocks
+        )
+        .forEach(heading=>{
+            state.futureBlocks[heading] =
+                state.futureBlocks[heading]
+                    .filter(item=>
+                        Number(item.id) !== Number(id)
+                    );
+
+            if(!state.futureBlocks[heading].length){
+                delete state.futureBlocks[heading];
+            }
+        });
+}
+
+function maintainFutureSetup(id){
+    const item =
+        findFutureItem(id);
+
+    if(!item){
+        return;
+    }
+
+    item.reviewed =
+        true;
+
+    updateEverything();
+
+    saveSession();
+
+    toast(
+        `TNL ${padTnl(item.tnl)} mantida para ${item.heading.replace("SETUPS ","")}`
+    );
+}
+
+function futureToSetup(
+    id,
+    mode
+){
+    const item =
+        findFutureItem(id);
+
+    if(!item){
+        return;
+    }
+
+    chooseSetup(
+        item.tnl,
+        mode,
+        item.emoji,
+        ()=>{
+            detachFutureItem(id);
+        }
+    );
+}
+
+function removeFutureSetup(id){
+    const item =
+        findFutureItem(id);
+
+    if(!item){
+        return;
+    }
+
+    detachFutureItem(id);
+
+    updateEverything();
+
+    saveSession();
+
+    toast(
+        `TNL ${padTnl(item.tnl)} removida dos setups futuros`
+    );
 }
 
 /* =========================================================
@@ -2303,153 +2553,121 @@ function saveManualMachine(){
             .value
             .trim();
 
+    closeAddModal();
+
     if(status === "adjustment"){
         if(!reason){
-            toast(
-                "Digite o motivo do ajuste"
-            );
-
-            el("addReason").focus();
+            openReasonModal({
+                tnl,
+                action:"adjustment",
+                title:`Motivo do ajuste - TNL ${padTnl(tnl)}`,
+                subtitle:"Informe o motivo que deve aparecer no relatório final."
+            });
 
             return;
         }
 
-        applyAdjustment(
+        startTransition({
             tnl,
-            reason
-        );
+            targetCategory:"adjustment",
 
-        closeAddModal();
+            applyTarget:()=>{
+                setAdjustment(
+                    tnl,
+                    reason
+                );
+            }
+        });
 
         return;
     }
 
     if(status === "maintenance"){
         if(!reason){
-            toast(
-                "Digite o motivo da manutenção"
-            );
-
-            el("addReason").focus();
+            openReasonModal({
+                tnl,
+                action:"maintenance",
+                title:`Motivo da manutenção - TNL ${padTnl(tnl)}`,
+                subtitle:"Informe o motivo que deve aparecer no relatório final."
+            });
 
             return;
         }
 
-        applyMaintenanceWithReason(
+        startTransition({
             tnl,
-            reason
-        );
+            targetCategory:"maintenance",
 
-        closeAddModal();
+            applyTarget:()=>{
+                setMaintenanceWithReason(
+                    tnl,
+                    reason,
+                    false
+                );
+            }
+        });
 
         return;
     }
 
     if(status === "maintenance_prod"){
         if(!reason){
-            toast(
-                "Digite o motivo da manutenção"
-            );
-
-            el("addReason").focus();
+            openReasonModal({
+                tnl,
+                action:"maintenance_prod",
+                title:`Motivo da manutenção - TNL ${padTnl(tnl)}`,
+                subtitle:"Informe o motivo que deve aparecer no relatório final."
+            });
 
             return;
         }
 
-        removeRecordsByTypes(
+        startTransition({
             tnl,
-            [
-                "maintenance",
-                "maintenance_prod"
-            ]
-        );
+            targetCategory:"maintenance",
 
-        addRecord(
-            createRecord({
-                tnl,
-                type:"maintenance_prod",
-                text:maintenanceProdText(
+            applyTarget:()=>{
+                setMaintenanceWithReason(
                     tnl,
-                    reason
-                ),
-                source:"manual",
-                reviewed:true
-            })
-        );
-
-        markReviewed(tnl);
-
-        closeAddModal();
-
-        updateEverything();
-
-        saveSession();
-
-        toast(
-            `TNL ${padTnl(tnl)} adicionada`
-        );
+                    reason,
+                    true
+                );
+            }
+        });
 
         return;
     }
 
     if(status === "setup_active"){
-        applySetup(tnl);
-
-        closeAddModal();
+        chooseSetup(
+            tnl,
+            "active"
+        );
 
         return;
     }
 
     if(status === "setup_start"){
-        removeRecordsByTypes(
+        chooseSetup(
             tnl,
-            [
-                "setup_active",
-                "setup_start"
-            ]
-        );
-
-        addRecord(
-            createRecord({
-                tnl,
-                type:"setup_start",
-                text:setupStartText(
-                    tnl,
-                    "🔴"
-                ),
-                emoji:"🔴",
-                source:"manual",
-                reviewed:true
-            })
-        );
-
-        markReviewed(tnl);
-
-        closeAddModal();
-
-        updateEverything();
-
-        saveSession();
-
-        toast(
-            `TNL ${padTnl(tnl)} adicionada`
+            "start"
         );
     }
 }
 
 /* =========================================================
-   RENDERIZAÇÃO DA CÉLULA
+   RENDERIZAÇÃO DOS CARDS
 ========================================================= */
 
 function typeLabel(type){
     return TYPE_CONFIG[type]?.short || type;
 }
 
-function groupedPendingForSelectedCell(){
+function activeGroupsForSelectedCell(){
     const selectedCell =
         el("cellSelect").value;
 
-    const cellMachines =
+    const machines =
         CELULAS[selectedCell] || [];
 
     const groups =
@@ -2457,7 +2675,7 @@ function groupedPendingForSelectedCell(){
 
     activeRecords()
         .filter(record=>
-            cellMachines.includes(
+            machines.includes(
                 Number(record.tnl)
             )
         )
@@ -2476,6 +2694,7 @@ function groupedPendingForSelectedCell(){
 
     return [...groups.entries()]
         .map(([tnl,records])=>({
+            kind:"active",
             tnl:Number(tnl),
             records:sortRecords(records)
         }))
@@ -2490,13 +2709,33 @@ function groupedPendingForSelectedCell(){
                 !isReviewed(group.tnl) ||
                 unresolved
             );
-        })
-        .sort((a,b)=>
-            a.tnl - b.tnl
-        );
+        });
 }
 
-function groupBadge(group){
+function futureItemsForSelectedCell(){
+    const selectedCell =
+        el("cellSelect").value;
+
+    const machines =
+        CELULAS[selectedCell] || [];
+
+    return allFutureItems()
+        .filter(item=>
+            machines.includes(
+                Number(item.tnl)
+            )
+        )
+        .filter(item=>
+            !item.reviewed
+        )
+        .map(item=>({
+            kind:"future",
+            tnl:Number(item.tnl),
+            item
+        }));
+}
+
+function cardBadgeForActive(group){
     const unresolved =
         isConflict(group.tnl) &&
         !state.resolvedConflicts[
@@ -2524,42 +2763,34 @@ function groupBadge(group){
     };
 }
 
-function renderConflictOptions(group){
+function renderActiveActions(group){
     return `
-        <div class="conflict-title">
-            A mesma máquina aparece em mais de um bloco ativo. Escolha como ela passará para o próximo turno.
-        </div>
-
-        <div class="conflict-options">
-
-            <button
-                class="conflict-option keep-all"
-                onclick="resolveKeepAll(${group.tnl})"
-            >
-                MANTER NOS BLOCOS
-            </button>
-
-        </div>
-
         <div class="machine-actions">
 
             <button
                 class="action-btn adjust"
-                onclick="requestAdjustment(${group.tnl})"
+                onclick="chooseAdjustment(${group.tnl})"
             >
                 VAI PASSAR EM AJUSTE
             </button>
 
             <button
+                class="action-btn start"
+                onclick="chooseSetup(${group.tnl},'start')"
+            >
+                INICIAR SETUP
+            </button>
+
+            <button
                 class="action-btn setup"
-                onclick="applySetup(${group.tnl})"
+                onclick="chooseSetup(${group.tnl},'active')"
             >
                 VAI PASSAR EM SETUP
             </button>
 
             <button
                 class="action-btn maintenance"
-                onclick="requestMaintenance(${group.tnl})"
+                onclick="chooseMaintenance(${group.tnl})"
             >
                 VAI PASSAR EM MANUTENÇÃO
             </button>
@@ -2575,84 +2806,192 @@ function renderConflictOptions(group){
     `;
 }
 
-function renderNormalActions(group){
+function renderActiveCard(group){
+    const badge =
+        cardBadgeForActive(group);
+
+    const conflict =
+        isConflict(group.tnl) &&
+        !state.resolvedConflicts[
+            String(group.tnl)
+        ];
+
     return `
-        <div class="machine-actions">
+        <article class="machine-card ${conflict ? "conflict" : ""}">
 
-            <button
-                class="action-btn adjust"
-                onclick="requestAdjustment(${group.tnl})"
-            >
-                VAI PASSAR EM AJUSTE
-            </button>
+            <div class="machine-head">
 
-            <button
-                class="action-btn setup"
-                onclick="applySetup(${group.tnl})"
-            >
-                VAI PASSAR EM SETUP
-            </button>
+                <div class="machine-number">
+                    TNL ${padTnl(group.tnl)}
+                </div>
 
-            <button
-                class="action-btn maintenance"
-                onclick="requestMaintenance(${group.tnl})"
-            >
-                VAI PASSAR EM MANUTENÇÃO
-            </button>
+                <span class="badge ${badge.css}">
+                    ${badge.text}
+                </span>
 
-            <button
-                class="action-btn release"
-                onclick="releaseMachine(${group.tnl})"
-            >
-                LIBERADA
-            </button>
+            </div>
 
-        </div>
+            ${conflict
+                ? `
+                    <div class="conflict-title">
+                        A máquina aparece em mais de um bloco ativo.
+                        Escolha como ela passará para o próximo turno.
+                    </div>
+                `
+                : ""
+            }
+
+            <div class="machine-lines">
+
+                ${group.records.map(record=>`
+                    <div class="machine-line">
+                        <strong>${typeLabel(record.type)}</strong>
+                        <br>
+                        ${record.text}
+                    </div>
+                `).join("")}
+
+            </div>
+
+            ${renderActiveActions(group)}
+
+        </article>
+    `;
+}
+
+function renderFutureCard(group){
+    const item =
+        group.item;
+
+    return `
+        <article class="machine-card future">
+
+            <div class="machine-head">
+
+                <div class="machine-number">
+                    TNL ${padTnl(item.tnl)}
+                </div>
+
+                <span class="badge blue">
+                    ${item.heading}
+                </span>
+
+            </div>
+
+            <div class="machine-lines">
+
+                <div class="machine-line">
+                    <strong>SETUP FUTURO</strong>
+                    <br>
+                    ${item.text}
+                </div>
+
+            </div>
+
+            <div class="future-actions">
+
+                <button
+                    class="future-action keep"
+                    onclick="maintainFutureSetup(${item.id})"
+                >
+                    MANTER PARA ${item.heading.replace("SETUPS ","")}
+                </button>
+
+                <button
+                    class="future-action start"
+                    onclick="futureToSetup(${item.id},'start')"
+                >
+                    INICIAR SETUP
+                </button>
+
+                <button
+                    class="future-action setup"
+                    onclick="futureToSetup(${item.id},'active')"
+                >
+                    EM SETUP
+                </button>
+
+                <button
+                    class="future-action remove"
+                    onclick="removeFutureSetup(${item.id})"
+                >
+                    REMOVER
+                </button>
+
+            </div>
+
+        </article>
     `;
 }
 
 function renderSelectedCell(){
     refreshManualMachineSelect();
 
-    const groups =
-        groupedPendingForSelectedCell();
+    const activeGroups =
+        activeGroupsForSelectedCell();
+
+    const futureGroups =
+        futureItemsForSelectedCell();
+
+    const cards =
+        [
+            ...activeGroups,
+            ...futureGroups
+        ]
+        .sort((a,b)=>{
+            if(Number(a.tnl) !== Number(b.tnl)){
+                return Number(a.tnl) - Number(b.tnl);
+            }
+
+            return a.kind.localeCompare(b.kind);
+        });
 
     const selectedCell =
         el("cellSelect").value;
 
-    const allCellRecords =
-        activeRecords()
-            .filter(record=>
-                (
-                    CELULAS[selectedCell] ||
-                    []
-                )
-                .includes(
-                    Number(record.tnl)
-                )
-            );
+    const machines =
+        CELULAS[selectedCell] || [];
 
-    const allTnls =
+    const activeTnls =
         uniqueNumbers(
-            allCellRecords
+            activeRecords()
+                .filter(record=>
+                    machines.includes(
+                        Number(record.tnl)
+                    )
+                )
                 .map(record=>
                     record.tnl
                 )
         );
 
-    const decidedCount =
-        allTnls
-            .filter(isReviewed)
-            .length;
+    const futureItems =
+        allFutureItems()
+            .filter(item=>
+                machines.includes(
+                    Number(item.tnl)
+                )
+            );
 
     const total =
-        allTnls.length;
+        activeTnls.length +
+        futureItems.length;
+
+    const decided =
+        activeTnls
+            .filter(isReviewed)
+            .length +
+        futureItems
+            .filter(item=>
+                item.reviewed
+            )
+            .length;
 
     const percent =
         total
             ? Math.round(
                 (
-                    decidedCount /
+                    decided /
                     total
                 ) * 100
             )
@@ -2666,13 +3005,13 @@ function renderSelectedCell(){
     el("cellProgressLabel")
         .textContent =
         total
-            ? `Célula ${selectedCell}: ${decidedCount}/${total} pendências decididas`
+            ? `Célula ${selectedCell}: ${decided}/${total} decisões concluídas`
             : `Célula ${selectedCell}: nenhuma pendência registrada`;
 
     const container =
         el("machineList");
 
-    if(!groups.length){
+    if(!cards.length){
         container.innerHTML = `
             <div class="empty">
                 Nenhuma pendência aguardando decisão nesta célula.
@@ -2685,52 +3024,12 @@ function renderSelectedCell(){
     }
 
     container.innerHTML =
-        groups
-            .map(group=>{
-                const badge =
-                    groupBadge(group);
-
-                const conflict =
-                    isConflict(group.tnl) &&
-                    !state.resolvedConflicts[
-                        String(group.tnl)
-                    ];
-
-                return `
-                    <article class="machine-card ${conflict ? "conflict" : ""}">
-
-                        <div class="machine-head">
-
-                            <div class="machine-number">
-                                TNL ${padTnl(group.tnl)}
-                            </div>
-
-                            <span class="badge ${badge.css}">
-                                ${badge.text}
-                            </span>
-
-                        </div>
-
-                        <div class="machine-lines">
-
-                            ${group.records.map(record=>`
-                                <div class="machine-line">
-                                    <strong>${typeLabel(record.type)}</strong>
-                                    <br>
-                                    ${record.text}
-                                </div>
-                            `).join("")}
-
-                        </div>
-
-                        ${conflict
-                            ? renderConflictOptions(group)
-                            : renderNormalActions(group)
-                        }
-
-                    </article>
-                `;
-            })
+        cards
+            .map(card=>
+                card.kind === "active"
+                    ? renderActiveCard(card)
+                    : renderFutureCard(card)
+            )
             .join("");
 }
 
@@ -2766,14 +3065,17 @@ N/A`;
     }
 
     return headings
+        .sort()
         .map(heading=>{
             const lines =
-                sortRecords(
-                    state.futureBlocks[heading]
-                )
-                .map(item=>
-                    item.text
-                );
+                state.futureBlocks[heading]
+                    .sort((a,b)=>
+                        Number(a.tnl) -
+                        Number(b.tnl)
+                    )
+                    .map(item=>
+                        item.text
+                    );
 
             return `*${heading}:*
 ${formatList(lines)}`;
@@ -2839,10 +3141,10 @@ function generateReport(){
             .trim() ||
         "N/A";
 
-    const currentShift =
+    const shift =
         `${el("currentShift").value}° TURNO`;
 
-    const report = `*${currentShift}*
+    const report = `*${shift}*
 *SITUAÇÃO DO SETOR ⬇️⬇️⬇️*
 
 *BANCADA – CHECK POINT:*
@@ -2994,7 +3296,7 @@ function fallbackCopy(text){
 ========================================================= */
 
 function updateKpis(){
-    const pendingTnls =
+    const pendingActiveTnls =
         uniqueNumbers(
             activeRecords()
                 .filter(record=>
@@ -3005,7 +3307,14 @@ function updateKpis(){
                 )
         );
 
-    const reviewedCount =
+    const pendingFutureCount =
+        allFutureItems()
+            .filter(item=>
+                !item.reviewed
+            )
+            .length;
+
+    const reviewedActive =
         Object
             .values(
                 state.reviewedTnls
@@ -3013,11 +3322,18 @@ function updateKpis(){
             .filter(Boolean)
             .length;
 
-    const conflictCount =
+    const reviewedFuture =
+        allFutureItems()
+            .filter(item=>
+                item.reviewed
+            )
+            .length;
+
+    const conflicts =
         unresolvedConflictTnls()
             .length;
 
-    const completedCount =
+    const completed =
         uniqueNumbers(
             state.completed.adjustments
         ).length +
@@ -3028,34 +3344,31 @@ function updateKpis(){
             state.completed.maintenances
         ).length;
 
-    el("kpiPending")
-        .textContent =
+    el("kpiPending").textContent =
         String(
-            pendingTnls.length
+            pendingActiveTnls.length +
+            pendingFutureCount
         );
 
-    el("kpiReviewed")
-        .textContent =
+    el("kpiReviewed").textContent =
         String(
-            reviewedCount
+            reviewedActive +
+            reviewedFuture
         );
 
-    el("kpiConflicts")
-        .textContent =
+    el("kpiConflicts").textContent =
         String(
-            conflictCount
+            conflicts
         );
 
-    el("kpiCompleted")
-        .textContent =
+    el("kpiCompleted").textContent =
         String(
-            completedCount
+            completed
         );
 
-    el("reportSafetyNote")
-        .textContent =
-        conflictCount
-            ? `${conflictCount} conflito(s) aguardando decisão. A cópia permanece bloqueada.`
+    el("reportSafetyNote").textContent =
+        conflicts
+            ? `${conflicts} conflito(s) aguardando decisão. A cópia permanece bloqueada.`
             : "Nenhum conflito pendente. O relatório pode ser copiado.";
 }
 
@@ -3063,7 +3376,7 @@ function updateKpis(){
    SALVAMENTO LOCAL
 ========================================================= */
 
-function manualFieldsSnapshot(){
+function fieldsSnapshot(){
     return {
         currentShift:
             el("currentShift").value,
@@ -3106,7 +3419,7 @@ function manualFieldsSnapshot(){
     };
 }
 
-function applyManualFields(snapshot){
+function applyFields(snapshot){
     if(!snapshot){
         return;
     }
@@ -3146,7 +3459,7 @@ function saveSession(){
     const payload = {
         state,
         fields:
-            manualFieldsSnapshot()
+            fieldsSnapshot()
     };
 
     localStorage.setItem(
@@ -3169,12 +3482,15 @@ function restoreSession(){
         const payload =
             JSON.parse(raw);
 
+        const blank =
+            createBlankState();
+
         state = {
-            ...createBlankState(),
+            ...blank,
             ...(payload.state || {}),
 
             completed:{
-                ...createBlankState().completed,
+                ...blank.completed,
                 ...(
                     payload.state?.completed ||
                     {}
@@ -3214,7 +3530,7 @@ function restoreSession(){
             state.raw ||
             "";
 
-        applyManualFields(
+        applyFields(
             payload.fields
         );
 
@@ -3326,16 +3642,10 @@ function bindEvents(){
             confirmReason
         );
 
-    el("btnConfirmCloseout")
+    el("btnCancelTransition")
         .addEventListener(
             "click",
-            confirmConflictTransition
-        );
-
-    el("btnCancelCloseout")
-        .addEventListener(
-            "click",
-            closeCloseoutModal
+            closeTransitionModal
         );
 
     el("btnRefreshReport")
@@ -3438,15 +3748,15 @@ function bindEvents(){
             }
         );
 
-    el("closeoutModal")
+    el("transitionModal")
         .addEventListener(
             "click",
             event=>{
                 if(
                     event.target.id ===
-                    "closeoutModal"
+                    "transitionModal"
                 ){
-                    closeCloseoutModal();
+                    closeTransitionModal();
                 }
             }
         );
