@@ -1,3789 +1,2684 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
->
-
-<title>Passagem de turno</title>
-
-<style>
-:root{
-    --bg:#071022;
-    --bg-deep:#030816;
-    --glass:rgba(255,255,255,.095);
-    --line:rgba(255,255,255,.15);
-    --line-soft:rgba(255,255,255,.09);
-    --text:#f8fafc;
-    --muted:#b6c3d6;
-    --purple:#7c3aed;
-    --blue:#2563eb;
-    --green:#16a34a;
-    --amber:#d97706;
-    --red:#dc2626;
-    --dark:#293044;
-    --shadow:0 20px 65px rgba(0,0,0,.36);
-    --radius-xl:30px;
-    --radius-md:17px;
-    --title:clamp(2.1rem,8vw,4rem);
-    --h2:clamp(1.25rem,4.8vw,1.75rem);
-    --small:clamp(.78rem,2.6vw,.92rem);
-}
-
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
-
-html{
-    scroll-behavior:smooth;
-}
-
-body{
-    min-height:100vh;
-    padding:16px 16px calc(30px + env(safe-area-inset-bottom));
-    color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-    background:
-        radial-gradient(circle at 4% 0%,rgba(124,58,237,.46),transparent 29%),
-        radial-gradient(circle at 100% 18%,rgba(37,99,235,.30),transparent 26%),
-        radial-gradient(circle at 50% 100%,rgba(14,116,144,.18),transparent 32%),
-        linear-gradient(145deg,var(--bg-deep),var(--bg));
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
-}
-
-button,
-input,
-textarea,
-select{
-    font:inherit;
-}
-
-button{
-    cursor:pointer;
-}
-
-.app{
-    width:min(100%,1180px);
-    margin:0 auto;
-    display:grid;
-    gap:16px;
-}
-
-.glass{
-    background:var(--glass);
-    border:1px solid var(--line);
-    border-radius:var(--radius-xl);
-    box-shadow:var(--shadow);
-    backdrop-filter:blur(20px);
-    -webkit-backdrop-filter:blur(20px);
-}
-
-.hero{
-    position:relative;
-    overflow:hidden;
-    padding:27px 20px 20px;
-}
-
-.hero::after{
-    content:"";
-    position:absolute;
-    width:220px;
-    height:220px;
-    right:-86px;
-    bottom:-118px;
-    border-radius:50%;
-    background:rgba(139,92,246,.24);
-    filter:blur(5px);
-}
-
-.hero h1{
-    position:relative;
-    z-index:1;
-    max-width:800px;
-    font-size:var(--title);
-    line-height:.94;
-    letter-spacing:-.065em;
-    font-weight:950;
-}
-
-.hero h1 span{
-    display:block;
-}
-
-.hero p{
-    position:relative;
-    z-index:1;
-    margin-top:14px;
-    color:#d8e5f5;
-    font-weight:750;
-}
-
-.hero-chips{
-    position:relative;
-    z-index:1;
-    display:grid;
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    gap:9px;
-    margin-top:18px;
-}
-
-.hero-chip{
-    min-height:74px;
-    padding:12px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    border:1px solid var(--line-soft);
-    border-radius:19px;
-    background:rgba(2,6,23,.42);
-}
-
-.hero-chip .name{
-    color:var(--muted);
-    font-size:var(--small);
-    font-weight:850;
-}
-
-.hero-chip .value{
-    margin-top:4px;
-    font-size:clamp(1.35rem,5vw,1.85rem);
-    line-height:1;
-    font-weight:950;
-}
-
-.card{
-    padding:18px;
-}
-
-.card h2{
-    margin-bottom:14px;
-    font-size:var(--h2);
-    line-height:1.08;
-    letter-spacing:-.03em;
-    font-weight:950;
-}
-
-.grid-2{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px;
-}
-
-.form-grid{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:11px;
-}
-
-.field{
-    display:grid;
-    gap:7px;
-}
-
-.field + .field{
-    margin-top:12px;
-}
-
-.label{
-    color:#d6e0f0;
-    font-size:var(--small);
-    font-weight:850;
-}
-
-.input,
-.select,
-.textarea,
-.output{
-    width:100%;
-    color:#fff;
-    border:1px solid var(--line-soft);
-    outline:none;
-    border-radius:var(--radius-md);
-    background:rgba(2,6,23,.80);
-    transition:.16s ease;
-}
-
-.input,
-.select{
-    min-height:54px;
-    padding:0 14px;
-    font-size:1rem;
-}
-
-.textarea{
-    min-height:270px;
-    padding:15px;
-    line-height:1.55;
-    resize:vertical;
-    font-size:1rem;
-}
-
-.textarea.medium{
-    min-height:116px;
-}
-
-.textarea.small{
-    min-height:94px;
-}
-
-.output{
-    min-height:560px;
-    padding:15px;
-    line-height:1.6;
-    resize:vertical;
-    white-space:pre-wrap;
-    font-size:.98rem;
-}
-
-.input:focus,
-.select:focus,
-.textarea:focus,
-.output:focus{
-    border-color:rgba(96,165,250,.72);
-    box-shadow:0 0 0 4px rgba(59,130,246,.14);
-}
-
-.btn{
-    min-height:54px;
-    width:100%;
-    padding:10px 14px;
-    border:none;
-    border-radius:17px;
-    color:#fff;
-    font-size:.98rem;
-    font-weight:950;
-    transition:.16s ease;
-}
-
-.btn:hover,
-.action-btn:hover,
-.future-action:hover,
-.transition-btn:hover{
-    transform:translateY(-1px);
-    filter:brightness(1.04);
-}
-
-.btn:active,
-.action-btn:active,
-.future-action:active,
-.transition-btn:active{
-    transform:scale(.988);
-}
-
-.btn-primary{
-    background:linear-gradient(135deg,#2563eb,#7c3aed);
-}
-
-.btn-green{
-    background:linear-gradient(135deg,#15803d,#16a34a);
-}
-
-.btn-red{
-    background:linear-gradient(135deg,#b91c1c,#dc2626);
-}
-
-.btn-soft{
-    background:rgba(255,255,255,.10);
-    border:1px solid var(--line-soft);
-}
-
-.actions-grid{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:10px;
-    margin-top:12px;
-}
-
-.note{
-    margin-top:11px;
-    color:var(--muted);
-    font-size:.86rem;
-    line-height:1.42;
-}
-
-.toolbar{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:11px;
-}
-
-.cell-progress{
-    display:grid;
-    gap:8px;
-    margin-top:13px;
-}
-
-.progress-bar{
-    overflow:hidden;
-    height:9px;
-    border-radius:999px;
-    background:rgba(255,255,255,.09);
-}
-
-.progress-fill{
-    width:0;
-    height:100%;
-    border-radius:999px;
-    background:linear-gradient(90deg,#22c55e,#3b82f6);
-    transition:.22s ease;
-}
-
-.progress-label{
-    color:#d9e4f4;
-    font-size:.88rem;
-    font-weight:800;
-}
-
-.machine-list{
-    display:grid;
-    gap:11px;
-    margin-top:14px;
-}
-
-.empty{
-    padding:16px;
-    color:#cbd5e1;
-    border:1px dashed rgba(255,255,255,.19);
-    border-radius:19px;
-    background:rgba(2,6,23,.38);
-    line-height:1.45;
-    text-align:center;
-    font-size:.92rem;
-    font-weight:800;
-}
-
-.machine-card{
-    display:grid;
-    gap:11px;
-    padding:14px;
-    border:1px solid rgba(255,255,255,.11);
-    border-radius:22px;
-    background:rgba(2,6,23,.76);
-}
-
-.machine-card.conflict{
-    border-color:rgba(245,158,11,.56);
-    background:
-        linear-gradient(145deg,rgba(120,53,15,.26),rgba(2,6,23,.82));
-}
-
-.machine-card.future{
-    border-color:rgba(59,130,246,.42);
-    background:
-        linear-gradient(145deg,rgba(30,64,175,.20),rgba(2,6,23,.82));
-}
-
-.machine-head{
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap:10px;
-}
-
-.machine-number{
-    font-size:1.16rem;
-    font-weight:950;
-}
-
-.machine-lines{
-    display:grid;
-    gap:6px;
-}
-
-.machine-line{
-    padding:9px 10px;
-    color:#dae7f7;
-    border:1px solid rgba(255,255,255,.09);
-    border-radius:14px;
-    background:rgba(255,255,255,.045);
-    font-size:.9rem;
-    line-height:1.42;
-}
-
-.machine-line strong{
-    color:#fff;
-}
-
-.badge{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    padding:7px 10px;
-    border:1px solid rgba(255,255,255,.11);
-    border-radius:999px;
-    font-size:.72rem;
-    line-height:1;
-    font-weight:950;
-    white-space:nowrap;
-}
-
-.badge.blue{
-    color:#bfdbfe;
-    background:rgba(37,99,235,.16);
-}
-
-.badge.amber{
-    color:#fde68a;
-    background:rgba(217,119,6,.18);
-}
-
-.badge.red{
-    color:#fecaca;
-    background:rgba(220,38,38,.18);
-}
-
-.badge.green{
-    color:#bbf7d0;
-    background:rgba(22,163,74,.18);
-}
-
-.machine-actions,
-.future-actions{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:8px;
-}
-
-.action-btn,
-.future-action{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    min-height:48px;
-    padding:10px 12px;
-    color:#fff;
-    border:1px solid rgba(255,255,255,.10);
-    border-radius:14px;
-    font-size:.84rem;
-    font-weight:950;
-    text-align:center;
-    transition:.16s ease;
-}
-
-.action-btn.adjust{
-    background:#d97706;
-}
-
-.action-btn.setup{
-    background:#2563eb;
-}
-
-.action-btn.start{
-    background:#0f766e;
-}
-
-.action-btn.maintenance{
-    background:#dc2626;
-}
-
-.action-btn.release{
-    background:#16a34a;
-}
-
-.future-action.keep{
-    background:#16a34a;
-}
-
-.future-action.start{
-    background:#0f766e;
-}
-
-.future-action.setup{
-    background:#2563eb;
-}
-
-.future-action.remove{
-    background:#475569;
-}
-
-.conflict-title{
-    color:#fde68a;
-    font-size:.88rem;
-    line-height:1.4;
-    font-weight:900;
-}
-
-.modal{
-    position:fixed;
-    inset:0;
-    z-index:100;
-    display:none;
-    align-items:flex-end;
-    justify-content:center;
-    padding:14px;
-    background:rgba(0,0,0,.62);
-}
-
-.modal.show{
-    display:flex;
-}
-
-.modal-card{
-    width:min(100%,570px);
-    max-height:88vh;
-    overflow:auto;
-    padding:17px;
-    border:1px solid var(--line);
-    border-radius:27px 27px 20px 20px;
-    background:#10192b;
-    box-shadow:0 22px 70px rgba(0,0,0,.58);
-}
-
-.modal-handle{
-    width:52px;
-    height:5px;
-    margin:0 auto 14px;
-    border-radius:999px;
-    background:rgba(255,255,255,.22);
-}
-
-.modal-title{
-    margin-bottom:7px;
-    font-size:1.25rem;
-    font-weight:950;
-}
-
-.modal-subtitle{
-    margin-bottom:14px;
-    color:var(--muted);
-    font-size:.9rem;
-    line-height:1.42;
-}
-
-.transition-options{
-    display:grid;
-    gap:9px;
-}
-
-.transition-btn{
-    min-height:48px;
-    padding:10px 12px;
-    color:#fff;
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:14px;
-    background:rgba(255,255,255,.10);
-    font-size:.9rem;
-    font-weight:950;
-    transition:.16s ease;
-}
-
-.transition-btn.yes{
-    background:#16a34a;
-}
-
-.transition-btn.no{
-    background:#dc2626;
-}
-
-.transition-btn.special{
-    background:#2563eb;
-}
-
-.transition-btn.remove{
-    background:#475569;
-}
-
-.transition-btn.keep{
-    background:#0f766e;
-}
-
-.toast{
-    position:fixed;
-    top:16px;
-    left:50%;
-    z-index:200;
-    opacity:0;
-    pointer-events:none;
-    transform:translateX(-50%);
-    padding:12px 16px;
-    color:#fff;
-    border:1px solid var(--line);
-    border-radius:999px;
-    background:#071022;
-    box-shadow:0 12px 32px rgba(0,0,0,.32);
-    font-size:.9rem;
-    font-weight:900;
-    transition:.18s ease;
-}
-
-.toast.show{
-    opacity:1;
-}
-
-@media(max-width:900px){
-    .grid-2{
-        grid-template-columns:1fr;
-    }
-}
-
-@media(max-width:680px){
-    .form-grid,
-    .toolbar,
-    .machine-actions,
-    .future-actions,
-    .actions-grid{
-        grid-template-columns:1fr;
-    }
-
-    .hero-chips{
-        grid-template-columns:repeat(2,minmax(0,1fr));
-    }
-}
-</style>
-</head>
-
-<body>
-
-<main class="app">
-
-    <section class="hero glass">
-        <h1>
-            <span>VENANC Tools</span>
-            <span>Passagem de turno</span>
-        </h1>
-
-        <p>Checklist inteligente por célula e consolidação do relatório final.</p>
-
-        <div class="hero-chips">
-
-            <div class="hero-chip">
-                <div class="name">Pendências</div>
-                <div class="value" id="kpiPending">0</div>
-            </div>
-
-            <div class="hero-chip">
-                <div class="name">Decididas</div>
-                <div class="value" id="kpiReviewed">0</div>
-            </div>
-
-            <div class="hero-chip">
-                <div class="name">Conflitos</div>
-                <div class="value" id="kpiConflicts">0</div>
-            </div>
-
-            <div class="hero-chip">
-                <div class="name">Concluídas</div>
-                <div class="value" id="kpiCompleted">0</div>
-            </div>
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>VENANC Tools - Passagem de turno</title>
+    <style>
+      :root {
+        /* Paleta principal: industrial clean */
+        --bg: #101514;
+        --deep: #050706;
+        --glass: rgba(14, 20, 19, 0.86);
+        --line: rgba(205, 221, 215, 0.14);
+        --soft: rgba(205, 221, 215, 0.1);
+        --text: #f8fafc;
+        --muted: #aebbb6;
+        --accent: #2aa198;
+        --accent-strong: #23857f;
+        --ok: #2f6b4f;
+        --warn: #8b681f;
+        --danger: #8f2f32;
+        --neutral: #34403d;
+        --blue: var(--accent);
+        --purple: var(--accent-strong);
+        --green: var(--ok);
+        --amber: var(--warn);
+        --red: var(--danger);
+        --teal: var(--accent);
+        --gray: var(--neutral);
+        --shadow: 0 18px 48px rgba(0, 0, 0, 0.38);
+        --xl: 10px;
+        --md: 8px;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        min-height: 100vh;
+        padding: 14px 14px calc(28px + env(safe-area-inset-bottom));
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial,
+          sans-serif;
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+          linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.024) 1px,
+            transparent 1px
+          ),
+          linear-gradient(155deg, rgba(42, 161, 152, 0.12), transparent 36%),
+          linear-gradient(145deg, var(--deep), var(--bg));
+        background-size:
+          34px 34px,
+          34px 34px,
+          auto,
+          auto;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      .app {
+        width: min(100%, 1100px);
+        margin: 0 auto;
+        display: grid;
+        gap: 14px;
+      }
+      .glass {
+        background: var(--glass);
+        border: 1px solid var(--line);
+        border-radius: var(--xl);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+      .hero {
+        position: relative;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 0.55fr);
+        gap: 14px;
+        align-items: stretch;
+        padding: 14px;
+        background:
+          linear-gradient(90deg, rgba(42, 161, 152, 0.1), transparent 38%),
+          linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.07),
+            rgba(255, 255, 255, 0.035)
+          );
+      }
+      .brand-lockup {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+      }
+      .logo-mark {
+        flex: 0 0 auto;
+        width: 58px;
+        height: 58px;
+        padding: 6px;
+        border: 1px solid rgba(125, 211, 199, 0.3);
+        border-radius: 8px;
+        background: rgba(4, 9, 8, 0.72);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      }
+      .logo-mark svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .brand-copy h1 {
+        font-size: 2rem;
+        line-height: 1;
+        letter-spacing: 0;
+        font-weight: 950;
+      }
+      .kpi-row {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .kpi {
+        min-height: 58px;
+        padding: 10px;
+        border: 1px solid var(--soft);
+        border-radius: 8px;
+        background: rgba(2, 7, 6, 0.56);
+      }
+      .kpi-name {
+        color: var(--muted);
+        font-size: 0.77rem;
+        font-weight: 850;
+      }
+      .kpi-value {
+        margin-top: 5px;
+        font-size: 1.35rem;
+        line-height: 1;
+        font-weight: 950;
+      }
+      .card {
+        padding: 16px;
+      }
+      .card h2,
+      summary {
+        font-size: 1.24rem;
+        line-height: 1.08;
+        letter-spacing: 0;
+        font-weight: 950;
+      }
+      summary {
+        cursor: pointer;
+        list-style: none;
+      }
+      summary::-webkit-details-marker {
+        display: none;
+      }
+      summary:after {
+        content: "＋";
+        float: right;
+        color: #c9d5e8;
+      }
+      details[open] summary:after {
+        content: "−";
+      }
+      .details-body {
+        margin-top: 14px;
+      }
+      .field {
+        display: grid;
+        gap: 7px;
+      }
+      .field + .field {
+        margin-top: 11px;
+      }
+      .label {
+        color: #d5dfef;
+        font-size: 0.88rem;
+        font-weight: 850;
+      }
+      .input,
+      .select,
+      .textarea,
+      .output {
+        width: 100%;
+        color: #fff;
+        border: 1px solid var(--soft);
+        outline: none;
+        border-radius: var(--md);
+        background: rgba(4, 9, 8, 0.82);
+        transition: 0.16s ease;
+      }
+      .input,
+      .select {
+        min-height: 51px;
+        padding: 0 13px;
+        font-size: 1rem;
+      }
+      .textarea {
+        min-height: 170px;
+        padding: 13px;
+        line-height: 1.52;
+        resize: vertical;
+        font-size: 0.98rem;
+      }
+      .textarea.small {
+        min-height: 94px;
+      }
+      .output {
+        min-height: 510px;
+        padding: 13px;
+        line-height: 1.58;
+        resize: vertical;
+        white-space: pre-wrap;
+        font-size: 0.96rem;
+      }
+      .input:focus,
+      .select:focus,
+      .textarea:focus,
+      .output:focus {
+        border-color: rgba(42, 161, 152, 0.72);
+        box-shadow: 0 0 0 4px rgba(42, 161, 152, 0.13);
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+        margin-top: 11px;
+      }
+      .btn {
+        min-height: 51px;
+        width: 100%;
+        padding: 9px 12px;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.91rem;
+        font-weight: 950;
+        transition: 0.16s ease;
+      }
+      .btn:hover,
+      .action-btn:hover,
+      .future-btn:hover,
+      .modal-btn:hover,
+      .edit-btn:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+      }
+      .btn:active,
+      .action-btn:active,
+      .future-btn:active,
+      .modal-btn:active,
+      .edit-btn:active {
+        transform: scale(0.985);
+      }
+      .btn-primary {
+        background: var(--accent-strong);
+      }
+      .btn-green {
+        background: var(--accent-strong);
+      }
+      .btn-red {
+        background: var(--danger);
+      }
+      .btn-soft {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--soft);
+      }
+      .btn-undo {
+        background: var(--neutral);
+      }
+      .toolbar {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .cell-dashboard {
+        display: grid;
+        grid-template-columns: 1fr;
+        margin-top: 12px;
+      }
+      .cell-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(82px, 1fr));
+        gap: 7px;
+      }
+      .cell-chip {
+        min-height: 54px;
+        padding: 8px 9px;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        background: rgba(2, 6, 23, 0.55);
+        transition: 0.16s ease;
+      }
+      .cell-chip:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+      }
+      .cell-chip.selected {
+        border-color: rgba(42, 161, 152, 0.78);
+        box-shadow: 0 0 0 3px rgba(42, 161, 152, 0.13);
+      }
+      .cell-chip.pending {
+        background: rgba(139, 104, 31, 0.22);
+        border-color: rgba(178, 142, 58, 0.32);
+      }
+      .cell-chip.conflict {
+        background: rgba(143, 47, 50, 0.28);
+        border-color: rgba(184, 73, 76, 0.48);
+      }
+      .cell-chip.clear {
+        background: rgba(47, 107, 79, 0.16);
+      }
+      .cell-chip.empty-cell {
+        color: #b6c3d4;
+      }
+      .cell-chip-name {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 950;
+      }
+      .cell-chip-count {
+        display: block;
+        margin-top: 4px;
+        font-size: 0.72rem;
+        line-height: 1.2;
+        font-weight: 900;
+      }
+      .progress-wrap {
+        display: grid;
+        gap: 7px;
+        margin-top: 12px;
+      }
+      .progress {
+        overflow: hidden;
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.09);
+      }
+      .progress-fill {
+        width: 0;
+        height: 100%;
+        border-radius: 999px;
+        background: var(--accent);
+        transition: 0.22s ease;
+      }
+      .progress-label {
+        color: #d6e2f2;
+        font-size: 0.84rem;
+        font-weight: 800;
+      }
+      .machine-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .empty {
+        padding: 15px;
+        color: #cbd5e1;
+        border: 1px dashed rgba(255, 255, 255, 0.18);
+        border-radius: 8px;
+        background: rgba(2, 6, 23, 0.34);
+        line-height: 1.42;
+        text-align: center;
+        font-size: 0.9rem;
+        font-weight: 800;
+      }
+      .machine-card {
+        display: grid;
+        gap: 10px;
+        padding: 13px;
+        border: 1px solid rgba(255, 255, 255, 0.11);
+        border-radius: 8px;
+        background: rgba(4, 9, 8, 0.78);
+      }
+      .machine-card.conflict {
+        border-color: rgba(184, 73, 76, 0.58);
+        background: rgba(31, 13, 14, 0.82);
+      }
+      .machine-card.future {
+        border-color: rgba(42, 161, 152, 0.36);
+        background: rgba(8, 28, 27, 0.72);
+      }
+      .machine-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .machine-number {
+        font-size: 1.15rem;
+        font-weight: 950;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 9px;
+        border: 1px solid rgba(255, 255, 255, 0.11);
+        border-radius: 999px;
+        font-size: 0.69rem;
+        line-height: 1;
+        font-weight: 950;
+        white-space: nowrap;
+      }
+      .badge.red {
+        color: #fecaca;
+        background: rgba(143, 47, 50, 0.26);
+      }
+      .badge.blue {
+        color: #c8f5ef;
+        background: rgba(42, 161, 152, 0.2);
+      }
+      .badge.amber {
+        color: #fde68a;
+        background: rgba(139, 104, 31, 0.26);
+      }
+      .badge.green {
+        color: #bbf7d0;
+        background: rgba(47, 107, 79, 0.22);
+      }
+      .source-block {
+        padding: 9px;
+        border: 1px solid rgba(255, 255, 255, 0.085);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.043);
+      }
+      .source-name {
+        color: #fff;
+        font-size: 0.76rem;
+        font-weight: 950;
+      }
+      .source-line {
+        margin-top: 4px;
+        color: #dce8f7;
+        font-size: 0.87rem;
+        line-height: 1.4;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+      .round-question {
+        padding: 10px;
+        border: 1px solid rgba(42, 161, 152, 0.24);
+        border-radius: 8px;
+        background: rgba(42, 161, 152, 0.08);
+      }
+      .round-question-label {
+        color: #bdece5;
+        font-size: 0.72rem;
+        font-weight: 950;
+      }
+      .round-question-text {
+        margin-top: 4px;
+        color: #fff;
+        font-size: 0.9rem;
+        line-height: 1.42;
+        font-weight: 850;
+      }
+      .conflict-note {
+        color: #fde68a;
+        font-size: 0.84rem;
+        line-height: 1.4;
+        font-weight: 900;
+      }
+      .card-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+      }
+      .action-btn,
+      .future-btn {
+        min-height: 45px;
+        padding: 8px 9px;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        font-size: 0.79rem;
+        font-weight: 950;
+        transition: 0.16s ease;
+      }
+      .action-btn.adjust {
+        background: var(--amber);
+      }
+      .action-btn.start {
+        background: var(--accent-strong);
+      }
+      .action-btn.setup {
+        background: var(--accent-strong);
+      }
+      .action-btn.maintenance {
+        background: var(--red);
+      }
+      .action-btn.release {
+        background: var(--ok);
+      }
+      .action-btn.remove {
+        background: var(--gray);
+        grid-column: 1 / -1;
+      }
+      .future-btn.keep {
+        background: var(--neutral);
+      }
+      .future-btn.start {
+        background: var(--accent-strong);
+      }
+      .future-btn.setup {
+        background: var(--accent-strong);
+      }
+      .future-btn.remove {
+        background: var(--gray);
+        grid-column: 1 / -1;
+      }
+      .confirmed-list {
+        display: grid;
+        gap: 8px;
+        margin-top: 11px;
+      }
+      .confirmed-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 8px;
+        background: rgba(2, 6, 23, 0.48);
+      }
+      .confirmed-main {
+        min-width: 0;
+      }
+      .confirmed-title {
+        font-size: 0.91rem;
+        font-weight: 950;
+      }
+      .confirmed-sub {
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 0.78rem;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+      .edit-btn {
+        flex: 0 0 auto;
+        min-height: 37px;
+        padding: 7px 10px;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.11);
+        border-radius: 8px;
+        background: #334155;
+        font-size: 0.74rem;
+        font-weight: 950;
+        transition: 0.16s ease;
+      }
+      .modal {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: none;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 13px;
+        background: rgba(0, 0, 0, 0.64);
+      }
+      .modal.show {
+        display: flex;
+      }
+      .modal-card {
+        width: min(100%, 560px);
+        max-height: 88vh;
+        overflow: auto;
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #101615;
+        box-shadow: 0 22px 70px rgba(0, 0, 0, 0.58);
+      }
+      .modal-handle {
+        width: 50px;
+        height: 5px;
+        margin: 0 auto 13px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.22);
+      }
+      .modal-title {
+        margin-bottom: 6px;
+        font-size: 1.2rem;
+        font-weight: 950;
+      }
+      .modal-subtitle {
+        margin-bottom: 13px;
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.4;
+      }
+      .modal-options {
+        display: grid;
+        gap: 8px;
+      }
+      .modal-btn {
+        min-height: 47px;
+        padding: 9px 11px;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.11);
+        border-radius: 8px;
+        font-size: 0.86rem;
+        font-weight: 950;
+        transition: 0.16s ease;
+      }
+      .modal-btn.yes {
+        background: var(--ok);
+      }
+      .modal-btn.no {
+        background: var(--red);
+      }
+      .modal-btn.special {
+        background: var(--accent-strong);
+      }
+      .modal-btn.keep {
+        background: var(--neutral);
+      }
+      .modal-btn.remove {
+        background: var(--neutral);
+      }
+      .warning {
+        margin-top: 10px;
+        padding: 11px;
+        border: 1px solid rgba(139, 104, 31, 0.5);
+        border-radius: 8px;
+        background: rgba(139, 104, 31, 0.18);
+        color: #fde68a;
+        font-size: 0.82rem;
+        line-height: 1.42;
+        font-weight: 850;
+      }
+      .warning strong {
+        display: block;
+        margin-bottom: 4px;
+        color: #fff;
+      }
+      .toast {
+        position: fixed;
+        top: 15px;
+        left: 50%;
+        z-index: 200;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(-50%);
+        padding: 11px 14px;
+        color: #fff;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #08100f;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32);
+        font-size: 0.87rem;
+        font-weight: 900;
+        transition: 0.18s ease;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+      @media (max-width: 780px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        .form-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 620px) {
+        .toolbar,
+        .cell-dashboard,
+        .actions,
+        .card-actions {
+          grid-template-columns: 1fr;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero glass">
+        <div class="brand-lockup">
+          <div class="logo-mark" aria-hidden="true">
+            <svg viewBox="0 0 96 96" role="img">
+              <defs>
+                <linearGradient id="logoStroke" x1="12" y1="10" x2="82" y2="86">
+                  <stop offset="0" stop-color="#bdece5" />
+                  <stop offset="0.6" stop-color="#2aa198" />
+                  <stop offset="1" stop-color="#9aa8a4" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M48 9 81 27v38L48 87 15 65V27L48 9Z"
+                fill="#07100e"
+                stroke="url(#logoStroke)"
+                stroke-width="5"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M28 31h14l7 27 7-27h14L58 68H40L28 31Z"
+                fill="url(#logoStroke)"
+              />
+              <path
+                d="M24 48h48M48 18v12M48 66v12"
+                fill="none"
+                stroke="#dffbf5"
+                stroke-width="4"
+                stroke-linecap="round"
+                opacity=".72"
+              />
+              <circle
+                cx="48"
+                cy="48"
+                r="25"
+                fill="none"
+                stroke="#5f746f"
+                stroke-width="3"
+                stroke-dasharray="5 7"
+                opacity=".85"
+              />
+            </svg>
+          </div>
+          <div class="brand-copy">
+            <h1>Passagem de turno</h1>
+          </div>
         </div>
-    </section>
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="kpi-name">Pendências</div>
+            <div class="kpi-value" id="kpiPending">0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-name">Conflitos</div>
+            <div class="kpi-value" id="kpiConflicts">0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-name">Concluídas</div>
+            <div class="kpi-value" id="kpiCompleted">0</div>
+          </div>
+        </div>
+      </section>
 
-    <section class="grid-2">
+      <details class="card glass" open>
+        <summary>Relatório do grupo</summary>
+        <div class="details-body">
+          <textarea
+            id="rawInput"
+            class="textarea"
+            placeholder="Cole aqui o último relatório atualizado do grupo..."
+          ></textarea>
+          <div class="actions">
+            <button class="btn btn-primary" id="btnImport">IMPORTAR</button>
+            <button class="btn btn-red" id="btnClear">LIMPAR</button>
+          </div>
+          <div id="parserWarning"></div>
+        </div>
+      </details>
 
-        <article class="card glass">
-            <h2>1. Relatório bruto do grupo</h2>
-
-            <div class="field">
-                <textarea
-                    id="rawInput"
-                    class="textarea"
-                    placeholder="Cole aqui o último relatório atualizado do grupo..."
-                ></textarea>
-            </div>
-
-            <div class="actions-grid">
-
-                <button class="btn btn-primary" id="btnImport">
-                    IMPORTAR RELATÓRIO
-                </button>
-
-                <button class="btn btn-red" id="btnClear">
-                    LIMPAR SESSÃO
-                </button>
-
-            </div>
-
-            <p class="note">
-                Máquinas não citadas são consideradas em produção normal e permanecem ocultas.
-            </p>
-        </article>
-
-        <article class="card glass">
-            <h2>2. Dados manuais do fechamento</h2>
-
-            <div class="form-grid">
-
-                <div class="field">
-                    <label class="label" for="currentShift">Turno atual</label>
-
-                    <select id="currentShift" class="select">
-                        <option value="1">1° TURNO</option>
-                        <option value="2" selected>2° TURNO</option>
-                        <option value="3">3° TURNO</option>
-                    </select>
-                </div>
-
-                <div class="field">
-                    <label class="label" for="checkpoint">
-                        Bancada – Check Point
-                    </label>
-
-                    <input id="checkpoint" class="input" value="00">
-                </div>
-
-                <div class="field">
-                    <label class="label" for="sel1">Seleção 1° turno</label>
-                    <input id="sel1" class="input" value="00">
-                </div>
-
-                <div class="field">
-                    <label class="label" for="sel2">Seleção 2° turno</label>
-                    <input id="sel2" class="input" value="00">
-                </div>
-
-                <div class="field">
-                    <label class="label" for="sel3">Seleção 3° turno</label>
-                    <input id="sel3" class="input" value="00">
-                </div>
-
-                <div class="field">
-                    <label class="label" for="selAll">Os 3 turnos</label>
-                    <input id="selAll" class="input" value="00">
-                </div>
-
-                <div class="field">
-                    <label class="label" for="selTnc">Seleção TNC</label>
-                    <input id="selTnc" class="input" value="00">
-                </div>
-
-                <div class="field">
-                    <label class="label" for="cqFechamento">CQ Fechamento</label>
-                    <input id="cqFechamento" class="input" value="00">
-                </div>
-
-                <div class="field">
-                    <label class="label" for="cqReinspecao">CQ Reinspeção</label>
-                    <input id="cqReinspecao" class="input" value="00">
-                </div>
-
-            </div>
-
-            <div class="field">
-                <label class="label" for="development">Desenvolvimento</label>
-
-                <textarea
-                    id="development"
-                    class="textarea medium"
-                    placeholder="Digite somente quando necessário..."
-                ></textarea>
-            </div>
-
-            <div class="field">
-                <label class="label" for="observations">Observações</label>
-
-                <textarea
-                    id="observations"
-                    class="textarea small"
-                    placeholder="Digite somente quando necessário..."
-                ></textarea>
-            </div>
-
-        </article>
-
-    </section>
-
-    <section class="card glass">
-        <h2>3. Passagem por célula</h2>
-
+      <section class="card glass">
+        <h2>Passagem por célula</h2>
         <div class="toolbar">
-
-            <div class="field">
-                <label class="label" for="cellSelect">Selecionar célula</label>
-
-                <select id="cellSelect" class="select">
-                    <option value="01">CÉLULA 01</option>
-                    <option value="02">CÉLULA 02</option>
-                    <option value="03">CÉLULA 03</option>
-                    <option value="04">CÉLULA 04</option>
-                    <option value="05">CÉLULA 05</option>
-                    <option value="06">CÉLULA 06</option>
-                    <option value="07">CÉLULA 07</option>
-                    <option value="08">CÉLULA 08</option>
-                    <option value="09">CÉLULA 09</option>
-                    <option value="10">CÉLULA 10</option>
-                </select>
-            </div>
-
-            <div class="field">
-                <label class="label">Nova informação durante a ronda</label>
-
-                <button class="btn btn-green" id="btnOpenAdd">
-                    + ADICIONAR MÁQUINA
-                </button>
-            </div>
-
+          <div class="field">
+            <label class="label" for="cellSelect">Célula</label>
+            <select id="cellSelect" class="select">
+              <option value="01">CÉLULA 01</option>
+              <option value="02">CÉLULA 02</option>
+              <option value="03">CÉLULA 03</option>
+              <option value="04">CÉLULA 04</option>
+              <option value="05">CÉLULA 05</option>
+              <option value="06">CÉLULA 06</option>
+              <option value="07">CÉLULA 07</option>
+              <option value="08">CÉLULA 08</option>
+              <option value="09">CÉLULA 09</option>
+              <option value="10">CÉLULA 10</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label">Nova informação</label>
+            <button class="btn btn-green" id="btnOpenAdd">
+              + ADICIONAR MÁQUINA
+            </button>
+          </div>
         </div>
-
-        <div class="cell-progress">
-
-            <div class="progress-bar">
-                <div class="progress-fill" id="cellProgressFill"></div>
-            </div>
-
-            <div class="progress-label" id="cellProgressLabel">
-                Importe o relatório para iniciar.
-            </div>
-
+        <div class="cell-dashboard">
+          <div class="cell-overview" id="cellOverview"></div>
         </div>
-
+        <div class="progress-wrap">
+          <div class="progress">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="progress-label" id="progressLabel">
+            Importe o relatório para iniciar.
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-undo" id="btnUndo">
+            DESFAZER ÚLTIMA AÇÃO
+          </button>
+        </div>
         <div class="machine-list" id="machineList">
-            <div class="empty">Importe o relatório bruto para começar.</div>
+          <div class="empty">Importe o relatório bruto para começar.</div>
         </div>
-    </section>
+      </section>
 
-    <section class="card glass">
-        <h2>4. Relatório final editável</h2>
+      <details class="card glass">
+        <summary>
+          Decisões confirmadas <span id="confirmedCount">— 00</span>
+        </summary>
+        <div class="details-body">
+          <div class="confirmed-list" id="confirmedList">
+            <div class="empty">Nenhuma decisão confirmada.</div>
+          </div>
+        </div>
+      </details>
 
-        <textarea
+      <details class="card glass">
+        <summary>Dados do fechamento</summary>
+        <div class="details-body">
+          <div class="form-grid">
+            <div class="field">
+              <label class="label" for="currentShift">Turno atual</label
+              ><select id="currentShift" class="select">
+                <option value="1">1° TURNO</option>
+                <option value="2" selected>2° TURNO</option>
+                <option value="3">3° TURNO</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="label" for="checkpoint">Bancada</label
+              ><input id="checkpoint" class="input" value="00" />
+            </div>
+            <div class="field">
+              <label class="label" for="cqFechamento">CQ Fechamento</label
+              ><input id="cqFechamento" class="input" value="00" />
+            </div>
+            <div class="field">
+              <label class="label" for="cqReinspecao">CQ Reinspeção</label
+              ><input id="cqReinspecao" class="input" value="00" />
+            </div>
+            <div class="field">
+              <label class="label" for="sel1">Seleção 1°T</label
+              ><input id="sel1" class="input" value="00" />
+            </div>
+            <div class="field">
+              <label class="label" for="sel2">Seleção 2°T</label
+              ><input id="sel2" class="input" value="00" />
+            </div>
+            <div class="field">
+              <label class="label" for="sel3">Seleção 3°T</label
+              ><input id="sel3" class="input" value="00" />
+            </div>
+            <div class="field">
+              <label class="label" for="selAll">Os 3 turnos</label
+              ><input id="selAll" class="input" value="00" />
+            </div>
+            <div class="field">
+              <label class="label" for="selTnc">Seleção TNC</label
+              ><input id="selTnc" class="input" value="00" />
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="card glass">
+        <summary>Desenvolvimento e observações</summary>
+        <div class="details-body">
+          <div class="field">
+            <label class="label" for="development">Desenvolvimento</label
+            ><textarea
+              id="development"
+              class="textarea small"
+              placeholder="Digite somente quando necessário..."
+            ></textarea>
+          </div>
+          <div class="field">
+            <label class="label" for="observations">Observações</label
+            ><textarea
+              id="observations"
+              class="textarea small"
+              placeholder="Digite somente quando necessário..."
+            ></textarea>
+          </div>
+        </div>
+      </details>
+
+      <details class="card glass">
+        <summary>Relatório final</summary>
+        <div class="details-body">
+          <textarea
             id="finalOutput"
             class="output"
             placeholder="O relatório final aparecerá aqui..."
-        ></textarea>
-
-        <div class="actions-grid">
-
-            <button class="btn btn-primary" id="btnRefreshReport">
-                ATUALIZAR RELATÓRIO
+          ></textarea>
+          <div class="actions">
+            <button class="btn btn-primary" id="btnRefresh">ATUALIZAR</button
+            ><button class="btn btn-green" id="btnCopy">
+              COPIAR RELATÓRIO
             </button>
-
-            <button class="btn btn-green" id="btnCopyReport">
-                COPIAR RELATÓRIO FINAL
-            </button>
-
+          </div>
         </div>
+      </details>
+    </main>
 
-        <p class="note" id="reportSafetyNote">
-            Conflitos não resolvidos bloqueiam a cópia.
-        </p>
-    </section>
-
-</main>
-
-<!-- MODAL: ADICIONAR MÁQUINA -->
-<div class="modal" id="addModal">
-    <div class="modal-card">
-
+    <div class="modal" id="addModal">
+      <div class="modal-card">
         <div class="modal-handle"></div>
-
         <div class="modal-title">Adicionar máquina</div>
-
-        <div class="modal-subtitle">
-            Use quando surgir uma exceção durante a ronda que ainda não apareceu no grupo.
-        </div>
-
         <div class="field">
-            <label class="label" for="addMachine">Máquina</label>
-            <select id="addMachine" class="select"></select>
+          <label class="label" for="addMachine">Máquina</label
+          ><input
+            id="addMachine"
+            class="input"
+            inputmode="numeric"
+            placeholder="Ex.: 048"
+          />
         </div>
-
         <div class="field">
-            <label class="label" for="addStatus">Como vai passar?</label>
-
-            <select id="addStatus" class="select">
-                <option value="adjustment">VAI PASSAR EM AJUSTE</option>
-                <option value="setup_active">VAI PASSAR EM SETUP</option>
-                <option value="setup_start">INICIAR SETUP</option>
-                <option value="maintenance">VAI PASSAR EM MANUTENÇÃO</option>
-                <option value="maintenance_prod">MANUTENÇÃO PRODUZINDO</option>
-            </select>
+          <label class="label" for="addStatus">Status</label
+          ><select id="addStatus" class="select">
+            <option value="adjustment">VAI PASSAR EM AJUSTE</option>
+            <option value="setup_start">INICIAR SETUP</option>
+            <option value="setup_active">VAI PASSAR EM SETUP</option>
+            <option value="setup_future">SETUP PRÓXIMO TURNO</option>
+            <option value="maintenance">VAI PASSAR EM MANUTENÇÃO</option>
+            <option value="maintenance_prod">MANUTENÇÃO PRODUZINDO</option>
+          </select>
         </div>
-
         <div class="field">
-            <label class="label" for="addReason">Motivo</label>
-
-            <input
-                id="addReason"
-                class="input"
-                placeholder="Obrigatório para ajuste ou manutenção"
-            >
+          <label class="label" for="addReason">Motivo</label
+          ><input
+            id="addReason"
+            class="input"
+            placeholder="Preencha para ajuste ou manutenção"
+          />
         </div>
-
-        <div class="actions-grid">
-
-            <button class="btn btn-primary" id="btnSaveAdd">
-                SALVAR
-            </button>
-
-            <button class="btn btn-soft" id="btnCloseAdd">
-                CANCELAR
-            </button>
-
+        <div class="actions">
+          <button class="btn btn-primary" id="btnSaveAdd">SALVAR</button
+          ><button class="btn btn-soft" id="btnCloseAdd">CANCELAR</button>
         </div>
-
+      </div>
     </div>
-</div>
 
-<!-- MODAL: MOTIVO -->
-<div class="modal" id="reasonModal">
-    <div class="modal-card">
-
+    <div class="modal" id="reasonModal">
+      <div class="modal-card">
         <div class="modal-handle"></div>
-
-        <div class="modal-title" id="reasonTitle">
-            Informar motivo
-        </div>
-
+        <div class="modal-title" id="reasonTitle">Informar motivo</div>
         <div class="modal-subtitle" id="reasonSubtitle">
-            Digite o motivo para continuar.
+          Digite o motivo para continuar.
         </div>
-
-        <div class="field">
-            <textarea
-                id="reasonInput"
-                class="textarea medium"
-                placeholder="Digite o motivo..."
-            ></textarea>
+        <textarea
+          id="reasonInput"
+          class="textarea small"
+          placeholder="Digite o motivo..."
+        ></textarea>
+        <div class="actions">
+          <button class="btn btn-primary" id="btnSaveReason">SALVAR</button
+          ><button class="btn btn-soft" id="btnCloseReason">CANCELAR</button>
         </div>
-
-        <div class="actions-grid">
-
-            <button class="btn btn-primary" id="btnConfirmReason">
-                SALVAR
-            </button>
-
-            <button class="btn btn-soft" id="btnCancelReason">
-                CANCELAR
-            </button>
-
-        </div>
-
+      </div>
     </div>
-</div>
 
-<!-- MODAL: TRANSIÇÃO DO CONFLITO -->
-<div class="modal" id="transitionModal">
-    <div class="modal-card">
-
+    <div class="modal" id="transitionModal">
+      <div class="modal-card">
         <div class="modal-handle"></div>
-
-        <div class="modal-title" id="transitionTitle">
-            Resolver conflito
-        </div>
-
+        <div class="modal-title" id="transitionTitle">Resolver conflito</div>
         <div class="modal-subtitle" id="transitionSubtitle">
-            Confirme o que ocorreu com a atividade anterior.
+          Selecione uma opção.
         </div>
-
-        <div class="transition-options" id="transitionOptions"></div>
-
-        <div class="actions-grid">
-            <button class="btn btn-soft" id="btnCancelTransition">
-                CANCELAR
-            </button>
+        <div class="modal-options" id="transitionOptions"></div>
+        <div class="actions">
+          <button class="btn btn-soft" id="btnCloseTransition">CANCELAR</button>
         </div>
-
+      </div>
     </div>
-</div>
 
-<div class="toast" id="toast"></div>
+    <div class="modal" id="editModal">
+      <div class="modal-card">
+        <div class="modal-handle"></div>
+        <div class="modal-title" id="editTitle">Reeditar decisão</div>
+        <div class="modal-subtitle">
+          A decisão anterior será desfeita e a máquina voltará para a
+          conferência.
+        </div>
+        <div class="modal-options">
+          <button class="modal-btn yes" id="btnConfirmEdit">
+            REABRIR MÁQUINA
+          </button>
+        </div>
+        <div class="actions">
+          <button class="btn btn-soft" id="btnCloseEdit">CANCELAR</button>
+        </div>
+      </div>
+    </div>
 
-<script>
-"use strict";
+    <div class="toast" id="toast"></div>
 
-/* =========================================================
-   CONFIGURAÇÃO
-========================================================= */
+    <script>
+      "use strict";
 
-const STORAGE_KEY = "venanc_tools_passagem_turno_v6";
+      // Configuração fixa e estado principal do app.
+      const STORAGE_KEY = "venanc_tools_passagem_turno_v20";
+      const CELULAS = {
+        "01": [2, 5, 15, 19, 23, 24, 25, 26, 27, 29, 30, 35, 46, 47, 48],
+        "02": [3, 4, 7, 8, 13, 16, 17, 18, 28, 31, 32, 49, 50, 51, 143],
+        "03": [9, 10, 33, 34, 36, 37, 39, 40, 41, 43, 44],
+        "04": [42, 52, 53, 57, 58, 59, 60, 61, 64, 65, 66],
+        "05": [69, 72, 83, 85, 87, 88, 89, 90, 91, 92, 93, 94, 95],
+        "06": [67, 68, 73, 74, 75, 76, 77, 79, 81, 82, 84, 86],
+        "07": [45, 54, 55, 56, 62, 63, 70, 71, 78, 80, 102, 103, 110, 111],
+        "08": [96, 98, 104, 107, 112, 113, 115, 116, 118, 119, 121, 122],
+        "09": [97, 99, 100, 101, 105, 106, 108, 109, 114, 117, 120, 123],
+        10: [
+          124, 125, 126, 127, 128, 129, 130, 134, 135, 136, 137, 138, 139, 140,
+          141, 142,
+        ],
+      };
+      const CELL_ORDER = [
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07",
+        "08",
+        "09",
+        "10",
+      ];
+      const ACTIVE_TYPES = [
+        "maintenance",
+        "maintenance_prod",
+        "setup_active",
+        "setup_start",
+        "adjustment",
+        "manual_pending",
+      ];
+      const TYPE_CONFIG = {
+        maintenance: { short: "MANUTENÇÃO", badge: "red" },
+        maintenance_prod: { short: "MANUT. PRODUZINDO", badge: "amber" },
+        setup_active: { short: "SETUP", badge: "blue" },
+        setup_start: { short: "INICIAR SETUP", badge: "blue" },
+        adjustment: { short: "AJUSTE", badge: "amber" },
+        manual_pending: { short: "REDEFINIR STATUS", badge: "amber" },
+      };
+      const SECTION_LABELS = {
+        maintenance: "MANUTENÇÃO PARADA",
+        maintenance_prod: "MANUTENÇÃO PRODUZINDO",
+        setup_active: "SETUP",
+        setup_start: "PRÓXIMOS SETUPS",
+        adjustment: "AJUSTE",
+        future: "SETUP FUTURO",
+        manual_pending: "REEDIÇÃO MANUAL",
+        decision: "DECISÃO DA RONDA",
+      };
+      function blank() {
+        return {
+          raw: "",
+          records: [],
+          futureItems: [],
+          reviewLines: [],
+          reasons: { maintenance: {}, adjustment: {} },
+          completed: { adjustments: [], setups: [], maintenances: [] },
+          reviewedTnls: {},
+          resolvedConflicts: {},
+          confirmedDecisions: {},
+          actionHistory: [],
+          nextId: 1,
+          nextFutureId: 1,
+        };
+      }
+      let state = blank(),
+        pendingReason = null,
+        pendingTransition = null,
+        pendingEditTnl = null;
 
-const CELULAS = {
-    "01":[2,5,15,19,23,24,25,26,27,29,30,35,46,47,48],
-    "02":[3,4,7,8,13,16,17,18,28,31,32,49,50,51,143],
-    "03":[9,10,33,34,36,37,39,40,41,43,44],
-    "04":[42,52,53,57,58,59,60,61,64,65,66],
-    "05":[69,72,83,85,87,88,89,90,91,92,93,94,95],
-    "06":[67,68,73,74,75,76,77,79,81,82,84,86],
-    "07":[45,54,55,56,62,63,70,71,78,80,102,103,110,111],
-    "08":[96,98,104,107,112,113,115,116,118,119,121,122],
-    "09":[97,99,100,101,105,106,108,109,114,117,120,123],
-    "10":[124,125,126,127,128,129,130,134,135,136,137,138,139,140,141,142]
-};
-
-const ACTIVE_TYPES = [
-    "maintenance",
-    "maintenance_prod",
-    "setup_active",
-    "setup_start",
-    "adjustment"
-];
-
-const TYPE_CONFIG = {
-    maintenance:{
-        label:"MANUTENÇÃO PARADA",
-        short:"MANUTENÇÃO",
-        badge:"red"
-    },
-
-    maintenance_prod:{
-        label:"MANUTENÇÃO PRODUZINDO",
-        short:"MANUT. PRODUZINDO",
-        badge:"amber"
-    },
-
-    setup_active:{
-        label:"EM SETUP",
-        short:"SETUP",
-        badge:"blue"
-    },
-
-    setup_start:{
-        label:"INICIAR SETUP",
-        short:"INICIAR SETUP",
-        badge:"blue"
-    },
-
-    adjustment:{
-        label:"EM AJUSTE",
-        short:"AJUSTE",
-        badge:"amber"
-    }
-};
-
-/* =========================================================
-   ESTADO
-========================================================= */
-
-function createBlankState(){
-    return {
-        raw:"",
-        records:[],
-        futureBlocks:{},
-        originalMaintenance:{},
-
-        completed:{
-            adjustments:[],
-            setups:[],
-            maintenances:[]
-        },
-
-        reviewedTnls:{},
-        resolvedConflicts:{},
-        nextId:1,
-        nextFutureId:1
-    };
-}
-
-let state = createBlankState();
-
-let pendingReasonAction = null;
-
-let pendingTransition = null;
-
-/* =========================================================
-   UTILITÁRIOS
-========================================================= */
-
-function el(id){
-    return document.getElementById(id);
-}
-
-function toast(message){
-    const element = el("toast");
-
-    element.textContent = message;
-
-    element.classList.add("show");
-
-    clearTimeout(window.__venancToastTimer);
-
-    window.__venancToastTimer = setTimeout(()=>{
-        element.classList.remove("show");
-    },1600);
-}
-
-function padTnl(number){
-    return String(Number(number)).padStart(3,"0");
-}
-
-function normalizeText(text){
-    return String(text || "")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g,"");
-}
-
-function normalizeHeader(text){
-    return normalizeText(text)
-        .replace(/[•●]/g," ")
-        .replace(/[*_:]/g," ")
-        .replace(/[º°]/g," ")
-        .replace(/\s+/g," ")
-        .trim()
-        .toUpperCase();
-}
-
-function cleanLine(text){
-    return String(text || "")
-        .replace(/[✅❌]/g,"")
-        .replace(/[•●]/g," ")
-        .replace(/\*/g,"")
-        .replace(/\s+/g," ")
-        .trim();
-}
-
-function extractTnl(text){
-    const match = String(text || "")
-        .match(/TNL\s*0*(\d{1,3})/i);
-
-    return match
-        ? Number(match[1])
-        : null;
-}
-
-function extractEmoji(text){
-    const match = String(text || "")
-        .match(/(🔴|🔵|🟢)/);
-
-    return match
-        ? match[1]
-        : "🔴";
-}
-
-function extractReasonAfterTnl(text){
-    const clean = cleanLine(text);
-
-    const match = clean.match(
-        /TNL\s*0*\d{1,3}\s*-\s*(.+)$/i
-    );
-
-    return match
-        ? match[1].trim()
-        : "";
-}
-
-function normalizeTnlInLine(text){
-    const tnl = extractTnl(text);
-
-    if(!tnl){
-        return cleanLine(text);
-    }
-
-    return cleanLine(text)
-        .replace(
-            /TNL\s*0*\d{1,3}/i,
-            `TNL ${padTnl(tnl)}`
-        );
-}
-
-function uniqueNumbers(list){
-    return [...new Set(
-        list
-            .map(Number)
-            .filter(value=>Number.isFinite(value))
-    )].sort((a,b)=>a-b);
-}
-
-function uniqueStrings(list){
-    return [...new Set(
-        list
-            .map(item=>String(item || "").trim())
-            .filter(Boolean)
-    )];
-}
-
-function sortRecords(records){
-    return [...records].sort((a,b)=>{
-        if(Number(a.tnl) !== Number(b.tnl)){
-            return Number(a.tnl) - Number(b.tnl);
+      // Utilitários pequenos de DOM, texto, TNL e ordenação.
+      function el(id) {
+        return document.getElementById(id);
+      }
+      function toast(message) {
+        const n = el("toast");
+        n.textContent = message;
+        n.classList.add("show");
+        clearTimeout(window.__toast);
+        window.__toast = setTimeout(() => n.classList.remove("show"), 1600);
+      }
+      function pad(number) {
+        return String(Number(number)).padStart(3, "0");
+      }
+      function esc(text) {
+        return String(text ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+      function normalizeText(text) {
+        return String(text || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+      }
+      function normalizeHeader(text) {
+        return normalizeText(text)
+          .replace(/[^A-Z0-9]+/gi, " ")
+          .replace(/\s+/g, " ")
+          .trim()
+          .toUpperCase();
+      }
+      function cleanLine(text) {
+        return String(text || "")
+          .replace(/[✅❌]/g, "")
+          .replace(/[•●]/g, " ")
+          .replace(/\*/g, "")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+      function extractTnl(text) {
+        const m = String(text || "").match(/TNL\s*0*(\d{1,3})/i);
+        return m ? Number(m[1]) : null;
+      }
+      function extractEmoji(text) {
+        const m = String(text || "").match(/(🔴|🔵|🟢)/);
+        return m ? m[1] : "🔴";
+      }
+      function extractReason(text) {
+        const m = cleanLine(text).match(/TNL\s*0*\d{1,3}\s*-\s*(.+)$/i);
+        return m ? m[1].trim() : "";
+      }
+      function isNA(text) {
+        return normalizeHeader(text).replace(/\s+/g, "") === "NA";
+      }
+      function mappedMachines() {
+        return uniqueNumbers(Object.values(CELULAS).flat());
+      }
+      function allOperationalTnls() {
+        return uniqueNumbers([
+          ...activeRecords().map((r) => r.tnl),
+          ...state.futureItems.map((x) => x.tnl),
+        ]);
+      }
+      function unmappedTnls() {
+        const mapped = new Set(mappedMachines());
+        return allOperationalTnls().filter((tnl) => !mapped.has(Number(tnl)));
+      }
+      function machinesForCell(cell) {
+        return cell === "SEM_MAPA" ? unmappedTnls() : CELULAS[cell] || [];
+      }
+      function hasUnmappedTnls() {
+        return unmappedTnls().length > 0;
+      }
+      function visibleCellOrder() {
+        return hasUnmappedTnls() ? [...CELL_ORDER, "SEM_MAPA"] : CELL_ORDER;
+      }
+      function syncUnmappedCellOption() {
+        const select = el("cellSelect"),
+          existing = select.querySelector('option[value="SEM_MAPA"]');
+        if (hasUnmappedTnls() && !existing) {
+          select.insertAdjacentHTML(
+            "beforeend",
+            '<option value="SEM_MAPA">⚠ SEM CÉLULA</option>',
+          );
         }
+        if (!hasUnmappedTnls()) {
+          existing?.remove();
+          if (select.value === "SEM_MAPA") select.value = "01";
+        }
+      }
+      function extractTime(text) {
+        const s = String(text || "");
+        let m = s.match(/\b([01]?\d|2[0-3]):([0-5]\d)\b/);
+        if (m) return `${String(m[1]).padStart(2, "0")}:${m[2]}`;
+        m = s.match(/\b([01]?\d|2[0-3])\s*[Hh]\b/);
+        return m ? `${String(m[1]).padStart(2, "0")}:00` : "";
+      }
+      function normalizeTnlLine(text) {
+        const tnl = extractTnl(text);
+        return tnl
+          ? cleanLine(text).replace(/TNL\s*0*\d{1,3}/i, `TNL ${pad(tnl)}`)
+          : cleanLine(text);
+      }
+      function uniqueNumbers(list) {
+        return [...new Set(list.map(Number).filter(Number.isFinite))].sort(
+          (a, b) => a - b,
+        );
+      }
+      function uniqueStrings(list) {
+        return [
+          ...new Set(list.map((x) => String(x || "").trim()).filter(Boolean)),
+        ];
+      }
+      function sortByTnl(list) {
+        return [...list].sort(
+          (a, b) =>
+            Number(a.tnl) - Number(b.tnl) ||
+            String(a.displayText || a.text || "").localeCompare(
+              String(b.displayText || b.text || ""),
+              "pt-BR",
+            ),
+        );
+      }
+      function currentNextTurn() {
+        const n = Number(el("currentShift").value || 2);
+        return n === 1 ? 2 : n === 2 ? 3 : 1;
+      }
+      function nextTurnHeading() {
+        return `SETUPS ${currentNextTurn()}°T`;
+      }
 
-        return String(a.text)
-            .localeCompare(String(b.text),"pt-BR");
-    });
-}
-
-function recordsOfTnl(tnl){
-    return state.records.filter(record=>
-        Number(record.tnl) === Number(tnl) &&
-        record.report === true
-    );
-}
-
-function activeRecords(){
-    return state.records.filter(record=>
-        record.report === true &&
-        ACTIVE_TYPES.includes(record.type)
-    );
-}
-
-function createRecord({
-    tnl,
-    type,
-    text,
-    emoji="",
-    source="raw",
-    reviewed=false
-}){
-    return {
-        id:state.nextId++,
-        tnl:Number(tnl),
+      // Consultas e alterações básicas sobre records, futuros e concluídos.
+      function recordsOfTnl(tnl) {
+        return state.records.filter((r) => Number(r.tnl) === Number(tnl));
+      }
+      function activeRecords() {
+        return state.records.filter((r) => ACTIVE_TYPES.includes(r.type));
+      }
+      function categoryOfType(type) {
+        if (type === "maintenance" || type === "maintenance_prod")
+          return "maintenance";
+        if (type === "setup_active" || type === "setup_start") return "setup";
+        if (type === "adjustment") return "adjustment";
+        return "";
+      }
+      function categoryLabel(c) {
+        return c === "maintenance"
+          ? "MANUTENÇÃO"
+          : c === "setup"
+            ? "SETUP"
+            : c === "adjustment"
+              ? "AJUSTE"
+              : c;
+      }
+      function categoriesOfTnl(tnl) {
+        return [
+          ...new Set(
+            recordsOfTnl(tnl)
+              .map((r) => categoryOfType(r.type))
+              .filter(Boolean),
+          ),
+        ];
+      }
+      function hasConflict(tnl) {
+        return categoriesOfTnl(tnl).length > 1;
+      }
+      function completedKey(c) {
+        return c === "maintenance"
+          ? "maintenances"
+          : c === "setup"
+            ? "setups"
+            : c === "adjustment"
+              ? "adjustments"
+              : "";
+      }
+      function addCompleted(tnl, c) {
+        const k = completedKey(c);
+        if (k)
+          state.completed[k] = uniqueNumbers([
+            ...state.completed[k],
+            Number(tnl),
+          ]);
+      }
+      function removeCompleted(tnl, c) {
+        const k = completedKey(c);
+        if (k)
+          state.completed[k] = state.completed[k].filter(
+            (x) => Number(x) !== Number(tnl),
+          );
+      }
+      function createRecord({
+        tnl,
         type,
-        text:String(text || "").trim(),
-        emoji,
-        source,
-        reviewed:Boolean(reviewed),
-        report:true
-    };
-}
+        displayText,
+        rawText,
+        sourceSection,
+        emoji = "🔴",
+      }) {
+        return {
+          id: state.nextId++,
+          tnl: Number(tnl),
+          type,
+          displayText: String(displayText || "").trim(),
+          rawText: String(rawText || "").trim(),
+          sourceSection,
+          emoji,
+        };
+      }
+      function addRecord(record) {
+        const key = [
+          record.tnl,
+          record.type,
+          record.displayText,
+          record.rawText,
+        ]
+          .join("|")
+          .toLowerCase();
+        if (
+          !state.records.some(
+            (r) =>
+              [r.tnl, r.type, r.displayText, r.rawText]
+                .join("|")
+                .toLowerCase() === key,
+          )
+        )
+          state.records.push(record);
+      }
+      function removeCategory(tnl, c) {
+        state.records = state.records.filter(
+          (r) => Number(r.tnl) !== Number(tnl) || categoryOfType(r.type) !== c,
+        );
+      }
+      function removeAllActiveRecords(tnl) {
+        state.records = state.records.filter(
+          (r) => Number(r.tnl) !== Number(tnl),
+        );
+      }
+      function maintenanceText(tnl, reason) {
+        return `TNL ${pad(tnl)} - ${reason || "MANUTENÇÃO"}`;
+      }
+      function maintenanceProducingText(tnl, reason) {
+        return `TNL ${pad(tnl)} - ${reason || "MANUTENÇÃO PRODUZINDO"}`;
+      }
+      function setupActiveText(tnl, emoji = "🔴") {
+        return `${emoji} TNL ${pad(tnl)} - EM SETUP`;
+      }
+      function setupStartText(tnl, emoji = "🔴") {
+        return `${emoji} TNL ${pad(tnl)} - INICIAR SETUP`;
+      }
+      function adjustmentText(tnl, reason) {
+        return `TNL ${pad(tnl)} - ${reason || "EM AJUSTE"}`;
+      }
+      function futureSetupText(tnl, emoji = "🔴") {
+        return `${emoji} TNL ${pad(tnl)} - Setup ${currentNextTurn()}°T`;
+      }
+      function futureAfterMaintenanceText(tnl, emoji = "🔴") {
+        return `${emoji} TNL ${pad(tnl)} - Após manutenção`;
+      }
+      function addFutureItem({
+        heading,
+        tnl,
+        emoji = "🔴",
+        displayText,
+        rawText,
+        sourceSection = "future",
+        reviewed = false,
+      }) {
+        const item = {
+          id: state.nextFutureId++,
+          heading,
+          tnl: Number(tnl),
+          emoji,
+          displayText: String(displayText || "").trim(),
+          rawText: String(rawText || "").trim(),
+          sourceSection,
+          reviewed: Boolean(reviewed),
+        };
+        const key = [item.heading, item.tnl, item.displayText, item.rawText]
+          .join("|")
+          .toLowerCase();
+        if (
+          !state.futureItems.some(
+            (x) =>
+              [x.heading, x.tnl, x.displayText, x.rawText]
+                .join("|")
+                .toLowerCase() === key,
+          )
+        )
+          state.futureItems.push(item);
+        state.futureItems = sortByTnl(state.futureItems);
+      }
+      function findFutureItem(id) {
+        return state.futureItems.find((x) => Number(x.id) === Number(id));
+      }
+      function removeFutureItem(id) {
+        state.futureItems = state.futureItems.filter(
+          (x) => Number(x.id) !== Number(id),
+        );
+      }
+      function removeFutureItemsByTnl(tnl) {
+        state.futureItems = state.futureItems.filter(
+          (x) => Number(x.tnl) !== Number(tnl),
+        );
+      }
+      function moveSetupToFutureAfterMaintenance(tnl, emoji = "🔴") {
+        removeCategory(tnl, "setup");
+        addFutureItem({
+          heading: nextTurnHeading(),
+          tnl,
+          emoji,
+          displayText: futureAfterMaintenanceText(tnl, emoji),
+          rawText: futureAfterMaintenanceText(tnl, emoji),
+          sourceSection: "decision_future_after",
+          reviewed: true,
+        });
+      }
+      function moveSetupToFutureOnly(tnl, emoji = "🔴") {
+        removeCategory(tnl, "setup");
+        addFutureItem({
+          heading: nextTurnHeading(),
+          tnl,
+          emoji,
+          displayText: futureSetupText(tnl, emoji),
+          rawText: futureSetupText(tnl, emoji),
+          sourceSection: "decision_future_only",
+          reviewed: true,
+        });
+      }
+      function setSetup(tnl, mode, emoji = "🔴") {
+        removeCategory(tnl, "setup");
+        addRecord(
+          createRecord({
+            tnl,
+            type: mode === "start" ? "setup_start" : "setup_active",
+            displayText:
+              mode === "start"
+                ? setupStartText(tnl, emoji)
+                : setupActiveText(tnl, emoji),
+            rawText:
+              mode === "start"
+                ? setupStartText(tnl, emoji)
+                : setupActiveText(tnl, emoji),
+            sourceSection: "decision",
+            emoji,
+          }),
+        );
+      }
+      function setAdjustment(tnl, reason) {
+        removeCategory(tnl, "adjustment");
+        state.reasons.adjustment[String(tnl)] = reason;
+        addRecord(
+          createRecord({
+            tnl,
+            type: "adjustment",
+            displayText: adjustmentText(tnl, reason),
+            rawText: adjustmentText(tnl, reason),
+            sourceSection: "decision",
+          }),
+        );
+      }
+      function normalizeReasonList(value) {
+        return uniqueStrings(
+          Array.isArray(value) ? value : [value].filter(Boolean),
+        );
+      }
+      function savedMaintenanceReasons(tnl) {
+        return normalizeReasonList(
+          state.reasons.maintenance[String(tnl)] || [],
+        );
+      }
+      function setMaintenance(tnl, reasons, producing = false) {
+        const list = normalizeReasonList(reasons);
+        removeCategory(tnl, "maintenance");
+        state.reasons.maintenance[String(tnl)] = list;
+        const finalList = list.length
+          ? list
+          : [producing ? "MANUTENÇÃO PRODUZINDO" : "MANUTENÇÃO"];
+        finalList.forEach((reason) =>
+          addRecord(
+            createRecord({
+              tnl,
+              type: producing ? "maintenance_prod" : "maintenance",
+              displayText: producing
+                ? maintenanceProducingText(tnl, reason)
+                : maintenanceText(tnl, reason),
+              rawText: producing
+                ? maintenanceProducingText(tnl, reason)
+                : maintenanceText(tnl, reason),
+              sourceSection: "decision",
+            }),
+          ),
+        );
+      }
 
-function addRecord(record){
-    const signature = [
-        record.tnl,
-        record.type,
-        record.text
-    ].join("|").toLowerCase();
-
-    const exists = state.records.some(existing=>{
-        const existingSignature = [
-            existing.tnl,
-            existing.type,
-            existing.text
-        ].join("|").toLowerCase();
-
-        return existingSignature === signature;
-    });
-
-    if(!exists){
-        state.records.push(record);
-    }
-}
-
-function removeOperationalRecords(tnl){
-    state.records = state.records.filter(record=>
-        Number(record.tnl) !== Number(tnl) ||
-        !ACTIVE_TYPES.includes(record.type)
-    );
-}
-
-function removeCategoryRecords(tnl,category){
-    state.records = state.records.filter(record=>{
-        if(Number(record.tnl) !== Number(tnl)){
-            return true;
+      // Snapshots sustentam desfazer ação e reabrir uma decisão já confirmada.
+      function snapshotMachine(tnl) {
+        return {
+          tnl: Number(tnl),
+          records: JSON.parse(JSON.stringify(recordsOfTnl(tnl))),
+          future: JSON.parse(
+            JSON.stringify(
+              state.futureItems.filter((x) => Number(x.tnl) === Number(tnl)),
+            ),
+          ),
+          completed: {
+            maintenance: state.completed.maintenances.includes(Number(tnl)),
+            setup: state.completed.setups.includes(Number(tnl)),
+            adjustment: state.completed.adjustments.includes(Number(tnl)),
+          },
+          reviewed: Boolean(state.reviewedTnls[String(tnl)]),
+          resolved: Boolean(state.resolvedConflicts[String(tnl)]),
+          confirmed: state.confirmedDecisions[String(tnl)]
+            ? JSON.parse(JSON.stringify(state.confirmedDecisions[String(tnl)]))
+            : null,
+          reasons: {
+            maintenance: JSON.parse(
+              JSON.stringify(state.reasons.maintenance[String(tnl)] || []),
+            ),
+            adjustment: state.reasons.adjustment[String(tnl)] || "",
+          },
+        };
+      }
+      function restoreSnapshot(s) {
+        if (!s) return;
+        const tnl = Number(s.tnl);
+        removeAllActiveRecords(tnl);
+        s.records.forEach((r) => addRecord(r));
+        removeFutureItemsByTnl(tnl);
+        s.future.forEach((x) => state.futureItems.push(x));
+        ["maintenance", "setup", "adjustment"].forEach((c) => {
+          removeCompleted(tnl, c);
+          if (s.completed[c]) addCompleted(tnl, c);
+        });
+        s.reviewed
+          ? (state.reviewedTnls[String(tnl)] = true)
+          : delete state.reviewedTnls[String(tnl)];
+        s.resolved
+          ? (state.resolvedConflicts[String(tnl)] = true)
+          : delete state.resolvedConflicts[String(tnl)];
+        s.confirmed
+          ? (state.confirmedDecisions[String(tnl)] = s.confirmed)
+          : delete state.confirmedDecisions[String(tnl)];
+        if (s.reasons) {
+          s.reasons.maintenance?.length
+            ? (state.reasons.maintenance[String(tnl)] = s.reasons.maintenance)
+            : delete state.reasons.maintenance[String(tnl)];
+          s.reasons.adjustment
+            ? (state.reasons.adjustment[String(tnl)] = s.reasons.adjustment)
+            : delete state.reasons.adjustment[String(tnl)];
         }
-
-        return categoryOfType(record.type) !== category;
-    });
-}
-
-function markReviewed(tnl){
-    state.reviewedTnls[String(tnl)] = true;
-
-    state.records.forEach(record=>{
-        if(Number(record.tnl) === Number(tnl)){
-            record.reviewed = true;
+        state.futureItems = sortByTnl(state.futureItems);
+      }
+      function summarizeMachine(tnl, fallback) {
+        const lines = [
+          ...recordsOfTnl(tnl).map((r) => r.displayText),
+          ...state.futureItems
+            .filter((x) => Number(x.tnl) === Number(tnl))
+            .map((x) => x.displayText),
+        ];
+        return lines.length ? uniqueStrings(lines).join(" | ") : fallback;
+      }
+      function commitDecision(tnl, before, fallback) {
+        state.reviewedTnls[String(tnl)] = true;
+        state.resolvedConflicts[String(tnl)] = true;
+        state.confirmedDecisions[String(tnl)] = {
+          tnl: Number(tnl),
+          label: summarizeMachine(tnl, fallback),
+          time: new Date().toLocaleTimeString("pt-BR", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          before,
+        };
+        state.actionHistory.push({ tnl: Number(tnl), before });
+        updateEverything();
+        saveSession();
+        toast(`TNL ${pad(tnl)} atualizada`);
+      }
+      function undoLastAction() {
+        const last = state.actionHistory.pop();
+        if (!last) {
+          toast("Nenhuma ação para desfazer");
+          return;
         }
-    });
-}
+        restoreSnapshot(last.before);
+        updateEverything();
+        saveSession();
+        toast("Última ação desfeita");
+      }
+      function openEditModal(tnl) {
+        pendingEditTnl = Number(tnl);
+        el("editTitle").textContent = `Reeditar TNL ${pad(tnl)}`;
+        el("editModal").classList.add("show");
+      }
+      function closeEditModal() {
+        pendingEditTnl = null;
+        el("editModal").classList.remove("show");
+      }
+      function confirmEdit() {
+        if (!pendingEditTnl) return;
+        const d = state.confirmedDecisions[String(pendingEditTnl)];
+        if (!d) {
+          closeEditModal();
+          return;
+        }
+        const current = snapshotMachine(pendingEditTnl),
+          tnl = Number(pendingEditTnl);
+        restoreSnapshot(d.before);
+        delete state.confirmedDecisions[String(tnl)];
+        delete state.reviewedTnls[String(tnl)];
+        delete state.resolvedConflicts[String(tnl)];
+        if (
+          !recordsOfTnl(tnl).length &&
+          !state.futureItems.some((item) => Number(item.tnl) === Number(tnl))
+        ) {
+          addRecord(
+            createRecord({
+              tnl,
+              type: "manual_pending",
+              displayText: `TNL ${pad(tnl)} - REDEFINIR STATUS`,
+              rawText: `TNL ${pad(tnl)} - Nova informação durante a ronda`,
+              sourceSection: "manual_pending",
+            }),
+          );
+        }
+        state.actionHistory.push({ tnl, before: current });
+        closeEditModal();
+        updateEverything();
+        saveSession();
+        toast(`TNL ${pad(tnl)} reaberta`);
+      }
 
-function isReviewed(tnl){
-    return Boolean(
-        state.reviewedTnls[String(tnl)]
-    );
-}
-
-/* =========================================================
-   CATEGORIAS
-========================================================= */
-
-function categoryOfType(type){
-    if(
-        type === "maintenance" ||
-        type === "maintenance_prod"
-    ){
-        return "maintenance";
-    }
-
-    if(
-        type === "setup_active" ||
-        type === "setup_start"
-    ){
-        return "setup";
-    }
-
-    if(type === "adjustment"){
-        return "adjustment";
-    }
-
-    return "";
-}
-
-function categoryLabel(category){
-    if(category === "maintenance"){
-        return "MANUTENÇÃO";
-    }
-
-    if(category === "setup"){
-        return "SETUP";
-    }
-
-    if(category === "adjustment"){
-        return "AJUSTE";
-    }
-
-    return category;
-}
-
-function completionQuestion(category){
-    if(category === "maintenance"){
-        return "A MANUTENÇÃO FOI CONCLUÍDA?";
-    }
-
-    if(category === "setup"){
-        return "O SETUP FOI CONCLUÍDO?";
-    }
-
-    if(category === "adjustment"){
-        return "O AJUSTE FOI CONCLUÍDO?";
-    }
-
-    return "A ATIVIDADE FOI CONCLUÍDA?";
-}
-
-function categoriesOfTnl(tnl){
-    return [...new Set(
-        recordsOfTnl(tnl)
-            .map(record=>
-                categoryOfType(record.type)
+      // Parser do relatório bruto colado no campo inicial.
+      function detectSection(line) {
+        const h = normalizeHeader(line);
+        if (h === "MAQUINAS EM MANUTENCAO PARADA")
+          return { type: "maintenance" };
+        if (h === "MAQUINAS EM MANUTENCAO PRODUZINDO")
+          return { type: "maintenance_prod" };
+        if (h === "MAQUINAS EM SETUP" || h === "SETUP")
+          return { type: "setup_active" };
+        if (h === "PROXIMOS SETUPS") return { type: "setup_start" };
+        const f = h.match(/^SETUPS?\s*([123])\s*T(?:URNO)?$/);
+        if (f) return { type: "future", heading: `SETUPS ${f[1]}°T` };
+        if (h === "MAQUINAS EM AJUSTES" || h === "MAQUINAS EM AJUSTE")
+          return { type: "adjustment" };
+        if (
+          [
+            "ORDENS PARA SELECAO",
+            "BOM TRABALHO",
+            "SITUACAO DO SETOR",
+            "OBSERVACOES",
+            "DESENVOLVIMENTO",
+            "BANCADA CHECK POINT",
+            "CQ FECHAMENTO",
+            "CQ REINSPECAO",
+            "AJUSTES CONCLUIDOS",
+            "SETUPS CONCLUIDOS",
+            "MANUTENCOES CONCLUIDAS",
+            "RESTANTE OK",
+          ].includes(h)
+        )
+          return { type: "ignore" };
+        return null;
+      }
+      function importReport() {
+        const raw = el("rawInput").value;
+        state = blank();
+        state.raw = raw;
+        let section = "ignore",
+          futureHeading = nextTurnHeading();
+        raw.split("\n").forEach((rawLine) => {
+          const line = String(rawLine || "").trim();
+          if (!line) return;
+          const detected = detectSection(line);
+          if (detected) {
+            section = detected.type;
+            if (detected.heading) futureHeading = detected.heading;
+            return;
+          }
+          const tnl = extractTnl(line);
+          if (!tnl) {
+            if (
+              [
+                "maintenance",
+                "maintenance_prod",
+                "setup_active",
+                "setup_start",
+                "adjustment",
+                "future",
+              ].includes(section) &&
+              !isNA(line)
             )
-            .filter(Boolean)
-    )];
-}
-
-function completionKey(category){
-    if(category === "maintenance"){
-        return "maintenances";
-    }
-
-    if(category === "setup"){
-        return "setups";
-    }
-
-    if(category === "adjustment"){
-        return "adjustments";
-    }
-
-    return "";
-}
-
-function addCompletedByCategory(tnl,category){
-    const key = completionKey(category);
-
-    if(!key){
-        return;
-    }
-
-    state.completed[key].push(Number(tnl));
-
-    state.completed[key] =
-        uniqueNumbers(state.completed[key]);
-}
-
-function hasMaintenanceActive(tnl){
-    return recordsOfTnl(tnl)
-        .some(record=>
-            categoryOfType(record.type) === "maintenance"
-        );
-}
-
-function hasSetupActive(tnl){
-    return recordsOfTnl(tnl)
-        .some(record=>
-            categoryOfType(record.type) === "setup"
-        );
-}
-
-/* =========================================================
-   FORMATADORES
-========================================================= */
-
-function maintenanceText(tnl,reason){
-    return `TNL ${padTnl(tnl)} - ${reason || "MANUTENÇÃO PARADA"}`;
-}
-
-function maintenanceProdText(tnl,reason){
-    return `TNL ${padTnl(tnl)} - ${reason || "MANUTENÇÃO PRODUZINDO"}`;
-}
-
-function setupText(tnl,emoji="🔴"){
-    return `${emoji || "🔴"} TNL ${padTnl(tnl)} - EM SETUP`;
-}
-
-function setupStartText(tnl,emoji="🔴"){
-    return `${emoji || "🔴"} TNL ${padTnl(tnl)} - INICIAR SETUP`;
-}
-
-function setupAfterMaintenanceText(tnl,emoji="🔴"){
-    return `${emoji || "🔴"} TNL ${padTnl(tnl)} - APÓS MANUTENÇÃO`;
-}
-
-function adjustmentText(tnl,reason=""){
-    return `TNL ${padTnl(tnl)} - ${reason || "EM AJUSTE"}`;
-}
-
-/* =========================================================
-   DETECÇÃO DE SEÇÕES
-========================================================= */
-
-function detectSection(line){
-    const header = normalizeHeader(line);
-
-    if(header === "MAQUINAS EM MANUTENCAO PARADA"){
-        return {
-            type:"maintenance"
-        };
-    }
-
-    if(header === "MAQUINAS EM MANUTENCAO PRODUZINDO"){
-        return {
-            type:"maintenance_prod"
-        };
-    }
-
-    if(
-        header === "MAQUINAS EM SETUP" ||
-        header === "SETUP"
-    ){
-        return {
-            type:"setup_active"
-        };
-    }
-
-    if(header === "PROXIMOS SETUPS"){
-        return {
-            type:"setup_start"
-        };
-    }
-
-    const futureMatch = header.match(
-        /^SETUPS?\s*([123])\s*T(?:URNO)?$/
-    );
-
-    if(futureMatch){
-        return {
-            type:"future_setup",
-            heading:`SETUPS ${futureMatch[1]}°T`
-        };
-    }
-
-    if(
-        header === "MAQUINAS EM AJUSTES" ||
-        header === "MAQUINAS EM AJUSTE"
-    ){
-        return {
-            type:"adjustment"
-        };
-    }
-
-    if(
-        header === "ORDENS PARA SELECAO" ||
-        header === "BOM TRABALHO" ||
-        header === "OBSERVACOES" ||
-        header === "DESENVOLVIMENTO" ||
-        header === "SITUACAO DO SETOR"
-    ){
-        return {
-            type:"ignore"
-        };
-    }
-
-    return null;
-}
-
-/* =========================================================
-   IMPORTAÇÃO
-========================================================= */
-
-function importReport(){
-    const raw = el("rawInput").value;
-
-    state = createBlankState();
-
-    state.raw = raw;
-
-    let currentSection = "ignore";
-
-    let currentFutureHeading = "";
-
-    const lines = raw.split("\n");
-
-    for(const rawLine of lines){
-        const line = String(rawLine || "").trim();
-
-        if(!line){
-            continue;
-        }
-
-        const section = detectSection(line);
-
-        if(section){
-            currentSection = section.type;
-
-            if(section.type === "future_setup"){
-                currentFutureHeading = section.heading;
-
-                if(!state.futureBlocks[currentFutureHeading]){
-                    state.futureBlocks[currentFutureHeading] = [];
-                }
+              state.reviewLines.push(
+                `${SECTION_LABELS[section] || section}: ${line}`,
+              );
+            return;
+          }
+          const concluded = line.includes("✅"),
+            emoji = extractEmoji(line),
+            reason = extractReason(line);
+          if (section === "maintenance" || section === "maintenance_prod") {
+            if (reason)
+              state.reasons.maintenance[String(tnl)] = uniqueStrings([
+                ...savedMaintenanceReasons(tnl),
+                reason,
+              ]);
+            if (concluded) {
+              addCompleted(tnl, "maintenance");
+              return;
             }
-
-            continue;
-        }
-
-        const tnl = extractTnl(line);
-
-        if(!tnl){
-            continue;
-        }
-
-        const concluded = line.includes("✅");
-
-        const emoji = extractEmoji(line);
-
-        const reason = extractReasonAfterTnl(line);
-
-        if(currentSection === "maintenance"){
-            const text = maintenanceText(tnl,reason);
-
-            if(!state.originalMaintenance[String(tnl)]){
-                state.originalMaintenance[String(tnl)] = [];
-            }
-
-            state.originalMaintenance[String(tnl)].push(text);
-
-            state.originalMaintenance[String(tnl)] =
-                uniqueStrings(
-                    state.originalMaintenance[String(tnl)]
-                );
-
-            if(concluded){
-                state.completed.maintenances.push(tnl);
-
-                continue;
-            }
-
             addRecord(
-                createRecord({
-                    tnl,
-                    type:"maintenance",
-                    text
-                })
-            );
-
-            continue;
-        }
-
-        if(currentSection === "maintenance_prod"){
-            if(concluded){
-                state.completed.maintenances.push(tnl);
-
-                continue;
-            }
-
-            addRecord(
-                createRecord({
-                    tnl,
-                    type:"maintenance_prod",
-                    text:maintenanceProdText(tnl,reason)
-                })
-            );
-
-            continue;
-        }
-
-        if(currentSection === "setup_active"){
-            if(concluded){
-                state.completed.setups.push(tnl);
-
-                continue;
-            }
-
-            addRecord(
-                createRecord({
-                    tnl,
-                    type:"setup_active",
-                    text:setupText(tnl,emoji),
-                    emoji
-                })
-            );
-
-            continue;
-        }
-
-        if(currentSection === "setup_start"){
-            if(concluded){
-                state.completed.setups.push(tnl);
-
-                continue;
-            }
-
-            addRecord(
-                createRecord({
-                    tnl,
-                    type:"setup_start",
-                    text:setupStartText(tnl,emoji),
-                    emoji
-                })
-            );
-
-            continue;
-        }
-
-        if(currentSection === "future_setup"){
-            if(concluded){
-                continue;
-            }
-
-            if(!state.futureBlocks[currentFutureHeading]){
-                state.futureBlocks[currentFutureHeading] = [];
-            }
-
-            state.futureBlocks[currentFutureHeading].push({
-                id:state.nextFutureId++,
-                heading:currentFutureHeading,
+              createRecord({
                 tnl,
+                type: section,
+                displayText:
+                  section === "maintenance"
+                    ? maintenanceText(tnl, reason)
+                    : maintenanceProducingText(tnl, reason),
+                rawText: line,
+                sourceSection: section,
                 emoji,
-                text:normalizeTnlInLine(line),
-                reviewed:false
-            });
-
-            continue;
-        }
-
-        if(currentSection === "adjustment"){
-            if(concluded){
-                state.completed.adjustments.push(tnl);
-
-                continue;
+              }),
+            );
+            return;
+          }
+          if (section === "setup_active" || section === "setup_start") {
+            if (concluded) {
+              addCompleted(tnl, "setup");
+              return;
             }
-
             addRecord(
-                createRecord({
-                    tnl,
-                    type:"adjustment",
-                    text:adjustmentText(tnl)
-                })
+              createRecord({
+                tnl,
+                type: section,
+                displayText:
+                  section === "setup_active"
+                    ? setupActiveText(tnl, emoji)
+                    : setupStartText(tnl, emoji),
+                rawText: line,
+                sourceSection: section,
+                emoji,
+              }),
             );
-        }
-    }
-
-    state.completed.adjustments =
-        uniqueNumbers(state.completed.adjustments);
-
-    state.completed.setups =
-        uniqueNumbers(state.completed.setups);
-
-    state.completed.maintenances =
-        uniqueNumbers(state.completed.maintenances);
-
-    Object.keys(state.futureBlocks).forEach(heading=>{
-        state.futureBlocks[heading] =
-            state.futureBlocks[heading]
-                .sort((a,b)=>
-                    Number(a.tnl) - Number(b.tnl)
-                )
-                .filter((item,index,array)=>{
-                    const signature =
-                        `${item.tnl}|${item.text}`;
-
-                    return array.findIndex(other=>
-                        `${other.tnl}|${other.text}` === signature
-                    ) === index;
-                });
-    });
-
-    state.records =
-        sortRecords(state.records);
-
-    updateEverything();
-
-    saveSession();
-
-    toast("Relatório importado");
-}
-
-/* =========================================================
-   CONFLITOS
-========================================================= */
-
-function isConflict(tnl){
-    return categoriesOfTnl(tnl).length > 1;
-}
-
-function unresolvedConflictTnls(){
-    const tnls =
-        uniqueNumbers(
-            activeRecords()
-                .map(record=>
-                    record.tnl
-                )
-        );
-
-    return tnls.filter(tnl=>
-        isConflict(tnl) &&
-        !state.resolvedConflicts[String(tnl)]
-    );
-}
-
-/* =========================================================
-   TRANSIÇÕES EM CAMADAS
-========================================================= */
-
-function startTransition({
-    tnl,
-    targetCategory,
-    applyTarget
-}){
-    const otherCategories =
-        categoriesOfTnl(tnl)
-            .filter(category=>
-                category !== targetCategory
+            return;
+          }
+          if (section === "adjustment") {
+            if (concluded) {
+              addCompleted(tnl, "adjustment");
+              return;
+            }
+            addRecord(
+              createRecord({
+                tnl,
+                type: "adjustment",
+                displayText: adjustmentText(tnl, ""),
+                rawText: line,
+                sourceSection: "adjustment",
+                emoji,
+              }),
             );
+            return;
+          }
+          if (section === "future") {
+            if (concluded) {
+              addCompleted(tnl, "setup");
+              return;
+            }
+            addFutureItem({
+              heading: futureHeading,
+              tnl,
+              emoji,
+              displayText: normalizeTnlLine(line),
+              rawText: line,
+              sourceSection: "future",
+              reviewed: false,
+            });
+          }
+        });
+        state.records = sortByTnl(state.records);
+        updateEverything();
+        saveSession();
+        toast("Relatório importado");
+      }
 
-    if(!otherCategories.length){
-        applyTarget();
-
-        finalizeDecision(tnl);
-
-        return;
-    }
-
-    pendingTransition = {
-        tnl:Number(tnl),
+      // Fluxo de decisão para quando uma TNL muda de status ou tem conflito.
+      function startTransition({
+        tnl,
         targetCategory,
         applyTarget,
-        otherCategories,
-        currentIndex:0,
-        decisions:{}
-    };
-
-    askCurrentCategoryConclusion();
-}
-
-function askCurrentCategoryConclusion(){
-    if(!pendingTransition){
-        return;
-    }
-
-    const {
-        tnl,
-        otherCategories,
-        currentIndex
-    } = pendingTransition;
-
-    if(currentIndex >= otherCategories.length){
-        finalizeTransition();
-
-        return;
-    }
-
-    const category =
-        otherCategories[currentIndex];
-
-    el("transitionTitle").textContent =
-        `TNL ${padTnl(tnl)} - ${categoryLabel(category)}`;
-
-    el("transitionSubtitle").textContent =
-        completionQuestion(category);
-
-    el("transitionOptions").innerHTML = `
-        <button
-            class="transition-btn yes"
-            onclick="answerConclusion('yes')"
-        >
-            SIM
-        </button>
-
-        <button
-            class="transition-btn no"
-            onclick="answerConclusion('no')"
-        >
-            NÃO
-        </button>
-    `;
-
-    el("transitionModal")
-        .classList
-        .add("show");
-}
-
-function answerConclusion(answer){
-    if(!pendingTransition){
-        return;
-    }
-
-    const {
-        otherCategories,
-        currentIndex
-    } = pendingTransition;
-
-    const category =
-        otherCategories[currentIndex];
-
-    if(answer === "yes"){
-        pendingTransition.decisions[category] =
-            "complete";
-
-        goToNextTransitionCategory();
-
-        return;
-    }
-
-    showResidualOptions(category);
-}
-
-function showResidualOptions(category){
-    if(!pendingTransition){
-        return;
-    }
-
-    const targetCategory =
-        pendingTransition.targetCategory;
-
-    el("transitionSubtitle").textContent =
-        `O que deseja fazer com ${categoryLabel(category)}?`;
-
-    if(
-        category === "setup" &&
-        targetCategory === "maintenance"
-    ){
-        el("transitionOptions").innerHTML = `
-            <button
-                class="transition-btn special"
-                onclick="answerResidual('setup_after_maintenance')"
-            >
-                SETUP APÓS MANUTENÇÃO
-            </button>
-
-            <button
-                class="transition-btn remove"
-                onclick="answerResidual('remove')"
-            >
-                REMOVER DE SETUP
-            </button>
-        `;
-
-        return;
-    }
-
-    el("transitionOptions").innerHTML = `
-        <button
-            class="transition-btn keep"
-            onclick="answerResidual('keep')"
-        >
-            MANTER EM ${categoryLabel(category)}
-        </button>
-
-        <button
-            class="transition-btn remove"
-            onclick="answerResidual('remove')"
-        >
-            REMOVER DE ${categoryLabel(category)}
-        </button>
-    `;
-}
-
-function answerResidual(decision){
-    if(!pendingTransition){
-        return;
-    }
-
-    const {
-        otherCategories,
-        currentIndex
-    } = pendingTransition;
-
-    const category =
-        otherCategories[currentIndex];
-
-    pendingTransition.decisions[category] =
-        decision;
-
-    goToNextTransitionCategory();
-}
-
-function goToNextTransitionCategory(){
-    if(!pendingTransition){
-        return;
-    }
-
-    pendingTransition.currentIndex += 1;
-
-    askCurrentCategoryConclusion();
-}
-
-function finalizeTransition(){
-    if(!pendingTransition){
-        return;
-    }
-
-    const {
-        tnl,
-        applyTarget,
-        decisions
-    } = pendingTransition;
-
-    Object.entries(decisions)
-        .forEach(([category,decision])=>{
-            if(decision === "complete"){
-                addCompletedByCategory(
-                    tnl,
-                    category
-                );
-
-                removeCategoryRecords(
-                    tnl,
-                    category
-                );
-
-                return;
-            }
-
-            if(decision === "remove"){
-                removeCategoryRecords(
-                    tnl,
-                    category
-                );
-            }
-        });
-
-    applyTarget();
-
-    const mustConvertSetup =
-        Object.values(decisions)
-            .includes("setup_after_maintenance") ||
-        (
-            hasMaintenanceActive(tnl) &&
-            hasSetupActive(tnl)
-        );
-
-    if(mustConvertSetup){
-        convertSetupToAfterMaintenance(tnl);
-    }
-
-    pendingTransition = null;
-
-    closeTransitionModal();
-
-    finalizeDecision(tnl);
-}
-
-function closeTransitionModal(){
-    el("transitionModal")
-        .classList
-        .remove("show");
-
-    el("transitionOptions")
-        .innerHTML = "";
-
-    pendingTransition = null;
-}
-
-function finalizeDecision(tnl){
-    state.resolvedConflicts[String(tnl)] =
-        true;
-
-    markReviewed(tnl);
-
-    updateEverything();
-
-    saveSession();
-}
-
-/* =========================================================
-   ALTERAÇÃO DE REGISTROS ATIVOS
-========================================================= */
-
-function convertSetupToAfterMaintenance(tnl){
-    const setupRecords =
-        recordsOfTnl(tnl)
-            .filter(record=>
-                categoryOfType(record.type) === "setup"
+        label,
+        before,
+      }) {
+        const other = categoriesOfTnl(tnl).filter((c) => c !== targetCategory);
+        if (!other.length) {
+          applyTarget();
+          commitDecision(tnl, before, label);
+          return;
+        }
+        pendingTransition = {
+          tnl: Number(tnl),
+          targetCategory,
+          applyTarget,
+          label,
+          before,
+          other,
+          index: 0,
+          decisions: {},
+        };
+        askConclusion();
+      }
+      function askConclusion() {
+        if (!pendingTransition) return;
+        const { tnl, other, index } = pendingTransition;
+        if (index >= other.length) {
+          finalizeTransition();
+          return;
+        }
+        const c = other[index];
+        const q =
+          c === "setup"
+            ? "O SETUP FOI CONCLUÍDO?"
+            : c === "maintenance"
+              ? "A MANUTENÇÃO FOI CONCLUÍDA?"
+              : c === "adjustment"
+                ? "O AJUSTE FOI CONCLUÍDO?"
+                : "A ATIVIDADE FOI CONCLUÍDA?";
+        el("transitionTitle").textContent =
+          `TNL ${pad(tnl)} — ${categoryLabel(c)}`;
+        el("transitionSubtitle").textContent = q;
+        el("transitionOptions").innerHTML =
+          `<button class="modal-btn yes" onclick="answerConclusion(true)">SIM</button><button class="modal-btn no" onclick="answerConclusion(false)">NÃO</button>`;
+        el("transitionModal").classList.add("show");
+      }
+      function answerConclusion(done) {
+        if (!pendingTransition) return;
+        const c = pendingTransition.other[pendingTransition.index];
+        if (done) {
+          pendingTransition.decisions[c] = "complete";
+          nextTransitionStep();
+          return;
+        }
+        showResidualOptions(c);
+      }
+      function showResidualOptions(c) {
+        if (!pendingTransition) return;
+        const target = pendingTransition.targetCategory;
+        el("transitionSubtitle").textContent =
+          `O que deseja fazer com ${categoryLabel(c)}?`;
+        if (c === "setup" && target === "maintenance") {
+          el("transitionOptions").innerHTML =
+            `<button class="modal-btn special" onclick="answerResidual('future_after')">SETUP ${currentNextTurn()}°T APÓS MANUTENÇÃO</button><button class="modal-btn keep" onclick="answerResidual('future_only')">MANTER APENAS COMO SETUP ${currentNextTurn()}°T</button><button class="modal-btn remove" onclick="answerResidual('remove')">REMOVER DE SETUP</button>`;
+          return;
+        }
+        if (c === "maintenance" && target === "setup") {
+          el("transitionOptions").innerHTML =
+            `<button class="modal-btn special" onclick="answerResidual('maintenance_future_after')">MANTER MANUTENÇÃO + SETUP ${currentNextTurn()}°T APÓS MANUTENÇÃO</button><button class="modal-btn keep" onclick="answerResidual('maintenance_future_only')">MANTER MANUTENÇÃO + SETUP ${currentNextTurn()}°T</button><button class="modal-btn remove" onclick="answerResidual('remove')">REMOVER DE MANUTENÇÃO</button>`;
+          return;
+        }
+        el("transitionOptions").innerHTML =
+          `<button class="modal-btn keep" onclick="answerResidual('keep')">MANTER EM ${categoryLabel(c)}</button><button class="modal-btn remove" onclick="answerResidual('remove')">REMOVER DE ${categoryLabel(c)}</button>`;
+      }
+      function answerResidual(decision) {
+        if (!pendingTransition) return;
+        const c = pendingTransition.other[pendingTransition.index];
+        pendingTransition.decisions[c] = decision;
+        nextTransitionStep();
+      }
+      function nextTransitionStep() {
+        pendingTransition.index += 1;
+        askConclusion();
+      }
+      function finalizeTransition() {
+        if (!pendingTransition) return;
+        const t = pendingTransition;
+        let convertTarget = "";
+        Object.entries(t.decisions).forEach(([c, d]) => {
+          if (d === "complete") {
+            addCompleted(t.tnl, c);
+            removeCategory(t.tnl, c);
+            return;
+          }
+          if (d === "remove") {
+            removeCategory(t.tnl, c);
+            return;
+          }
+          if (d === "future_after") {
+            const s = recordsOfTnl(t.tnl).find(
+              (r) => categoryOfType(r.type) === "setup",
             );
+            moveSetupToFutureAfterMaintenance(t.tnl, s?.emoji || "🔴");
+            return;
+          }
+          if (d === "future_only") {
+            const s = recordsOfTnl(t.tnl).find(
+              (r) => categoryOfType(r.type) === "setup",
+            );
+            moveSetupToFutureOnly(t.tnl, s?.emoji || "🔴");
+            return;
+          }
+          if (d === "maintenance_future_after") convertTarget = "after";
+          if (d === "maintenance_future_only") convertTarget = "only";
+        });
+        t.applyTarget();
+        if (convertTarget) {
+          const s = recordsOfTnl(t.tnl).find(
+            (r) => categoryOfType(r.type) === "setup",
+          );
+          convertTarget === "after"
+            ? moveSetupToFutureAfterMaintenance(t.tnl, s?.emoji || "🔴")
+            : moveSetupToFutureOnly(t.tnl, s?.emoji || "🔴");
+        }
+        closeTransitionModal();
+        commitDecision(t.tnl, t.before, t.label);
+      }
 
-    const emoji =
-        setupRecords[0]?.emoji ||
-        "🔴";
-
-    removeCategoryRecords(
-        tnl,
-        "setup"
-    );
-
-    addRecord(
-        createRecord({
-            tnl,
-            type:"setup_active",
-            text:setupAfterMaintenanceText(
+      // Ações chamadas pelos botões dos cards e pelos modais.
+      function closeTransitionModal() {
+        pendingTransition = null;
+        el("transitionOptions").innerHTML = "";
+        el("transitionModal").classList.remove("show");
+      }
+      function setupEmoji(tnl) {
+        const current = recordsOfTnl(tnl).find(
+          (r) => categoryOfType(r.type) === "setup",
+        );
+        return current?.emoji || "🔴";
+      }
+      function openSetupChoice(tnl) {
+        el("transitionTitle").textContent = `TNL ${pad(tnl)} — SETUP`;
+        el("transitionSubtitle").textContent =
+          "Como essa TNL vai passar para o próximo turno?";
+        el("transitionOptions").innerHTML =
+          `<button class="modal-btn yes" onclick="chooseSetupFromModal(${tnl},'active')">EM SETUP</button>` +
+          `<button class="modal-btn keep" onclick="chooseSetupFromModal(${tnl},'start')">INICIAR SETUP</button>` +
+          `<button class="modal-btn special" onclick="setupFutureOnly(${tnl})">SETUP ${currentNextTurn()}°T</button>` +
+          `<button class="modal-btn remove" onclick="setupAfterMaintenance(${tnl})">APÓS MANUTENÇÃO</button>`;
+        el("transitionModal").classList.add("show");
+      }
+      function chooseSetupFromModal(tnl, mode) {
+        closeTransitionModal();
+        chooseSetup(tnl, mode);
+      }
+      function setupFutureOnly(tnl) {
+        const before = snapshotMachine(tnl);
+        moveSetupToFutureOnly(tnl, setupEmoji(tnl));
+        closeTransitionModal();
+        commitDecision(tnl, before, `SETUP ${currentNextTurn()}°T`);
+      }
+      function setupAfterMaintenance(tnl) {
+        const before = snapshotMachine(tnl);
+        moveSetupToFutureAfterMaintenance(tnl, setupEmoji(tnl));
+        closeTransitionModal();
+        commitDecision(tnl, before, "APÓS MANUTENÇÃO");
+      }
+      function chooseSetup(tnl, mode) {
+        const before = snapshotMachine(tnl),
+          emoji = setupEmoji(tnl);
+        startTransition({
+          tnl,
+          targetCategory: "setup",
+          applyTarget: () => setSetup(tnl, mode, emoji),
+          label: mode === "start" ? "INICIAR SETUP" : "VAI PASSAR EM SETUP",
+          before,
+        });
+      }
+      function chooseAdjustment(tnl) {
+        const reason = state.reasons.adjustment[String(tnl)] || "";
+        reason
+          ? applyAdjustment(tnl, reason)
+          : openReasonModal({
+              tnl,
+              action: "adjustment",
+              title: `Motivo do ajuste — TNL ${pad(tnl)}`,
+              subtitle: "Informe o motivo do ajuste.",
+            });
+      }
+      function applyAdjustment(tnl, reason) {
+        const before = snapshotMachine(tnl);
+        startTransition({
+          tnl,
+          targetCategory: "adjustment",
+          applyTarget: () => setAdjustment(tnl, reason),
+          label: `VAI PASSAR EM AJUSTE — ${reason}`,
+          before,
+        });
+      }
+      function chooseMaintenance(tnl) {
+        const reasons = savedMaintenanceReasons(tnl);
+        reasons.length
+          ? applyMaintenance(tnl, reasons, false)
+          : openReasonModal({
+              tnl,
+              action: "maintenance",
+              title: `Motivo da manutenção — TNL ${pad(tnl)}`,
+              subtitle: "Informe o motivo da manutenção.",
+            });
+      }
+      function applyMaintenance(tnl, reasons, producing) {
+        const list = normalizeReasonList(reasons),
+          before = snapshotMachine(tnl),
+          summary = list.join(" + ") || "SEM MOTIVO INFORMADO";
+        startTransition({
+          tnl,
+          targetCategory: "maintenance",
+          applyTarget: () => setMaintenance(tnl, list, producing),
+          label: producing
+            ? `MANUTENÇÃO PRODUZINDO — ${summary}`
+            : `VAI PASSAR EM MANUTENÇÃO — ${summary}`,
+          before,
+        });
+      }
+      function releaseMachine(tnl) {
+        const before = snapshotMachine(tnl);
+        categoriesOfTnl(tnl).forEach((c) => addCompleted(tnl, c));
+        removeAllActiveRecords(tnl);
+        commitDecision(tnl, before, "LIBERADA");
+      }
+      function keepFutureSetup(id) {
+        const item = findFutureItem(id);
+        if (!item) return;
+        const before = snapshotMachine(item.tnl);
+        item.reviewed = true;
+        commitDecision(
+          item.tnl,
+          before,
+          `MANTER ${item.heading.replace("SETUPS ", "")}`,
+        );
+      }
+      function removeFutureSetup(id) {
+        const item = findFutureItem(id);
+        if (!item) return;
+        const before = snapshotMachine(item.tnl);
+        removeFutureItem(id);
+        commitDecision(item.tnl, before, "SETUP FUTURO REMOVIDO");
+      }
+      function removeMachineFromReport(tnl) {
+        const before = snapshotMachine(tnl);
+        removeAllActiveRecords(tnl);
+        removeFutureItemsByTnl(tnl);
+        ["maintenance", "setup", "adjustment"].forEach((c) =>
+          removeCompleted(tnl, c),
+        );
+        delete state.reasons.adjustment[String(tnl)];
+        delete state.reasons.maintenance[String(tnl)];
+        commitDecision(tnl, before, "REMOVIDA DO RELATÓRIO");
+      }
+      function openFutureSetupChoice(id) {
+        const item = findFutureItem(id);
+        if (!item) return;
+        el("transitionTitle").textContent = `TNL ${pad(item.tnl)} — SETUP`;
+        el("transitionSubtitle").textContent =
+          "O setup futuro iniciou ou mudou de condição?";
+        el("transitionOptions").innerHTML =
+          `<button class="modal-btn yes" onclick="chooseFutureSetupFromModal(${id},'active')">EM SETUP</button>` +
+          `<button class="modal-btn keep" onclick="chooseFutureSetupFromModal(${id},'start')">INICIAR SETUP</button>` +
+          `<button class="modal-btn special" onclick="futureAfterMaintenance(${id})">APÓS MANUTENÇÃO</button>`;
+        el("transitionModal").classList.add("show");
+      }
+      function chooseFutureSetupFromModal(id, mode) {
+        closeTransitionModal();
+        futureToSetup(id, mode);
+      }
+      function futureAfterMaintenance(id) {
+        const item = findFutureItem(id);
+        if (!item) return;
+        const before = snapshotMachine(item.tnl);
+        removeFutureItem(id);
+        addFutureItem({
+          heading: item.heading,
+          tnl: item.tnl,
+          emoji: item.emoji,
+          displayText: futureAfterMaintenanceText(item.tnl, item.emoji),
+          rawText: futureAfterMaintenanceText(item.tnl, item.emoji),
+          sourceSection: "decision_future_after",
+          reviewed: true,
+        });
+        closeTransitionModal();
+        commitDecision(item.tnl, before, "APÓS MANUTENÇÃO");
+      }
+      function futureToSetup(id, mode) {
+        const item = findFutureItem(id);
+        if (!item) return;
+        const before = snapshotMachine(item.tnl);
+        startTransition({
+          tnl: item.tnl,
+          targetCategory: "setup",
+          applyTarget: () => {
+            removeFutureItem(id);
+            setSetup(item.tnl, mode, item.emoji);
+          },
+          label: mode === "start" ? "INICIAR SETUP" : "VAI PASSAR EM SETUP",
+          before,
+        });
+      }
+      function openReasonModal({ tnl, action, title, subtitle }) {
+        pendingReason = { tnl: Number(tnl), action };
+        el("reasonTitle").textContent = title;
+        el("reasonSubtitle").textContent = subtitle;
+        el("reasonInput").value = "";
+        el("reasonModal").classList.add("show");
+        setTimeout(() => el("reasonInput").focus(), 80);
+      }
+      function closeReasonModal() {
+        pendingReason = null;
+        el("reasonInput").value = "";
+        el("reasonModal").classList.remove("show");
+      }
+      function saveReason() {
+        if (!pendingReason) return;
+        const reason = el("reasonInput").value.trim();
+        if (!reason) {
+          toast("Digite o motivo");
+          return;
+        }
+        const { tnl, action } = pendingReason;
+        closeReasonModal();
+        action === "adjustment"
+          ? applyAdjustment(tnl, reason)
+          : applyMaintenance(tnl, [reason], action === "maintenance_prod");
+      }
+      function refreshMachineSelect() {}
+      function openAddModal() {
+        el("addMachine").value = "";
+        el("addReason").value = "";
+        el("addModal").classList.add("show");
+        setTimeout(() => el("addMachine").focus(), 80);
+      }
+      function closeAddModal() {
+        el("addModal").classList.remove("show");
+      }
+      function saveManualMachine() {
+        const tnl = Number(String(el("addMachine").value).replace(/\D/g, "")),
+          status = el("addStatus").value,
+          reason = el("addReason").value.trim();
+        if (!Number.isInteger(tnl) || tnl < 1 || tnl > 999) {
+          toast("Informe uma TNL válida");
+          return;
+        }
+        closeAddModal();
+        if (status === "adjustment") {
+          reason ? applyAdjustment(tnl, reason) : chooseAdjustment(tnl);
+          return;
+        }
+        if (status === "maintenance" || status === "maintenance_prod") {
+          reason
+            ? applyMaintenance(tnl, [reason], status === "maintenance_prod")
+            : openReasonModal({
                 tnl,
-                emoji
+                action: status,
+                title: `Motivo da manutenção — TNL ${pad(tnl)}`,
+                subtitle: "Informe o motivo da manutenção.",
+              });
+          return;
+        }
+        if (status === "setup_future") {
+          const before = snapshotMachine(tnl);
+          addFutureItem({
+            heading: nextTurnHeading(),
+            tnl,
+            displayText: futureSetupText(tnl),
+            rawText: futureSetupText(tnl),
+            sourceSection: "manual_future",
+            reviewed: true,
+          });
+          commitDecision(tnl, before, `SETUP ${currentNextTurn()}°T`);
+          return;
+        }
+        chooseSetup(tnl, status === "setup_start" ? "start" : "active");
+      }
+      function unresolvedConflicts() {
+        return uniqueNumbers(activeRecords().map((r) => r.tnl)).filter(
+          (tnl) => hasConflict(tnl) && !state.resolvedConflicts[String(tnl)],
+        );
+      }
+      function sourceLabel(section) {
+        return SECTION_LABELS[section] || "INFORMAÇÃO DO GRUPO";
+      }
+      function sourceBlocks(records) {
+        const groups = new Map();
+        records.forEach((r) => {
+          const key = r.sourceSection || r.type;
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(r);
+        });
+        return [...groups.entries()]
+          .map(
+            ([section, items]) =>
+              `<div class="source-block"><div class="source-name">${esc(sourceLabel(section))}</div>${items.map((item) => `<div class="source-line">${esc(item.rawText || item.displayText)}</div>`).join("")}</div>`,
+          )
+          .join("");
+      }
+      function maintenanceReasons(records) {
+        return uniqueStrings(
+          records
+            .filter((r) => categoryOfType(r.type) === "maintenance")
+            .map(
+              (r) => extractReason(r.rawText) || extractReason(r.displayText),
+            )
+            .filter(Boolean),
+        );
+      }
+      function buildQuestionForActive(group) {
+        const cats = categoriesOfTnl(group.tnl),
+          tnl = pad(group.tnl);
+        if (cats.length > 1) {
+          const names = cats.map(categoryLabel).join(" × ");
+          return `A TNL ${tnl} consta em ${names}. Confirme qual status deve permanecer ativo na passagem.`;
+        }
+        const r = group.records[0];
+        if (!r)
+          return `Confirme como a TNL ${tnl} passará para o próximo turno.`;
+        if (r.type === "maintenance") {
+          const reasons = maintenanceReasons(group.records);
+          if (reasons.length > 1)
+            return `A TNL ${tnl} continua parada em manutenção pelas ocorrências registradas: ${reasons.map((x) => `“${x}”`).join(" e ")} ou houve atualização?`;
+          return reasons.length
+            ? `A TNL ${tnl} continua parada em manutenção por “${reasons[0]}” ou foi liberada?`
+            : `A TNL ${tnl} continua parada em manutenção ou foi liberada?`;
+        }
+        if (r.type === "maintenance_prod") {
+          const reasons = maintenanceReasons(group.records);
+          return reasons.length
+            ? `A TNL ${tnl} continua produzindo com manutenção aberta por “${reasons[0]}” ou a ocorrência foi encerrada?`
+            : `A TNL ${tnl} continua produzindo com manutenção aberta ou a ocorrência foi encerrada?`;
+        }
+        if (r.type === "setup_active")
+          return `A TNL ${tnl} continua em setup ou o setup foi concluído?`;
+        if (r.type === "setup_start") {
+          const time = extractTime(r.rawText);
+          return time
+            ? `A TNL ${tnl} estava prevista para iniciar o setup às ${time}. Vai iniciar mesmo ou mudou a programação?`
+            : `A TNL ${tnl} estava prevista para iniciar o setup neste turno. Vai iniciar mesmo ou mudou a programação?`;
+        }
+        if (r.type === "adjustment")
+          return `A TNL ${tnl} continua em ajuste ou foi liberada?`;
+        return `Confirme como a TNL ${tnl} passará para o próximo turno.`;
+      }
+      function buildQuestionForFuture(item) {
+        const turn = item.heading.replace("SETUPS ", "");
+        return item.displayText.toLowerCase().includes("após manutenção")
+          ? `A TNL ${pad(item.tnl)} permanece planejada para setup no ${turn} após a liberação da manutenção?`
+          : `A TNL ${pad(item.tnl)} está planejada para setup no ${turn}. Mantém para o ${turn}, vai iniciar agora ou já está em setup?`;
+      }
+      function activeGroupsForCell(cell) {
+        const machines = machinesForCell(cell),
+          groups = new Map();
+        activeRecords()
+          .filter((r) => machines.includes(Number(r.tnl)))
+          .forEach((r) => {
+            if (!groups.has(r.tnl)) groups.set(r.tnl, []);
+            groups.get(r.tnl).push(r);
+          });
+        return [...groups.entries()]
+          .map(([tnl, records]) => ({
+            kind: "active",
+            tnl: Number(tnl),
+            records: sortByTnl(records),
+          }))
+          .filter(
+            (g) =>
+              !state.reviewedTnls[String(g.tnl)] ||
+              (hasConflict(g.tnl) && !state.resolvedConflicts[String(g.tnl)]),
+          );
+      }
+      function futureGroupsForCell(cell) {
+        const machines = machinesForCell(cell);
+        return state.futureItems
+          .filter((x) => machines.includes(Number(x.tnl)) && !x.reviewed)
+          .map((item) => ({ kind: "future", tnl: Number(item.tnl), item }));
+      }
+      function pendingGroupsForCell(cell) {
+        return [
+          ...activeGroupsForCell(cell),
+          ...futureGroupsForCell(cell),
+        ].sort((a, b) => a.tnl - b.tnl || a.kind.localeCompare(b.kind));
+      }
+      function activeGroupsForSelectedCell() {
+        return activeGroupsForCell(el("cellSelect").value);
+      }
+      function futureGroupsForSelectedCell() {
+        return futureGroupsForCell(el("cellSelect").value);
+      }
+      function cellOverviewFor(cell) {
+        const pending = pendingGroupsForCell(cell),
+          conflicts = pending.filter(
+            (g) =>
+              g.kind === "active" &&
+              hasConflict(g.tnl) &&
+              !state.resolvedConflicts[String(g.tnl)],
+          ).length,
+          future = pending.filter((g) => g.kind === "future").length;
+        return { pending: pending.length, conflicts, future };
+      }
+      function renderActiveCard(group) {
+        const conflict =
+            hasConflict(group.tnl) &&
+            !state.resolvedConflicts[String(group.tnl)],
+          first = group.records[0]?.type || "adjustment",
+          badge = conflict
+            ? { text: "CONFLITO", css: "red" }
+            : {
+                text: TYPE_CONFIG[first]?.short || first,
+                css: TYPE_CONFIG[first]?.badge || "amber",
+              };
+        return `<article class="machine-card ${conflict ? "conflict" : ""}"><div class="machine-head"><div class="machine-number">TNL ${pad(group.tnl)}</div><span class="badge ${badge.css}">${esc(badge.text)}</span></div>${conflict ? `<div class="conflict-note">A máquina aparece em mais de um bloco. Confirme como ela passará.</div>` : ""}<div class="source-name">INFORMAÇÃO ORIGINAL DO GRUPO</div>${sourceBlocks(group.records)}<div class="round-question"><div class="round-question-label">PERGUNTA PARA A RONDA</div><div class="round-question-text">${esc(buildQuestionForActive(group))}</div></div><div class="card-actions"><button class="action-btn adjust" onclick="chooseAdjustment(${group.tnl})">VAI PASSAR EM AJUSTE</button><button class="action-btn setup" onclick="openSetupChoice(${group.tnl})">VAI PASSAR EM SETUP</button><button class="action-btn maintenance" onclick="chooseMaintenance(${group.tnl})">VAI PASSAR EM MANUTENÇÃO</button><button class="action-btn release" onclick="releaseMachine(${group.tnl})">LIBERADA</button><button class="action-btn remove" onclick="removeMachineFromReport(${group.tnl})">REMOVER DO RELATÓRIO</button></div></article>`;
+      }
+      function renderFutureCard(group) {
+        const item = group.item;
+        return `<article class="machine-card future"><div class="machine-head"><div class="machine-number">TNL ${pad(item.tnl)}</div><span class="badge blue">${esc(item.heading)}</span></div><div class="source-block"><div class="source-name">INFORMAÇÃO ORIGINAL DO GRUPO — ${esc(item.heading)}</div><div class="source-line">${esc(item.rawText || item.displayText)}</div></div><div class="round-question"><div class="round-question-label">PERGUNTA PARA A RONDA</div><div class="round-question-text">${esc(buildQuestionForFuture(item))}</div></div><div class="card-actions"><button class="future-btn keep" onclick="keepFutureSetup(${item.id})">MANTER PARA ${esc(item.heading.replace("SETUPS ", ""))}</button><button class="future-btn setup" onclick="openFutureSetupChoice(${item.id})">VAI PASSAR EM SETUP</button><button class="future-btn remove" onclick="removeFutureSetup(${item.id})">REMOVER DO RELATÓRIO</button></div></article>`;
+      }
+      function renderParserWarning() {
+        const unmapped = unmappedTnls(),
+          lines = uniqueStrings(state.reviewLines || []),
+          parts = [];
+        if (unmapped.length)
+          parts.push(
+            `TNLs sem célula mapeada: ${unmapped.map(pad).join(", ")}. Use a opção ⚠ SEM CÉLULA para conferir.`,
+          );
+        if (lines.length)
+          parts.push(
+            `Linhas que precisam de leitura manual:<br>${lines.slice(0, 8).map(esc).join("<br>")}${lines.length > 8 ? "<br>..." : ""}`,
+          );
+        el("parserWarning").innerHTML = parts.length
+          ? `<div class="warning"><strong>⚠ REVISAR ANTES DE FINALIZAR</strong>${parts.join("<br><br>")}</div>`
+          : "";
+      }
+      function renderCellOverview() {
+        const selected = el("cellSelect").value;
+        el("cellOverview").innerHTML = visibleCellOrder()
+          .map((cell) => {
+            const info = cellOverviewFor(cell),
+              name = cell === "SEM_MAPA" ? "SEM CÉL." : `C${cell}`,
+              statusClass = info.conflicts
+                ? "conflict"
+                : info.pending
+                  ? "pending"
+                  : allOperationalTnls().length
+                    ? "clear"
+                    : "empty-cell",
+              count = info.conflicts
+                ? `${info.pending} pend. · ${info.conflicts} confl.`
+                : info.pending
+                  ? `${info.pending} pend.`
+                  : "OK";
+            return `<button class="cell-chip ${statusClass} ${cell === selected ? "selected" : ""}" onclick="selectCell('${cell}')"><span class="cell-chip-name">${esc(name)}</span><span class="cell-chip-count">${esc(count)}</span></button>`;
+          })
+          .join("");
+      }
+      function selectCell(cell) {
+        el("cellSelect").value = cell;
+        renderSelectedCell();
+        saveSession();
+      }
+      function renderSelectedCell() {
+        syncUnmappedCellOption();
+        refreshMachineSelect();
+        const cards = [
+            ...activeGroupsForSelectedCell(),
+            ...futureGroupsForSelectedCell(),
+          ].sort((a, b) => a.tnl - b.tnl || a.kind.localeCompare(b.kind)),
+          cell = el("cellSelect").value,
+          machines = machinesForCell(cell),
+          activeTnls = uniqueNumbers(
+            activeRecords()
+              .filter((r) => machines.includes(Number(r.tnl)))
+              .map((r) => r.tnl),
+          ),
+          future = state.futureItems.filter((x) =>
+            machines.includes(Number(x.tnl)),
+          ),
+          total = activeTnls.length + future.length,
+          decided =
+            activeTnls.filter((t) => state.reviewedTnls[String(t)]).length +
+            future.filter((x) => x.reviewed).length,
+          percent = total ? Math.round((decided / total) * 100) : 100;
+        el("progressFill").style.width = `${percent}%`;
+        const cellLabel =
+          cell === "SEM_MAPA" ? "Sem célula mapeada" : `Célula ${cell}`;
+        el("progressLabel").textContent = total
+          ? `${cellLabel}: ${decided}/${total} decisões concluídas`
+          : `${cellLabel}: nenhuma pendência registrada`;
+        el("machineList").innerHTML = cards.length
+          ? cards
+              .map((c) =>
+                c.kind === "active" ? renderActiveCard(c) : renderFutureCard(c),
+              )
+              .join("")
+          : `<div class="empty">Nenhuma pendência aguardando decisão nesta célula.</div>`;
+        renderCellOverview();
+      }
+      function renderConfirmedDecisions() {
+        const decisions = Object.values(state.confirmedDecisions).sort(
+          (a, b) => Number(a.tnl) - Number(b.tnl),
+        );
+        el("confirmedCount").textContent =
+          `— ${String(decisions.length).padStart(2, "0")}`;
+        el("confirmedList").innerHTML = decisions.length
+          ? decisions
+              .map(
+                (d) =>
+                  `<div class="confirmed-item"><div class="confirmed-main"><div class="confirmed-title">TNL ${pad(d.tnl)}</div><div class="confirmed-sub">${esc(d.label)} · ${esc(d.time)}</div></div><button class="edit-btn" onclick="openEditModal(${d.tnl})">REEDITAR</button></div>`,
+              )
+              .join("")
+          : `<div class="empty">Nenhuma decisão confirmada.</div>`;
+      }
+      function formatList(lines) {
+        return lines.length ? uniqueStrings(lines).join("\n") : "N/A";
+      }
+      function formatCompleted(numbers) {
+        const list = uniqueNumbers(numbers).map(pad);
+        return list.length ? `TNL's - ${list.join(" - ")}.` : "N/A";
+      }
+      function renderFutureBlocks() {
+        const headings = [
+          ...new Set(state.futureItems.map((x) => x.heading)),
+        ].sort();
+        if (!headings.length) return `*${nextTurnHeading()}:*\nN/A`;
+        return headings
+          .map(
+            (h) =>
+              `*${h}:*\n${formatList(sortByTnl(state.futureItems.filter((x) => x.heading === h)).map((x) => x.displayText))}`,
+          )
+          .join("\n\n");
+      }
+      function generateReport() {
+        const maint = sortByTnl(
+            activeRecords().filter((r) => r.type === "maintenance"),
+          ).map((r) => r.displayText),
+          prod = sortByTnl(
+            activeRecords().filter((r) => r.type === "maintenance_prod"),
+          ).map((r) => r.displayText),
+          setup = sortByTnl(
+            activeRecords().filter(
+              (r) => r.type === "setup_active" || r.type === "setup_start",
             ),
-            emoji,
-            source:"decision",
-            reviewed:true
-        })
-    );
-}
-
-function setSetupStatus(
-    tnl,
-    mode,
-    emoji="🔴"
-){
-    removeCategoryRecords(
-        tnl,
-        "setup"
-    );
-
-    let text =
-        setupText(
-            tnl,
-            emoji
-        );
-
-    let type =
-        "setup_active";
-
-    if(mode === "start"){
-        text =
-            setupStartText(
-                tnl,
-                emoji
-            );
-
-        type =
-            "setup_start";
-    }
-
-    if(mode === "after_maintenance"){
-        text =
-            setupAfterMaintenanceText(
-                tnl,
-                emoji
-            );
-
-        type =
-            "setup_active";
-    }
-
-    addRecord(
-        createRecord({
-            tnl,
-            type,
-            text,
-            emoji,
-            source:"decision",
-            reviewed:true
-        })
-    );
-}
-
-function setAdjustment(
-    tnl,
-    reason
-){
-    removeCategoryRecords(
-        tnl,
-        "adjustment"
-    );
-
-    addRecord(
-        createRecord({
-            tnl,
-            type:"adjustment",
-            text:adjustmentText(
-                tnl,
-                reason
-            ),
-            source:"decision",
-            reviewed:true
-        })
-    );
-}
-
-function getExistingMaintenanceReason(tnl){
-    const original =
-        state.originalMaintenance[
-            String(tnl)
-        ] || [];
-
-    if(original.length){
-        return original;
-    }
-
-    return recordsOfTnl(tnl)
-        .filter(record=>
-            categoryOfType(record.type) === "maintenance"
-        )
-        .map(record=>
-            record.text
-        );
-}
-
-function setMaintenanceWithLines(
-    tnl,
-    lines,
-    producing=false
-){
-    removeCategoryRecords(
-        tnl,
-        "maintenance"
-    );
-
-    const validLines =
-        uniqueStrings(lines);
-
-    validLines.forEach(line=>{
-        addRecord(
-            createRecord({
-                tnl,
-                type:producing
-                    ? "maintenance_prod"
-                    : "maintenance",
-                text:line,
-                source:"decision",
-                reviewed:true
-            })
-        );
-    });
-}
-
-function setMaintenanceWithReason(
-    tnl,
-    reason,
-    producing=false
-){
-    const text =
-        producing
-            ? maintenanceProdText(
-                tnl,
-                reason
-            )
-            : maintenanceText(
-                tnl,
-                reason
-            );
-
-    state.originalMaintenance[
-        String(tnl)
-    ] = [
-        text
-    ];
-
-    setMaintenanceWithLines(
-        tnl,
-        [
-            text
-        ],
-        producing
-    );
-}
-
-/* =========================================================
-   AÇÕES DOS CARDS ATIVOS
-========================================================= */
-
-function chooseSetup(
-    tnl,
-    mode="active",
-    emojiOverride="",
-    beforeApply=null
-){
-    const existingSetup =
-        recordsOfTnl(tnl)
-            .find(record=>
-                categoryOfType(record.type) === "setup"
-            );
-
-    const emoji =
-        emojiOverride ||
-        existingSetup?.emoji ||
-        "🔴";
-
-    startTransition({
-        tnl,
-        targetCategory:"setup",
-
-        applyTarget:()=>{
-            if(typeof beforeApply === "function"){
-                beforeApply();
-            }
-
-            setSetupStatus(
-                tnl,
-                mode,
-                emoji
-            );
+          ).map((r) => r.displayText),
+          adj = sortByTnl(
+            activeRecords().filter((r) => r.type === "adjustment"),
+          ).map((r) => r.displayText),
+          shift = `${el("currentShift").value}° TURNO`,
+          dev = el("development").value.trim() || "N/A",
+          obs = el("observations").value.trim() || "N/A";
+        el("finalOutput").value =
+          `*${shift}*\n*SITUAÇÃO DO SETOR ⬇️⬇️⬇️*\n\n*BANCADA – CHECK POINT:*\n${el("checkpoint").value || "00"}\n\n*ORDENS PARA SELEÇÃO:*\n\nSeleção 1° turno: ${el("sel1").value || "00"}\nSeleção 2° turno: ${el("sel2").value || "00"}\nSeleção 3° turno: ${el("sel3").value || "00"}\nOs 3 turnos: ${el("selAll").value || "00"}\nSeleção TNC: ${el("selTnc").value || "00"}\n\n*CQ FECHAMENTO:*\n${el("cqFechamento").value || "00"}\n\n*CQ REINSPEÇÃO:*\n${el("cqReinspecao").value || "00"}\n\n*MÁQUINAS EM MANUTENÇÃO PARADA:*\n${formatList(maint)}\n\n*MÁQUINAS EM MANUTENÇÃO PRODUZINDO:*\n${formatList(prod)}\n\n*SETUP:*\n${formatList(setup)}\n\n*MAQUINAS EM AJUSTES:*\n${formatList(adj)}\n\n${renderFutureBlocks()}\n\n*AJUSTES CONCLUÍDOS:*\n${formatCompleted(state.completed.adjustments)}\n\n*SETUPS CONCLUÍDOS:*\n${formatCompleted(state.completed.setups)}\n\n*MANUTENÇÕES CONCLUÍDAS:*\n${formatCompleted(state.completed.maintenances)}\n\n*DESENVOLVIMENTO:*\n${dev}\n\n*OBSERVAÇÕES:*\n${obs}\n\n*RESTANTE OK !*`;
+        saveSession();
+      }
+      function copyReport() {
+        const conflicts = unresolvedConflicts();
+        if (conflicts.length) {
+          toast(`Resolva ${conflicts.length} conflito(s)`);
+          return;
         }
-    });
-}
-
-function chooseAdjustment(tnl){
-    openReasonModal({
-        tnl,
-        action:"adjustment",
-        title:`Motivo do ajuste - TNL ${padTnl(tnl)}`,
-        subtitle:"Informe o motivo que deve aparecer no relatório final."
-    });
-}
-
-function chooseMaintenance(tnl){
-    const existingLines =
-        getExistingMaintenanceReason(tnl);
-
-    if(existingLines.length){
-        startTransition({
-            tnl,
-            targetCategory:"maintenance",
-
-            applyTarget:()=>{
-                setMaintenanceWithLines(
-                    tnl,
-                    existingLines,
-                    false
-                );
-            }
-        });
-
-        return;
-    }
-
-    openReasonModal({
-        tnl,
-        action:"maintenance",
-        title:`Motivo da manutenção - TNL ${padTnl(tnl)}`,
-        subtitle:"Informe o motivo que deve aparecer no relatório final."
-    });
-}
-
-function releaseMachine(tnl){
-    const categories =
-        categoriesOfTnl(tnl);
-
-    categories.forEach(category=>{
-        addCompletedByCategory(
-            tnl,
-            category
-        );
-    });
-
-    removeOperationalRecords(tnl);
-
-    state.resolvedConflicts[String(tnl)] =
-        true;
-
-    markReviewed(tnl);
-
-    updateEverything();
-
-    saveSession();
-
-    toast(
-        `TNL ${padTnl(tnl)} liberada e concluída`
-    );
-}
-
-/* =========================================================
-   MODAL DE MOTIVO
-========================================================= */
-
-function openReasonModal({
-    tnl,
-    action,
-    title,
-    subtitle
-}){
-    pendingReasonAction = {
-        tnl:Number(tnl),
-        action
-    };
-
-    el("reasonTitle").textContent =
-        title;
-
-    el("reasonSubtitle").textContent =
-        subtitle;
-
-    el("reasonInput").value = "";
-
-    el("reasonModal")
-        .classList
-        .add("show");
-
-    setTimeout(()=>{
-        el("reasonInput").focus();
-    },80);
-}
-
-function closeReasonModal(){
-    pendingReasonAction = null;
-
-    el("reasonInput").value = "";
-
-    el("reasonModal")
-        .classList
-        .remove("show");
-}
-
-function confirmReason(){
-    if(!pendingReasonAction){
-        return;
-    }
-
-    const reason =
-        el("reasonInput")
-            .value
-            .trim();
-
-    if(!reason){
-        toast("Digite o motivo");
-
-        el("reasonInput").focus();
-
-        return;
-    }
-
-    const {
-        tnl,
-        action
-    } = pendingReasonAction;
-
-    closeReasonModal();
-
-    if(action === "adjustment"){
-        startTransition({
-            tnl,
-            targetCategory:"adjustment",
-
-            applyTarget:()=>{
-                setAdjustment(
-                    tnl,
-                    reason
-                );
-            }
-        });
-
-        return;
-    }
-
-    if(action === "maintenance"){
-        startTransition({
-            tnl,
-            targetCategory:"maintenance",
-
-            applyTarget:()=>{
-                setMaintenanceWithReason(
-                    tnl,
-                    reason,
-                    false
-                );
-            }
-        });
-
-        return;
-    }
-
-    if(action === "maintenance_prod"){
-        startTransition({
-            tnl,
-            targetCategory:"maintenance",
-
-            applyTarget:()=>{
-                setMaintenanceWithReason(
-                    tnl,
-                    reason,
-                    true
-                );
-            }
-        });
-    }
-}
-
-/* =========================================================
-   SETUPS FUTUROS
-========================================================= */
-
-function allFutureItems(){
-    return Object
-        .values(
-            state.futureBlocks
-        )
-        .flat();
-}
-
-function findFutureItem(id){
-    return allFutureItems()
-        .find(item=>
-            Number(item.id) === Number(id)
-        );
-}
-
-function detachFutureItem(id){
-    Object
-        .keys(
-            state.futureBlocks
-        )
-        .forEach(heading=>{
-            state.futureBlocks[heading] =
-                state.futureBlocks[heading]
-                    .filter(item=>
-                        Number(item.id) !== Number(id)
-                    );
-
-            if(!state.futureBlocks[heading].length){
-                delete state.futureBlocks[heading];
-            }
-        });
-}
-
-function maintainFutureSetup(id){
-    const item =
-        findFutureItem(id);
-
-    if(!item){
-        return;
-    }
-
-    item.reviewed =
-        true;
-
-    updateEverything();
-
-    saveSession();
-
-    toast(
-        `TNL ${padTnl(item.tnl)} mantida para ${item.heading.replace("SETUPS ","")}`
-    );
-}
-
-function futureToSetup(
-    id,
-    mode
-){
-    const item =
-        findFutureItem(id);
-
-    if(!item){
-        return;
-    }
-
-    chooseSetup(
-        item.tnl,
-        mode,
-        item.emoji,
-        ()=>{
-            detachFutureItem(id);
-        }
-    );
-}
-
-function removeFutureSetup(id){
-    const item =
-        findFutureItem(id);
-
-    if(!item){
-        return;
-    }
-
-    detachFutureItem(id);
-
-    updateEverything();
-
-    saveSession();
-
-    toast(
-        `TNL ${padTnl(item.tnl)} removida dos setups futuros`
-    );
-}
-
-/* =========================================================
-   ADICIONAR MÁQUINA MANUALMENTE
-========================================================= */
-
-function refreshManualMachineSelect(){
-    const selectedCell =
-        el("cellSelect").value;
-
-    const machines =
-        CELULAS[selectedCell] || [];
-
-    el("addMachine").innerHTML =
-        machines
-            .map(tnl=>`
-                <option value="${tnl}">
-                    TNL ${padTnl(tnl)}
-                </option>
-            `)
-            .join("");
-}
-
-function openAddModal(){
-    refreshManualMachineSelect();
-
-    el("addReason").value = "";
-
-    el("addModal")
-        .classList
-        .add("show");
-}
-
-function closeAddModal(){
-    el("addReason").value = "";
-
-    el("addModal")
-        .classList
-        .remove("show");
-}
-
-function saveManualMachine(){
-    const tnl =
-        Number(
-            el("addMachine").value
-        );
-
-    const status =
-        el("addStatus").value;
-
-    const reason =
-        el("addReason")
-            .value
-            .trim();
-
-    closeAddModal();
-
-    if(status === "adjustment"){
-        if(!reason){
-            openReasonModal({
-                tnl,
-                action:"adjustment",
-                title:`Motivo do ajuste - TNL ${padTnl(tnl)}`,
-                subtitle:"Informe o motivo que deve aparecer no relatório final."
-            });
-
-            return;
-        }
-
-        startTransition({
-            tnl,
-            targetCategory:"adjustment",
-
-            applyTarget:()=>{
-                setAdjustment(
-                    tnl,
-                    reason
-                );
-            }
-        });
-
-        return;
-    }
-
-    if(status === "maintenance"){
-        if(!reason){
-            openReasonModal({
-                tnl,
-                action:"maintenance",
-                title:`Motivo da manutenção - TNL ${padTnl(tnl)}`,
-                subtitle:"Informe o motivo que deve aparecer no relatório final."
-            });
-
-            return;
-        }
-
-        startTransition({
-            tnl,
-            targetCategory:"maintenance",
-
-            applyTarget:()=>{
-                setMaintenanceWithReason(
-                    tnl,
-                    reason,
-                    false
-                );
-            }
-        });
-
-        return;
-    }
-
-    if(status === "maintenance_prod"){
-        if(!reason){
-            openReasonModal({
-                tnl,
-                action:"maintenance_prod",
-                title:`Motivo da manutenção - TNL ${padTnl(tnl)}`,
-                subtitle:"Informe o motivo que deve aparecer no relatório final."
-            });
-
-            return;
-        }
-
-        startTransition({
-            tnl,
-            targetCategory:"maintenance",
-
-            applyTarget:()=>{
-                setMaintenanceWithReason(
-                    tnl,
-                    reason,
-                    true
-                );
-            }
-        });
-
-        return;
-    }
-
-    if(status === "setup_active"){
-        chooseSetup(
-            tnl,
-            "active"
-        );
-
-        return;
-    }
-
-    if(status === "setup_start"){
-        chooseSetup(
-            tnl,
-            "start"
-        );
-    }
-}
-
-/* =========================================================
-   RENDERIZAÇÃO DOS CARDS
-========================================================= */
-
-function typeLabel(type){
-    return TYPE_CONFIG[type]?.short || type;
-}
-
-function activeGroupsForSelectedCell(){
-    const selectedCell =
-        el("cellSelect").value;
-
-    const machines =
-        CELULAS[selectedCell] || [];
-
-    const groups =
-        new Map();
-
-    activeRecords()
-        .filter(record=>
-            machines.includes(
-                Number(record.tnl)
-            )
-        )
-        .forEach(record=>{
-            if(!groups.has(record.tnl)){
-                groups.set(
-                    record.tnl,
-                    []
-                );
-            }
-
-            groups
-                .get(record.tnl)
-                .push(record);
-        });
-
-    return [...groups.entries()]
-        .map(([tnl,records])=>({
-            kind:"active",
-            tnl:Number(tnl),
-            records:sortRecords(records)
-        }))
-        .filter(group=>{
-            const unresolved =
-                isConflict(group.tnl) &&
-                !state.resolvedConflicts[
-                    String(group.tnl)
-                ];
-
-            return (
-                !isReviewed(group.tnl) ||
-                unresolved
-            );
-        });
-}
-
-function futureItemsForSelectedCell(){
-    const selectedCell =
-        el("cellSelect").value;
-
-    const machines =
-        CELULAS[selectedCell] || [];
-
-    return allFutureItems()
-        .filter(item=>
-            machines.includes(
-                Number(item.tnl)
-            )
-        )
-        .filter(item=>
-            !item.reviewed
-        )
-        .map(item=>({
-            kind:"future",
-            tnl:Number(item.tnl),
-            item
-        }));
-}
-
-function cardBadgeForActive(group){
-    const unresolved =
-        isConflict(group.tnl) &&
-        !state.resolvedConflicts[
-            String(group.tnl)
-        ];
-
-    if(unresolved){
+        const text = el("finalOutput").value.trim(),
+          fallback = () => {
+            const t = document.createElement("textarea");
+            t.value = text;
+            t.style.position = "fixed";
+            t.style.opacity = "0";
+            document.body.appendChild(t);
+            t.select();
+            document.execCommand("copy");
+            t.remove();
+            toast("Relatório copiado");
+          };
+        navigator.clipboard && window.isSecureContext
+          ? navigator.clipboard
+              .writeText(text)
+              .then(() => toast("Relatório copiado"))
+              .catch(fallback)
+          : fallback();
+      }
+      function updateKpis() {
+        const pendingActive = uniqueNumbers(
+            activeRecords()
+              .filter((r) => !state.reviewedTnls[String(r.tnl)])
+              .map((r) => r.tnl),
+          ).length,
+          pendingFuture = state.futureItems.filter((x) => !x.reviewed).length,
+          completed =
+            uniqueNumbers(state.completed.adjustments).length +
+            uniqueNumbers(state.completed.setups).length +
+            uniqueNumbers(state.completed.maintenances).length;
+        el("kpiPending").textContent = String(pendingActive + pendingFuture);
+        el("kpiConflicts").textContent = String(unresolvedConflicts().length);
+        el("kpiCompleted").textContent = String(completed);
+      }
+      function fieldsSnapshot() {
         return {
-            text:"CONFLITO",
-            css:"red"
+          currentShift: el("currentShift").value,
+          checkpoint: el("checkpoint").value,
+          cqFechamento: el("cqFechamento").value,
+          cqReinspecao: el("cqReinspecao").value,
+          sel1: el("sel1").value,
+          sel2: el("sel2").value,
+          sel3: el("sel3").value,
+          selAll: el("selAll").value,
+          selTnc: el("selTnc").value,
+          development: el("development").value,
+          observations: el("observations").value,
+          selectedCell: el("cellSelect").value,
+          finalOutput: el("finalOutput").value,
         };
-    }
-
-    const type =
-        group.records[0]?.type ||
-        "adjustment";
-
-    const config =
-        TYPE_CONFIG[type] ||
-        TYPE_CONFIG.adjustment;
-
-    return {
-        text:config.label,
-        css:config.badge
-    };
-}
-
-function renderActiveActions(group){
-    return `
-        <div class="machine-actions">
-
-            <button
-                class="action-btn adjust"
-                onclick="chooseAdjustment(${group.tnl})"
-            >
-                VAI PASSAR EM AJUSTE
-            </button>
-
-            <button
-                class="action-btn start"
-                onclick="chooseSetup(${group.tnl},'start')"
-            >
-                INICIAR SETUP
-            </button>
-
-            <button
-                class="action-btn setup"
-                onclick="chooseSetup(${group.tnl},'active')"
-            >
-                VAI PASSAR EM SETUP
-            </button>
-
-            <button
-                class="action-btn maintenance"
-                onclick="chooseMaintenance(${group.tnl})"
-            >
-                VAI PASSAR EM MANUTENÇÃO
-            </button>
-
-            <button
-                class="action-btn release"
-                onclick="releaseMachine(${group.tnl})"
-            >
-                LIBERADA
-            </button>
-
-        </div>
-    `;
-}
-
-function renderActiveCard(group){
-    const badge =
-        cardBadgeForActive(group);
-
-    const conflict =
-        isConflict(group.tnl) &&
-        !state.resolvedConflicts[
-            String(group.tnl)
-        ];
-
-    return `
-        <article class="machine-card ${conflict ? "conflict" : ""}">
-
-            <div class="machine-head">
-
-                <div class="machine-number">
-                    TNL ${padTnl(group.tnl)}
-                </div>
-
-                <span class="badge ${badge.css}">
-                    ${badge.text}
-                </span>
-
-            </div>
-
-            ${conflict
-                ? `
-                    <div class="conflict-title">
-                        A máquina aparece em mais de um bloco ativo.
-                        Escolha como ela passará para o próximo turno.
-                    </div>
-                `
-                : ""
-            }
-
-            <div class="machine-lines">
-
-                ${group.records.map(record=>`
-                    <div class="machine-line">
-                        <strong>${typeLabel(record.type)}</strong>
-                        <br>
-                        ${record.text}
-                    </div>
-                `).join("")}
-
-            </div>
-
-            ${renderActiveActions(group)}
-
-        </article>
-    `;
-}
-
-function renderFutureCard(group){
-    const item =
-        group.item;
-
-    return `
-        <article class="machine-card future">
-
-            <div class="machine-head">
-
-                <div class="machine-number">
-                    TNL ${padTnl(item.tnl)}
-                </div>
-
-                <span class="badge blue">
-                    ${item.heading}
-                </span>
-
-            </div>
-
-            <div class="machine-lines">
-
-                <div class="machine-line">
-                    <strong>SETUP FUTURO</strong>
-                    <br>
-                    ${item.text}
-                </div>
-
-            </div>
-
-            <div class="future-actions">
-
-                <button
-                    class="future-action keep"
-                    onclick="maintainFutureSetup(${item.id})"
-                >
-                    MANTER PARA ${item.heading.replace("SETUPS ","")}
-                </button>
-
-                <button
-                    class="future-action start"
-                    onclick="futureToSetup(${item.id},'start')"
-                >
-                    INICIAR SETUP
-                </button>
-
-                <button
-                    class="future-action setup"
-                    onclick="futureToSetup(${item.id},'active')"
-                >
-                    EM SETUP
-                </button>
-
-                <button
-                    class="future-action remove"
-                    onclick="removeFutureSetup(${item.id})"
-                >
-                    REMOVER
-                </button>
-
-            </div>
-
-        </article>
-    `;
-}
-
-function renderSelectedCell(){
-    refreshManualMachineSelect();
-
-    const activeGroups =
-        activeGroupsForSelectedCell();
-
-    const futureGroups =
-        futureItemsForSelectedCell();
-
-    const cards =
+      }
+      function applyFields(f) {
+        if (!f) return;
         [
-            ...activeGroups,
-            ...futureGroups
-        ]
-        .sort((a,b)=>{
-            if(Number(a.tnl) !== Number(b.tnl)){
-                return Number(a.tnl) - Number(b.tnl);
-            }
-
-            return a.kind.localeCompare(b.kind);
+          "currentShift",
+          "checkpoint",
+          "cqFechamento",
+          "cqReinspecao",
+          "sel1",
+          "sel2",
+          "sel3",
+          "selAll",
+          "selTnc",
+          "development",
+          "observations",
+          "finalOutput",
+        ].forEach((id) => {
+          if (f[id] !== undefined) el(id).value = f[id];
         });
-
-    const selectedCell =
-        el("cellSelect").value;
-
-    const machines =
-        CELULAS[selectedCell] || [];
-
-    const activeTnls =
-        uniqueNumbers(
-            activeRecords()
-                .filter(record=>
-                    machines.includes(
-                        Number(record.tnl)
-                    )
-                )
-                .map(record=>
-                    record.tnl
-                )
-        );
-
-    const futureItems =
-        allFutureItems()
-            .filter(item=>
-                machines.includes(
-                    Number(item.tnl)
-                )
-            );
-
-    const total =
-        activeTnls.length +
-        futureItems.length;
-
-    const decided =
-        activeTnls
-            .filter(isReviewed)
-            .length +
-        futureItems
-            .filter(item=>
-                item.reviewed
-            )
-            .length;
-
-    const percent =
-        total
-            ? Math.round(
-                (
-                    decided /
-                    total
-                ) * 100
-            )
-            : 100;
-
-    el("cellProgressFill")
-        .style
-        .width =
-        `${percent}%`;
-
-    el("cellProgressLabel")
-        .textContent =
-        total
-            ? `Célula ${selectedCell}: ${decided}/${total} decisões concluídas`
-            : `Célula ${selectedCell}: nenhuma pendência registrada`;
-
-    const container =
-        el("machineList");
-
-    if(!cards.length){
-        container.innerHTML = `
-            <div class="empty">
-                Nenhuma pendência aguardando decisão nesta célula.
-                <br>
-                Máquinas não citadas são consideradas em produção normal.
-            </div>
-        `;
-
-        return;
-    }
-
-    container.innerHTML =
-        cards
-            .map(card=>
-                card.kind === "active"
-                    ? renderActiveCard(card)
-                    : renderFutureCard(card)
-            )
-            .join("");
-}
-
-/* =========================================================
-   RELATÓRIO FINAL
-========================================================= */
-
-function formatList(lines){
-    return lines.length
-        ? uniqueStrings(lines).join("\n")
-        : "N/A";
-}
-
-function formatCompleted(numbers){
-    const values =
-        uniqueNumbers(numbers)
-            .map(padTnl);
-
-    return values.length
-        ? `TNL's - ${values.join(" - ")}.`
-        : "N/A";
-}
-
-function renderFutureBlocks(){
-    const headings =
-        Object.keys(
-            state.futureBlocks
-        );
-
-    if(!headings.length){
-        return `*SETUPS 3°T:*
-N/A`;
-    }
-
-    return headings
-        .sort()
-        .map(heading=>{
-            const lines =
-                state.futureBlocks[heading]
-                    .sort((a,b)=>
-                        Number(a.tnl) -
-                        Number(b.tnl)
-                    )
-                    .map(item=>
-                        item.text
-                    );
-
-            return `*${heading}:*
-${formatList(lines)}`;
-        })
-        .join("\n\n");
-}
-
-function generateReport(){
-    const maintenances =
-        sortRecords(
-            activeRecords()
-                .filter(record=>
-                    record.type === "maintenance"
-                )
-        )
-        .map(record=>
-            record.text
-        );
-
-    const producingMaintenances =
-        sortRecords(
-            activeRecords()
-                .filter(record=>
-                    record.type === "maintenance_prod"
-                )
-        )
-        .map(record=>
-            record.text
-        );
-
-    const setups =
-        sortRecords(
-            activeRecords()
-                .filter(record=>
-                    record.type === "setup_active" ||
-                    record.type === "setup_start"
-                )
-        )
-        .map(record=>
-            record.text
-        );
-
-    const adjustments =
-        sortRecords(
-            activeRecords()
-                .filter(record=>
-                    record.type === "adjustment"
-                )
-        )
-        .map(record=>
-            record.text
-        );
-
-    const development =
-        el("development")
-            .value
-            .trim() ||
-        "N/A";
-
-    const observations =
-        el("observations")
-            .value
-            .trim() ||
-        "N/A";
-
-    const shift =
-        `${el("currentShift").value}° TURNO`;
-
-    const report = `*${shift}*
-*SITUAÇÃO DO SETOR ⬇️⬇️⬇️*
-
-*BANCADA – CHECK POINT:*
-${el("checkpoint").value || "00"}
-
-*ORDENS PARA SELEÇÃO:*
-
-Seleção 1° turno: ${el("sel1").value || "00"}
-Seleção 2° turno: ${el("sel2").value || "00"}
-Seleção 3° turno: ${el("sel3").value || "00"}
-Os 3 turnos: ${el("selAll").value || "00"}
-Seleção TNC: ${el("selTnc").value || "00"}
-
-*CQ FECHAMENTO:*
-${el("cqFechamento").value || "00"}
-
-*CQ REINSPEÇÃO:*
-${el("cqReinspecao").value || "00"}
-
-*MÁQUINAS EM MANUTENÇÃO PARADA:*
-${formatList(maintenances)}
-
-*MÁQUINAS EM MANUTENÇÃO PRODUZINDO:*
-${formatList(producingMaintenances)}
-
-*SETUP:*
-${formatList(setups)}
-
-*MAQUINAS EM AJUSTES:*
-${formatList(adjustments)}
-
-${renderFutureBlocks()}
-
-*AJUSTES CONCLUÍDOS:*
-${formatCompleted(state.completed.adjustments)}
-
-*SETUPS CONCLUÍDOS:*
-${formatCompleted(state.completed.setups)}
-
-*MANUTENÇÕES CONCLUÍDAS:*
-${formatCompleted(state.completed.maintenances)}
-
-*DESENVOLVIMENTO:*
-${development}
-
-*OBSERVAÇÕES:*
-${observations}
-
-*RESTANTE OK !*`;
-
-    el("finalOutput").value =
-        report;
-
-    updateKpis();
-
-    saveSession();
-
-    return report;
-}
-
-function copyReport(){
-    const unresolved =
-        unresolvedConflictTnls();
-
-    if(unresolved.length){
-        toast(
-            `Resolva ${unresolved.length} conflito(s) antes de copiar`
-        );
-
-        return;
-    }
-
-    const text =
-        el("finalOutput")
-            .value
-            .trim();
-
-    if(!text){
-        toast(
-            "Atualize o relatório antes de copiar"
-        );
-
-        return;
-    }
-
-    if(
-        navigator.clipboard &&
-        window.isSecureContext
-    ){
-        navigator.clipboard
-            .writeText(text)
-            .then(()=>{
-                toast(
-                    "Relatório copiado"
-                );
-            })
-            .catch(()=>{
-                fallbackCopy(text);
-            });
-
-        return;
-    }
-
-    fallbackCopy(text);
-}
-
-function fallbackCopy(text){
-    const textarea =
-        document.createElement(
-            "textarea"
-        );
-
-    textarea.value =
-        text;
-
-    textarea.style.position =
-        "fixed";
-
-    textarea.style.opacity =
-        "0";
-
-    document.body.appendChild(
-        textarea
-    );
-
-    textarea.select();
-
-    try{
-        document.execCommand(
-            "copy"
-        );
-
-        toast(
-            "Relatório copiado"
-        );
-    }catch(error){
-        toast(
-            "Não foi possível copiar"
-        );
-    }
-
-    document.body.removeChild(
-        textarea
-    );
-}
-
-/* =========================================================
-   KPIs
-========================================================= */
-
-function updateKpis(){
-    const pendingActiveTnls =
-        uniqueNumbers(
-            activeRecords()
-                .filter(record=>
-                    !isReviewed(record.tnl)
-                )
-                .map(record=>
-                    record.tnl
-                )
-        );
-
-    const pendingFutureCount =
-        allFutureItems()
-            .filter(item=>
-                !item.reviewed
-            )
-            .length;
-
-    const reviewedActive =
-        Object
-            .values(
-                state.reviewedTnls
-            )
-            .filter(Boolean)
-            .length;
-
-    const reviewedFuture =
-        allFutureItems()
-            .filter(item=>
-                item.reviewed
-            )
-            .length;
-
-    const conflicts =
-        unresolvedConflictTnls()
-            .length;
-
-    const completed =
-        uniqueNumbers(
-            state.completed.adjustments
-        ).length +
-        uniqueNumbers(
-            state.completed.setups
-        ).length +
-        uniqueNumbers(
-            state.completed.maintenances
-        ).length;
-
-    el("kpiPending").textContent =
-        String(
-            pendingActiveTnls.length +
-            pendingFutureCount
-        );
-
-    el("kpiReviewed").textContent =
-        String(
-            reviewedActive +
-            reviewedFuture
-        );
-
-    el("kpiConflicts").textContent =
-        String(
-            conflicts
-        );
-
-    el("kpiCompleted").textContent =
-        String(
-            completed
-        );
-
-    el("reportSafetyNote").textContent =
-        conflicts
-            ? `${conflicts} conflito(s) aguardando decisão. A cópia permanece bloqueada.`
-            : "Nenhum conflito pendente. O relatório pode ser copiado.";
-}
-
-/* =========================================================
-   SALVAMENTO LOCAL
-========================================================= */
-
-function fieldsSnapshot(){
-    return {
-        currentShift:
-            el("currentShift").value,
-
-        checkpoint:
-            el("checkpoint").value,
-
-        sel1:
-            el("sel1").value,
-
-        sel2:
-            el("sel2").value,
-
-        sel3:
-            el("sel3").value,
-
-        selAll:
-            el("selAll").value,
-
-        selTnc:
-            el("selTnc").value,
-
-        cqFechamento:
-            el("cqFechamento").value,
-
-        cqReinspecao:
-            el("cqReinspecao").value,
-
-        development:
-            el("development").value,
-
-        observations:
-            el("observations").value,
-
-        finalOutput:
-            el("finalOutput").value,
-
-        selectedCell:
-            el("cellSelect").value
-    };
-}
-
-function applyFields(snapshot){
-    if(!snapshot){
-        return;
-    }
-
-    const ids = [
-        "currentShift",
-        "checkpoint",
-        "sel1",
-        "sel2",
-        "sel3",
-        "selAll",
-        "selTnc",
-        "cqFechamento",
-        "cqReinspecao",
-        "development",
-        "observations",
-        "finalOutput"
-    ];
-
-    ids.forEach(id=>{
-        if(snapshot[id] !== undefined){
-            el(id).value =
-                snapshot[id];
+        if (f.selectedCell) {
+          syncUnmappedCellOption();
+          el("cellSelect").value =
+            f.selectedCell === "SEM_MAPA" && !hasUnmappedTnls()
+              ? "01"
+              : f.selectedCell;
         }
-    });
-
-    if(snapshot.selectedCell !== undefined){
-        el("cellSelect").value =
-            snapshot.selectedCell;
-    }
-}
-
-function saveSession(){
-    state.raw =
-        el("rawInput").value;
-
-    const payload = {
-        state,
-        fields:
-            fieldsSnapshot()
-    };
-
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(payload)
-    );
-}
-
-function restoreSession(){
-    try{
-        const raw =
-            localStorage.getItem(
-                STORAGE_KEY
-            );
-
-        if(!raw){
-            return false;
-        }
-
-        const payload =
-            JSON.parse(raw);
-
-        const blank =
-            createBlankState();
-
-        state = {
-            ...blank,
-            ...(payload.state || {}),
-
-            completed:{
-                ...blank.completed,
-                ...(
-                    payload.state?.completed ||
-                    {}
-                )
+      }
+      function saveSession() {
+        state.raw = el("rawInput").value;
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({ state, fields: fieldsSnapshot() }),
+        );
+      }
+      function hydrate(saved) {
+        const b = blank(),
+          s = saved || {},
+          maintenance = {};
+        Object.entries(s.reasons?.maintenance || {}).forEach(
+          ([k, v]) => (maintenance[k] = normalizeReasonList(v)),
+        );
+        return {
+          ...b,
+          ...s,
+          reasons: {
+            maintenance,
+            adjustment: {
+              ...b.reasons.adjustment,
+              ...(s.reasons?.adjustment || {}),
             },
-
-            futureBlocks:{
-                ...(
-                    payload.state?.futureBlocks ||
-                    {}
-                )
-            },
-
-            originalMaintenance:{
-                ...(
-                    payload.state?.originalMaintenance ||
-                    {}
-                )
-            },
-
-            reviewedTnls:{
-                ...(
-                    payload.state?.reviewedTnls ||
-                    {}
-                )
-            },
-
-            resolvedConflicts:{
-                ...(
-                    payload.state?.resolvedConflicts ||
-                    {}
-                )
-            }
+          },
+          completed: {
+            adjustments: [...(s.completed?.adjustments || [])],
+            setups: [...(s.completed?.setups || [])],
+            maintenances: [...(s.completed?.maintenances || [])],
+          },
+          reviewedTnls: { ...(s.reviewedTnls || {}) },
+          resolvedConflicts: { ...(s.resolvedConflicts || {}) },
+          confirmedDecisions: { ...(s.confirmedDecisions || {}) },
+          actionHistory: [...(s.actionHistory || [])],
+          futureItems: [...(s.futureItems || [])],
+          records: [...(s.records || [])],
+          reviewLines: [...(s.reviewLines || [])],
         };
-
-        el("rawInput").value =
-            state.raw ||
-            "";
-
-        applyFields(
-            payload.fields
-        );
-
-        return true;
-    }catch(error){
-        console.error(
-            error
-        );
-
-        return false;
-    }
-}
-
-function clearSession(){
-    const confirmed =
-        window.confirm(
-            "Deseja limpar toda a sessão atual?"
-        );
-
-    if(!confirmed){
-        return;
-    }
-
-    localStorage.removeItem(
-        STORAGE_KEY
-    );
-
-    state =
-        createBlankState();
-
-    el("rawInput").value = "";
-    el("currentShift").value = "2";
-    el("checkpoint").value = "00";
-    el("sel1").value = "00";
-    el("sel2").value = "00";
-    el("sel3").value = "00";
-    el("selAll").value = "00";
-    el("selTnc").value = "00";
-    el("cqFechamento").value = "00";
-    el("cqReinspecao").value = "00";
-    el("development").value = "";
-    el("observations").value = "";
-    el("finalOutput").value = "";
-    el("cellSelect").value = "01";
-
-    updateEverything();
-
-    toast(
-        "Sessão limpa"
-    );
-}
-
-/* =========================================================
-   ATUALIZAÇÃO CENTRAL
-========================================================= */
-
-function updateEverything(){
-    renderSelectedCell();
-
-    generateReport();
-
-    updateKpis();
-}
-
-/* =========================================================
-   EVENTOS
-========================================================= */
-
-function bindEvents(){
-    el("btnImport")
-        .addEventListener(
-            "click",
-            importReport
-        );
-
-    el("btnClear")
-        .addEventListener(
-            "click",
-            clearSession
-        );
-
-    el("btnOpenAdd")
-        .addEventListener(
-            "click",
-            openAddModal
-        );
-
-    el("btnCloseAdd")
-        .addEventListener(
-            "click",
-            closeAddModal
-        );
-
-    el("btnSaveAdd")
-        .addEventListener(
-            "click",
-            saveManualMachine
-        );
-
-    el("btnCancelReason")
-        .addEventListener(
-            "click",
-            closeReasonModal
-        );
-
-    el("btnConfirmReason")
-        .addEventListener(
-            "click",
-            confirmReason
-        );
-
-    el("btnCancelTransition")
-        .addEventListener(
-            "click",
-            closeTransitionModal
-        );
-
-    el("btnRefreshReport")
-        .addEventListener(
-            "click",
-            ()=>{
-                generateReport();
-
-                toast(
-                    "Relatório atualizado"
-                );
-            }
-        );
-
-    el("btnCopyReport")
-        .addEventListener(
-            "click",
-            copyReport
-        );
-
-    el("cellSelect")
-        .addEventListener(
-            "change",
-            ()=>{
-                renderSelectedCell();
-
-                saveSession();
-            }
-        );
-
-    el("rawInput")
-        .addEventListener(
-            "input",
-            saveSession
-        );
-
-    [
-        "currentShift",
-        "checkpoint",
-        "sel1",
-        "sel2",
-        "sel3",
-        "selAll",
-        "selTnc",
-        "cqFechamento",
-        "cqReinspecao",
-        "development",
-        "observations"
-    ].forEach(id=>{
-        el(id)
-            .addEventListener(
-                "input",
-                ()=>{
-                    generateReport();
-
-                    saveSession();
-                }
-            );
-
-        el(id)
-            .addEventListener(
-                "change",
-                ()=>{
-                    generateReport();
-
-                    saveSession();
-                }
-            );
-    });
-
-    el("finalOutput")
-        .addEventListener(
-            "input",
-            saveSession
-        );
-
-    el("addModal")
-        .addEventListener(
-            "click",
-            event=>{
-                if(
-                    event.target.id ===
-                    "addModal"
-                ){
-                    closeAddModal();
-                }
-            }
-        );
-
-    el("reasonModal")
-        .addEventListener(
-            "click",
-            event=>{
-                if(
-                    event.target.id ===
-                    "reasonModal"
-                ){
-                    closeReasonModal();
-                }
-            }
-        );
-
-    el("transitionModal")
-        .addEventListener(
-            "click",
-            event=>{
-                if(
-                    event.target.id ===
-                    "transitionModal"
-                ){
-                    closeTransitionModal();
-                }
-            }
-        );
-}
-
-/* =========================================================
-   INICIALIZAÇÃO
-========================================================= */
-
-function init(){
-    bindEvents();
-
-    if(restoreSession()){
+      }
+      function restoreSession() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return false;
+          const p = JSON.parse(raw);
+          state = hydrate(p.state);
+          el("rawInput").value = state.raw || "";
+          applyFields(p.fields);
+          return true;
+        } catch (e) {
+          console.error(e);
+          return false;
+        }
+      }
+      function clearSession() {
+        if (!window.confirm("Deseja limpar toda a sessão?")) return;
+        localStorage.removeItem(STORAGE_KEY);
+        state = blank();
+        el("rawInput").value = "";
+        applyFields({
+          currentShift: "2",
+          checkpoint: "00",
+          cqFechamento: "00",
+          cqReinspecao: "00",
+          sel1: "00",
+          sel2: "00",
+          sel3: "00",
+          selAll: "00",
+          selTnc: "00",
+          development: "",
+          observations: "",
+          selectedCell: "01",
+          finalOutput: "",
+        });
         updateEverything();
-
-        toast(
-            "Sessão restaurada"
+        toast("Sessão limpa");
+      }
+      function updateEverything() {
+        renderParserWarning();
+        renderSelectedCell();
+        renderConfirmedDecisions();
+        updateKpis();
+        generateReport();
+      }
+      function bindEvents() {
+        el("btnImport").onclick = importReport;
+        el("btnClear").onclick = clearSession;
+        el("btnUndo").onclick = undoLastAction;
+        el("btnOpenAdd").onclick = openAddModal;
+        el("btnCloseAdd").onclick = closeAddModal;
+        el("btnSaveAdd").onclick = saveManualMachine;
+        el("btnSaveReason").onclick = saveReason;
+        el("btnCloseReason").onclick = closeReasonModal;
+        el("btnCloseTransition").onclick = closeTransitionModal;
+        el("btnConfirmEdit").onclick = confirmEdit;
+        el("btnCloseEdit").onclick = closeEditModal;
+        el("btnRefresh").onclick = () => {
+          generateReport();
+          toast("Relatório atualizado");
+        };
+        el("btnCopy").onclick = copyReport;
+        el("cellSelect").onchange = () => {
+          renderSelectedCell();
+          saveSession();
+        };
+        el("rawInput").oninput = saveSession;
+        [
+          "currentShift",
+          "checkpoint",
+          "cqFechamento",
+          "cqReinspecao",
+          "sel1",
+          "sel2",
+          "sel3",
+          "selAll",
+          "selTnc",
+          "development",
+          "observations",
+        ].forEach((id) => {
+          el(id).oninput = () => {
+            generateReport();
+            saveSession();
+          };
+          el(id).onchange = () => {
+            generateReport();
+            saveSession();
+          };
+        });
+        el("finalOutput").oninput = saveSession;
+        [
+          ["addModal", closeAddModal],
+          ["reasonModal", closeReasonModal],
+          ["transitionModal", closeTransitionModal],
+          ["editModal", closeEditModal],
+        ].forEach(
+          ([id, close]) =>
+            (el(id).onclick = (e) => {
+              if (e.target.id === id) close();
+            }),
         );
-
-        return;
-    }
-
-    updateEverything();
-}
-
-init();
-</script>
-
-</body>
+      }
+      function init() {
+        bindEvents();
+        restoreSession() ? toast("Sessão restaurada") : null;
+        updateEverything();
+      }
+      init();
+    </script>
+  </body>
 </html>
