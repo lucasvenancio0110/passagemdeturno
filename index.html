@@ -265,6 +265,7 @@
       .btn:hover,
       .action-btn:hover,
       .future-btn:hover,
+      .devobs-btn:hover,
       .modal-btn:hover,
       .edit-btn:hover {
         transform: translateY(-1px);
@@ -273,6 +274,7 @@
       .btn:active,
       .action-btn:active,
       .future-btn:active,
+      .devobs-btn:active,
       .modal-btn:active,
       .edit-btn:active {
         transform: scale(0.985);
@@ -756,6 +758,243 @@
         font-weight: 900;
       }
 
+
+
+      /* PATCH V21 — design, transições e cards de desenvolvimento/observações */
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: -35% -20%;
+        pointer-events: none;
+        background: radial-gradient(circle at 18% 18%, rgba(42, 161, 152, 0.18), transparent 30%);
+        animation: heroGlow 6s ease-in-out infinite alternate;
+      }
+      .glass {
+        transform: translateZ(0);
+      }
+      details.card {
+        animation: sectionIn 0.28s ease both;
+      }
+      details[open] .details-body {
+        animation: detailsOpen 0.18s ease both;
+      }
+      .kpi-value.bump {
+        animation: kpiBump 0.28s cubic-bezier(0.2, 1.5, 0.4, 1);
+      }
+      .cell-chip {
+        position: relative;
+        overflow: hidden;
+      }
+      .cell-chip::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+        transform: translateX(-120%);
+      }
+      .cell-chip.clear::after {
+        animation: chipShine 1.2s ease both;
+      }
+      .machine-list {
+        perspective: 900px;
+      }
+      .machine-card {
+        position: relative;
+        overflow: hidden;
+        animation: cardEnter 0.26s cubic-bezier(0.2, 0.85, 0.28, 1) both;
+        animation-delay: calc(var(--card-i, 0) * 34ms);
+        will-change: transform, opacity;
+      }
+      .machine-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: rgba(42, 161, 152, 0.75);
+        opacity: 0.75;
+      }
+      .machine-card.conflict {
+        animation: cardEnter 0.26s cubic-bezier(0.2, 0.85, 0.28, 1) both, conflictPulse 1.4s ease-in-out infinite;
+        animation-delay: calc(var(--card-i, 0) * 34ms), 0ms;
+      }
+      .machine-card.conflict::before {
+        background: rgba(239, 68, 68, 0.95);
+      }
+      .machine-card.future::before {
+        background: rgba(42, 161, 152, 0.95);
+      }
+      .machine-card.devobs {
+        border-color: rgba(178, 142, 58, 0.42);
+        background: linear-gradient(180deg, rgba(35, 27, 8, 0.7), rgba(5, 9, 8, 0.78));
+      }
+      .machine-card.devobs::before {
+        background: rgba(234, 179, 8, 0.95);
+      }
+      .machine-card.development {
+        border-color: rgba(42, 161, 152, 0.44);
+        background: linear-gradient(180deg, rgba(8, 31, 30, 0.72), rgba(5, 9, 8, 0.78));
+      }
+      .machine-card.development::before {
+        background: rgba(45, 212, 191, 0.95);
+      }
+      .devobs-btn {
+        min-height: 45px;
+        padding: 8px 9px;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        font-size: 0.79rem;
+        font-weight: 950;
+        transition: 0.16s ease;
+      }
+      .devobs-btn.keep { background: var(--ok); }
+      .devobs-btn.resolve { background: var(--neutral); }
+      .devobs-btn.adjust { background: var(--amber); }
+      .devobs-btn.setup { background: var(--accent-strong); }
+      .devobs-btn.maintenance { background: var(--red); }
+      .devobs-btn.remove {
+        background: var(--gray);
+        grid-column: 1 / -1;
+      }
+      .modal.show {
+        animation: overlayIn 0.16s ease both;
+      }
+      .modal.show .modal-card {
+        animation: sheetIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      .toast.show {
+        animation: toastDrop 0.22s ease both;
+      }
+      @keyframes heroGlow {
+        from { transform: translate3d(-2%, -1%, 0) scale(1); opacity: 0.65; }
+        to { transform: translate3d(2%, 1%, 0) scale(1.04); opacity: 1; }
+      }
+      @keyframes sectionIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes detailsOpen {
+        from { opacity: 0; transform: translateY(-4px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes cardEnter {
+        from { opacity: 0; transform: translateY(12px) scale(0.985); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      @keyframes conflictPulse {
+        0%, 100% { box-shadow: 0 0 0 rgba(184, 73, 76, 0); }
+        50% { box-shadow: 0 0 0 3px rgba(184, 73, 76, 0.18); }
+      }
+      @keyframes chipShine {
+        0% { opacity: 0; transform: translateX(-120%); }
+        35% { opacity: 1; }
+        100% { opacity: 0; transform: translateX(120%); }
+      }
+      @keyframes kpiBump {
+        0% { transform: scale(1); }
+        45% { transform: scale(1.14); }
+        100% { transform: scale(1); }
+      }
+      @keyframes overlayIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes sheetIn {
+        from { opacity: 0; transform: translateY(26px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      @keyframes toastDrop {
+        from { opacity: 0; transform: translate(-50%, -10px); }
+        to { opacity: 1; transform: translate(-50%, 0); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+
+
+      /* PATCH V22 — informação geral sem TNL */
+      .cell-chip.general {
+        background: rgba(42, 161, 152, 0.18);
+        border-color: rgba(42, 161, 152, 0.42);
+      }
+      .machine-card.general-info {
+        border-color: rgba(42, 161, 152, 0.4);
+        background: rgba(7, 23, 22, 0.74);
+      }
+      .badge.general {
+        color: #dffbf5;
+        background: rgba(42, 161, 152, 0.22);
+      }
+
+
+
+      /* PATCH V26 — decisões confirmadas minimizadas e mais limpas */
+      .confirmed-item.decision-item {
+        display: block;
+        padding: 0;
+        overflow: hidden;
+      }
+      .decision-summary-line {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px;
+        list-style: none;
+      }
+      .decision-summary-line:after {
+        content: "+";
+        flex: 0 0 auto;
+        color: #dbeafe;
+        font-size: 1.05rem;
+        font-weight: 950;
+      }
+      details[open] > .decision-summary-line:after {
+        content: "−";
+      }
+      .decision-summary-text {
+        min-width: 0;
+        display: grid;
+        gap: 3px;
+      }
+      .decision-action {
+        color: var(--muted);
+        font-size: 0.78rem;
+        line-height: 1.32;
+        font-weight: 850;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .decision-detail {
+        display: grid;
+        gap: 9px;
+        padding: 0 10px 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+      }
+      .decision-detail .source-block {
+        margin-top: 9px;
+      }
+      .decision-detail-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .decision-muted {
+        color: var(--muted);
+        font-size: 0.78rem;
+        line-height: 1.35;
+        font-weight: 800;
+      }
+
       @media (max-width: 780px) {
         .hero {
           grid-template-columns: 1fr;
@@ -863,78 +1102,7 @@
         </div>
       </section>
 
-      <details class="card glass" open>
-        <summary>Relatório do grupo</summary>
-        <div class="details-body">
-          <textarea
-            id="rawInput"
-            class="textarea"
-            placeholder="Cole aqui o último relatório atualizado do grupo..."
-          ></textarea>
-          <div class="actions">
-            <button class="btn btn-primary" id="btnImport">IMPORTAR</button>
-            <button class="btn btn-red" id="btnClear">LIMPAR</button>
-          </div>
-          <div id="parserWarning"></div>
-        </div>
-      </details>
 
-      <section class="card glass">
-        <h2>Passagem por célula</h2>
-        <div class="toolbar">
-          <div class="field">
-            <label class="label" for="cellSelect">Célula</label>
-            <select id="cellSelect" class="select">
-              <option value="01">CÉLULA 01</option>
-              <option value="02">CÉLULA 02</option>
-              <option value="03">CÉLULA 03</option>
-              <option value="04">CÉLULA 04</option>
-              <option value="05">CÉLULA 05</option>
-              <option value="06">CÉLULA 06</option>
-              <option value="07">CÉLULA 07</option>
-              <option value="08">CÉLULA 08</option>
-              <option value="09">CÉLULA 09</option>
-              <option value="10">CÉLULA 10</option>
-            </select>
-          </div>
-          <div class="field">
-            <label class="label">Nova informação</label>
-            <button class="btn btn-green" id="btnOpenAdd">
-              + ADICIONAR MÁQUINA
-            </button>
-          </div>
-        </div>
-        <div class="cell-dashboard">
-          <div class="cell-overview" id="cellOverview"></div>
-        </div>
-        <div class="progress-wrap">
-          <div class="progress">
-            <div class="progress-fill" id="progressFill"></div>
-          </div>
-          <div class="progress-label" id="progressLabel">
-            Importe o relatório para iniciar.
-          </div>
-        </div>
-        <div class="actions">
-          <button class="btn btn-undo" id="btnUndo">
-            DESFAZER ÚLTIMA AÇÃO
-          </button>
-        </div>
-        <div class="machine-list" id="machineList">
-          <div class="empty">Importe o relatório bruto para começar.</div>
-        </div>
-      </section>
-
-      <details class="card glass">
-        <summary>
-          Decisões confirmadas <span id="confirmedCount">— 00</span>
-        </summary>
-        <div class="details-body">
-          <div class="confirmed-list" id="confirmedList">
-            <div class="empty">Nenhuma decisão confirmada.</div>
-          </div>
-        </div>
-      </details>
 
       <details class="card glass">
         <summary>Dados do fechamento</summary>
@@ -984,7 +1152,20 @@
         </div>
       </details>
 
-      <details class="card glass">
+<details class="card glass" open>
+        <summary>Relatório do grupo</summary>
+        <div class="details-body">
+          <textarea
+            id="rawInput"
+            class="textarea"
+            placeholder="Cole aqui o último relatório atualizado do grupo..."
+          ></textarea>
+          <div id="parserWarning"></div>
+        </div>
+      </details>
+
+
+      <details class="card glass" open>
         <summary>Desenvolvimento e observações</summary>
         <div class="details-body">
           <div class="field">
@@ -992,7 +1173,9 @@
             ><textarea
               id="development"
               class="textarea small"
-              placeholder="Digite somente quando necessário..."
+              placeholder="Ex.:
+TNL 006 - PROGRAMAÇÃO
+TNL 134 - PROGRAMAÇÃO"
             ></textarea>
           </div>
           <div class="field">
@@ -1000,13 +1183,78 @@
             ><textarea
               id="observations"
               class="textarea small"
-              placeholder="Digite somente quando necessário..."
+              placeholder="Ex.:
+TNL 043 - Teste de ferramenta
+(514112)
+TNL's - 055 - 056 - Sem ordem"
             ></textarea>
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary" id="btnImport">PREPARAR PASSAGEM</button>
+            <button class="btn btn-red" id="btnClear">LIMPAR</button>
           </div>
         </div>
       </details>
 
+      
+      <section class="card glass">
+        <h2>Passagem por célula</h2>
+        <div class="toolbar">
+          <div class="field">
+            <label class="label" for="cellSelect">Célula</label>
+            <select id="cellSelect" class="select">
+              <option value="01">CÉLULA 01</option>
+              <option value="02">CÉLULA 02</option>
+              <option value="03">CÉLULA 03</option>
+              <option value="04">CÉLULA 04</option>
+              <option value="05">CÉLULA 05</option>
+              <option value="06">CÉLULA 06</option>
+              <option value="07">CÉLULA 07</option>
+              <option value="08">CÉLULA 08</option>
+              <option value="09">CÉLULA 09</option>
+              <option value="10">CÉLULA 10</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label">Nova informação</label>
+            <button class="btn btn-green" id="btnOpenAdd">
+              + ADICIONAR MÁQUINA
+            </button>
+          </div>
+        </div>
+        <div class="cell-dashboard">
+          <div class="cell-overview" id="cellOverview"></div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="progress-label" id="progressLabel">
+            Prepare a passagem para iniciar a ronda.
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-undo" id="btnUndo">
+            DESFAZER ÚLTIMA AÇÃO
+          </button>
+        </div>
+        <div class="machine-list" id="machineList">
+          <div class="empty">Preencha o relatório, desenvolvimento/observações e prepare a passagem.</div>
+        </div>
+      </section>
+
       <details class="card glass">
+        <summary>
+          Decisões confirmadas <span id="confirmedCount">— 00</span>
+        </summary>
+        <div class="details-body">
+          <div class="confirmed-list" id="confirmedList">
+            <div class="empty">Nenhuma decisão confirmada.</div>
+          </div>
+        </div>
+      </details>
+
+<details class="card glass">
         <summary>Relatório final</summary>
         <div class="details-body">
           <textarea
@@ -1046,6 +1294,8 @@
             <option value="setup_future">SETUP PRÓXIMO TURNO</option>
             <option value="maintenance">VAI PASSAR EM MANUTENÇÃO</option>
             <option value="maintenance_prod">MANUTENÇÃO PRODUZINDO</option>
+            <option value="development">DESENVOLVIMENTO</option>
+            <option value="observation">OBSERVAÇÃO</option>
           </select>
         </div>
         <div class="field">
@@ -1053,7 +1303,7 @@
           ><input
             id="addReason"
             class="input"
-            placeholder="Preencha para ajuste ou manutenção"
+            placeholder="Preencha para ajuste, manutenção, desenvolvimento ou observação"
           />
         </div>
         <div class="actions">
@@ -1230,6 +1480,7 @@
           reviewedTnls: {},
           resolvedConflicts: {},
           confirmedDecisions: {},
+          decisionOrder: 0,
           actionHistory: [],
           nextId: 1,
           nextFutureId: 1,
@@ -1715,6 +1966,7 @@
             minute: "2-digit",
           }),
           before,
+          order: (state.decisionOrder = Number(state.decisionOrder || 0) + 1),
         };
         state.actionHistory.push({ tnl: Number(tnl), before });
         updateEverything();
@@ -2536,7 +2788,7 @@
       }
       function renderConfirmedDecisions() {
         const decisions = Object.values(state.confirmedDecisions).sort(
-          (a, b) => Number(a.tnl) - Number(b.tnl),
+          (a, b) => Number(b.order || 0) - Number(a.order || 0) || String(b.time || "").localeCompare(String(a.time || "")) || Number(b.tnl || 0) - Number(a.tnl || 0),
         );
         el("confirmedCount").textContent =
           `— ${String(decisions.length).padStart(2, "0")}`;
@@ -2717,6 +2969,7 @@
           if (!raw) return false;
           const p = JSON.parse(raw);
           state = hydrate(p.state);
+          state.decisionOrder = Math.max(Number(state.decisionOrder || 0), ...Object.values(state.confirmedDecisions || {}).map((d) => Number(d.order || 0)));
           el("rawInput").value = state.raw || "";
           applyFields(p.fields);
           return true;
@@ -2812,6 +3065,1359 @@
             }),
         );
       }
+
+
+      // PATCH V21 — desenvolvimento/observações por célula + animações seguras.
+      let pendingSetupContext = null;
+
+      function blank() {
+        return {
+          raw: "",
+          records: [],
+          futureItems: [],
+          devObsItems: [],
+          generalDevelopmentLines: [],
+          generalObservationLines: [],
+          reviewLines: [],
+          reasons: { maintenance: {}, adjustment: {} },
+          completed: { adjustments: [], setups: [], maintenances: [] },
+          reviewedTnls: {},
+          resolvedConflicts: {},
+          confirmedDecisions: {},
+          decisionOrder: 0,
+          actionHistory: [],
+          nextId: 1,
+          nextFutureId: 1,
+          nextDevObsId: 1,
+        };
+      }
+      function devObsList() {
+        if (!Array.isArray(state.devObsItems)) state.devObsItems = [];
+        return state.devObsItems;
+      }
+      function activeDevObsItems() {
+        return devObsList().filter((x) => !["resolved", "removed"].includes(x.status));
+      }
+      function futureItemsOfTnl(tnl) {
+        return state.futureItems.filter((x) => Number(x.tnl) === Number(tnl));
+      }
+      function devObsItemsOfTnl(tnl) {
+        return devObsList().filter((x) => Number(x.tnl) === Number(tnl));
+      }
+      function allOperationalTnls() {
+        return uniqueNumbers([
+          ...activeRecords().map((r) => r.tnl),
+          ...state.futureItems.map((x) => x.tnl),
+          ...activeDevObsItems().map((x) => x.tnl),
+        ]);
+      }
+      function normalizedKey(text) {
+        return normalizeText(text).toLowerCase().replace(/\s+/g, " ").trim();
+      }
+      function stripReason(text) {
+        return cleanLine(text)
+          .replace(/^TNL\s*0*\d{1,3}\s*-?\s*/i, "")
+          .replace(/^com\s+/i, "com ")
+          .trim();
+      }
+      function isDevObsHeader(line) {
+        const h = normalizeHeader(line);
+        return h === "DESENVOLVIMENTO" || h === "OBSERVACOES" || h === "OBSERVACAO";
+      }
+      function makeDevObsItem({ kind, tnl, reason, raw, previousItems }) {
+        const cleanReason = String(reason || "").trim();
+        const extraRaw = String(raw || "").trim();
+        const displayText = `TNL ${pad(tnl)}${cleanReason ? ` - ${cleanReason}` : ""}${extraRaw ? `\n${extraRaw}` : ""}`;
+        const rawText = displayText;
+        const key = [kind, Number(tnl), normalizedKey(rawText)].join("|");
+        const old = (previousItems || []).find(
+          (x) => [x.kind, Number(x.tnl), normalizedKey(x.rawText || x.displayText)].join("|") === key,
+        );
+        return {
+          id: old?.id || state.nextDevObsId++,
+          kind,
+          tnl: Number(tnl),
+          displayText,
+          rawText,
+          reviewed: Boolean(old?.reviewed),
+          status: old?.status || "pending",
+        };
+      }
+      function parseTnlsLine(line, extraLines, kind, previousItems) {
+        const clean = cleanLine(line);
+        const extra = uniqueStrings(extraLines || []).join("\n");
+        const items = [];
+        let m = clean.match(/^TNL'?S?\s*-\s*(.+)$/i);
+        if (m) {
+          const parts = m[1].split(/\s*-\s*/).filter(Boolean);
+          const numbers = [];
+          const reasonParts = [];
+          let inReason = false;
+          parts.forEach((part) => {
+            const p = part.trim();
+            if (!inReason && /^0*\d{1,3}$/.test(p)) numbers.push(Number(p));
+            else {
+              inReason = true;
+              reasonParts.push(p);
+            }
+          });
+          const reason = reasonParts.join(" - ").trim();
+          numbers.forEach((tnl) => items.push(makeDevObsItem({ kind, tnl, reason, raw: extra, previousItems })));
+          if (items.length) return items;
+        }
+        m = clean.match(/^TNL\s*0*(\d{1,3}(?:\s*[\/,]\s*0*\d{1,3})+)\s*(?:-\s*)?(.+)?$/i);
+        if (m) {
+          const numbers = m[1].split(/[\/,]/).map((x) => Number(x.replace(/\D/g, ""))).filter(Number.isFinite);
+          const reason = String(m[2] || "").trim();
+          numbers.forEach((tnl) => items.push(makeDevObsItem({ kind, tnl, reason, raw: extra, previousItems })));
+          if (items.length) return items;
+        }
+        m = clean.match(/^TNL\s*0*(\d{1,3})\s*(?:-\s*)?(.+)?$/i);
+        if (m) {
+          items.push(makeDevObsItem({ kind, tnl: Number(m[1]), reason: String(m[2] || "").trim(), raw: extra, previousItems }));
+          return items;
+        }
+        return [];
+      }
+      function parseDevObsText(text, kind, previousItems) {
+        const entries = [];
+        const general = [];
+        let current = null;
+        String(text || "").split("\n").forEach((rawLine) => {
+          const line = String(rawLine || "").trim();
+          if (!line || isNA(line) || isDevObsHeader(line)) return;
+          if (extractTnl(line) || /^TNL'?S?\s*-/i.test(cleanLine(line))) {
+            if (current) entries.push(current);
+            current = { line, extra: [] };
+          } else if (current) {
+            current.extra.push(line);
+          } else {
+            general.push(cleanLine(line));
+          }
+        });
+        if (current) entries.push(current);
+        const items = entries.flatMap((entry) => parseTnlsLine(entry.line, entry.extra, kind, previousItems));
+        entries.forEach((entry) => {
+          if (!parseTnlsLine(entry.line, entry.extra, kind, previousItems).length) general.push(entry.line, ...(entry.extra || []));
+        });
+        return { items, general: uniqueStrings(general) };
+      }
+      function rebuildDevObsItemsFromFields() {
+        const previous = devObsList();
+        const dev = parseDevObsText(el("development").value, "development", previous);
+        const obs = parseDevObsText(el("observations").value, "observation", previous);
+        state.devObsItems = sortByTnl([...dev.items, ...obs.items]);
+        state.generalDevelopmentLines = dev.general;
+        state.generalObservationLines = obs.general;
+      }
+      function findDevObsItem(id) {
+        return devObsList().find((x) => Number(x.id) === Number(id));
+      }
+      function setDevObsStatus(id, status, reviewed = true) {
+        const item = findDevObsItem(id);
+        if (!item) return;
+        item.status = status;
+        item.reviewed = reviewed;
+      }
+      function consumeDevObs(id) {
+        if (id !== null && id !== undefined) setDevObsStatus(id, "resolved", true);
+      }
+      function addManualDevObs(tnl, kind, reason) {
+        const text = `TNL ${pad(tnl)} - ${reason || (kind === "development" ? "DESENVOLVIMENTO" : "OBSERVAÇÃO")}`;
+        state.devObsItems.push({
+          id: state.nextDevObsId++,
+          kind,
+          tnl: Number(tnl),
+          displayText: text,
+          rawText: text,
+          reviewed: true,
+          status: "kept",
+        });
+        state.devObsItems = sortByTnl(state.devObsItems);
+      }
+      function snapshotMachine(tnl) {
+        return {
+          tnl: Number(tnl),
+          records: JSON.parse(JSON.stringify(recordsOfTnl(tnl))),
+          future: JSON.parse(JSON.stringify(futureItemsOfTnl(tnl))),
+          devObs: JSON.parse(JSON.stringify(devObsItemsOfTnl(tnl))),
+          completed: {
+            maintenance: state.completed.maintenances.includes(Number(tnl)),
+            setup: state.completed.setups.includes(Number(tnl)),
+            adjustment: state.completed.adjustments.includes(Number(tnl)),
+          },
+          reviewed: Boolean(state.reviewedTnls[String(tnl)]),
+          resolved: Boolean(state.resolvedConflicts[String(tnl)]),
+          confirmed: state.confirmedDecisions[String(tnl)]
+            ? JSON.parse(JSON.stringify(state.confirmedDecisions[String(tnl)]))
+            : null,
+          reasons: {
+            maintenance: JSON.parse(JSON.stringify(state.reasons.maintenance[String(tnl)] || [])),
+            adjustment: state.reasons.adjustment[String(tnl)] || "",
+          },
+        };
+      }
+      function restoreSnapshot(s) {
+        if (!s) return;
+        const tnl = Number(s.tnl);
+        removeAllActiveRecords(tnl);
+        s.records.forEach((r) => addRecord(r));
+        removeFutureItemsByTnl(tnl);
+        s.future.forEach((x) => state.futureItems.push(x));
+        state.devObsItems = devObsList().filter((x) => Number(x.tnl) !== Number(tnl));
+        (s.devObs || []).forEach((x) => state.devObsItems.push(x));
+        ["maintenance", "setup", "adjustment"].forEach((c) => {
+          removeCompleted(tnl, c);
+          if (s.completed[c]) addCompleted(tnl, c);
+        });
+        s.reviewed ? (state.reviewedTnls[String(tnl)] = true) : delete state.reviewedTnls[String(tnl)];
+        s.resolved ? (state.resolvedConflicts[String(tnl)] = true) : delete state.resolvedConflicts[String(tnl)];
+        s.confirmed ? (state.confirmedDecisions[String(tnl)] = s.confirmed) : delete state.confirmedDecisions[String(tnl)];
+        if (s.reasons) {
+          s.reasons.maintenance?.length ? (state.reasons.maintenance[String(tnl)] = s.reasons.maintenance) : delete state.reasons.maintenance[String(tnl)];
+          s.reasons.adjustment ? (state.reasons.adjustment[String(tnl)] = s.reasons.adjustment) : delete state.reasons.adjustment[String(tnl)];
+        }
+        state.futureItems = sortByTnl(state.futureItems);
+        state.devObsItems = sortByTnl(state.devObsItems);
+      }
+      function summarizeMachine(tnl, fallback) {
+        const lines = [
+          ...recordsOfTnl(tnl).map((r) => r.displayText),
+          ...futureItemsOfTnl(tnl).map((x) => x.displayText),
+          ...devObsItemsOfTnl(tnl)
+            .filter((x) => !["resolved", "removed"].includes(x.status))
+            .map((x) => x.displayText),
+        ];
+        return lines.length ? uniqueStrings(lines).join(" | ") : fallback;
+      }
+      function detectSection(line) {
+        const h = normalizeHeader(line);
+        if (h === "MAQUINAS EM MANUTENCAO PARADA") return { type: "maintenance" };
+        if (h === "MAQUINAS EM MANUTENCAO PRODUZINDO") return { type: "maintenance_prod" };
+        if (h === "MAQUINAS EM SETUP" || h === "SETUP") return { type: "setup_active" };
+        if (h === "PROXIMOS SETUPS") return { type: "setup_start" };
+        const f = h.match(/^SETUPS?\s*([123])\s*T(?:URNO)?$/);
+        if (f) return { type: "future", heading: `SETUPS ${f[1]}°T` };
+        if (h === "MAQUINAS EM AJUSTES" || h === "MAQUINAS EM AJUSTE") return { type: "adjustment" };
+        if (h === "DESENVOLVIMENTO") return { type: "development_raw" };
+        if (h === "OBSERVACOES" || h === "OBSERVACAO") return { type: "observation_raw" };
+        if (["ORDENS PARA SELECAO", "BOM TRABALHO", "SITUACAO DO SETOR", "BANCADA CHECK POINT", "CQ FECHAMENTO", "CQ REINSPECAO", "AJUSTES CONCLUIDOS", "SETUPS CONCLUIDOS", "MANUTENCOES CONCLUIDAS", "RESTANTE OK"].includes(h)) return { type: "ignore" };
+        return null;
+      }
+      function importReport() {
+        const raw = el("rawInput").value;
+        const typedDev = el("development").value.trim();
+        const typedObs = el("observations").value.trim();
+        state = blank();
+        state.raw = raw;
+        const rawDevelopment = [];
+        const rawObservations = [];
+        let section = "ignore", futureHeading = nextTurnHeading();
+        raw.split("\n").forEach((rawLine) => {
+          const line = String(rawLine || "").trim();
+          if (!line) return;
+          const detected = detectSection(line);
+          if (detected) {
+            section = detected.type;
+            if (detected.heading) futureHeading = detected.heading;
+            return;
+          }
+          if (section === "development_raw") {
+            rawDevelopment.push(line);
+            return;
+          }
+          if (section === "observation_raw") {
+            rawObservations.push(line);
+            return;
+          }
+          const tnl = extractTnl(line);
+          if (!tnl) {
+            if (["maintenance", "maintenance_prod", "setup_active", "setup_start", "adjustment", "future"].includes(section) && !isNA(line)) {
+              state.reviewLines.push(`${SECTION_LABELS[section] || section}: ${line}`);
+            }
+            return;
+          }
+          const concluded = line.includes("✅"), emoji = extractEmoji(line), reason = extractReason(line);
+          if (section === "maintenance" || section === "maintenance_prod") {
+            if (reason) state.reasons.maintenance[String(tnl)] = uniqueStrings([...savedMaintenanceReasons(tnl), reason]);
+            if (concluded) {
+              addCompleted(tnl, "maintenance");
+              return;
+            }
+            addRecord(createRecord({ tnl, type: section, displayText: section === "maintenance" ? maintenanceText(tnl, reason) : maintenanceProducingText(tnl, reason), rawText: line, sourceSection: section, emoji }));
+            return;
+          }
+          if (section === "setup_active" || section === "setup_start") {
+            if (concluded) {
+              addCompleted(tnl, "setup");
+              return;
+            }
+            addRecord(createRecord({ tnl, type: section, displayText: section === "setup_active" ? setupActiveText(tnl, emoji) : setupStartText(tnl, emoji), rawText: line, sourceSection: section, emoji }));
+            return;
+          }
+          if (section === "adjustment") {
+            if (concluded) {
+              addCompleted(tnl, "adjustment");
+              return;
+            }
+            addRecord(createRecord({ tnl, type: "adjustment", displayText: adjustmentText(tnl, ""), rawText: line, sourceSection: "adjustment", emoji }));
+            return;
+          }
+          if (section === "future") {
+            if (concluded) {
+              addCompleted(tnl, "setup");
+              return;
+            }
+            addFutureItem({ heading: futureHeading, tnl, emoji, displayText: normalizeTnlLine(line), rawText: line, sourceSection: "future", reviewed: false });
+          }
+        });
+        state.records = sortByTnl(state.records);
+        el("development").value = rawDevelopment.length ? rawDevelopment.join("\n") : typedDev;
+        el("observations").value = rawObservations.length ? rawObservations.join("\n") : typedObs;
+        rebuildDevObsItemsFromFields();
+        updateEverything();
+        saveSession();
+        toast("Relatório importado");
+      }
+      function closeTransitionModal() {
+        pendingTransition = null;
+        pendingSetupContext = null;
+        el("transitionOptions").innerHTML = "";
+        el("transitionModal").classList.remove("show");
+      }
+      function openSetupChoice(tnl, context = null) {
+        pendingSetupContext = context;
+        el("transitionTitle").textContent = `TNL ${pad(tnl)} — SETUP`;
+        el("transitionSubtitle").textContent = "Como essa TNL vai passar para o próximo turno?";
+        el("transitionOptions").innerHTML =
+          `<button class="modal-btn yes" onclick="chooseSetupFromModal(${tnl},'active')">EM SETUP</button>` +
+          `<button class="modal-btn keep" onclick="chooseSetupFromModal(${tnl},'start')">INICIAR SETUP</button>` +
+          `<button class="modal-btn special" onclick="setupFutureOnly(${tnl})">SETUP ${currentNextTurn()}°T</button>` +
+          `<button class="modal-btn remove" onclick="setupAfterMaintenance(${tnl})">APÓS MANUTENÇÃO</button>`;
+        el("transitionModal").classList.add("show");
+      }
+      function chooseSetupFromModal(tnl, mode) {
+        const context = pendingSetupContext;
+        closeTransitionModal();
+        chooseSetup(tnl, mode, context?.before || null, context?.devObsId);
+      }
+      function setupFutureOnly(tnl) {
+        const context = pendingSetupContext;
+        const before = context?.before || snapshotMachine(tnl);
+        if (context?.devObsId) consumeDevObs(context.devObsId);
+        moveSetupToFutureOnly(tnl, setupEmoji(tnl));
+        closeTransitionModal();
+        commitDecision(tnl, before, `SETUP ${currentNextTurn()}°T`);
+      }
+      function setupAfterMaintenance(tnl) {
+        const context = pendingSetupContext;
+        const before = context?.before || snapshotMachine(tnl);
+        if (context?.devObsId) consumeDevObs(context.devObsId);
+        moveSetupToFutureAfterMaintenance(tnl, setupEmoji(tnl));
+        closeTransitionModal();
+        commitDecision(tnl, before, "APÓS MANUTENÇÃO");
+      }
+      function chooseSetup(tnl, mode, beforeOverride = null, devObsId = null) {
+        const before = beforeOverride || snapshotMachine(tnl), emoji = setupEmoji(tnl);
+        startTransition({
+          tnl,
+          targetCategory: "setup",
+          applyTarget: () => {
+            if (devObsId) consumeDevObs(devObsId);
+            setSetup(tnl, mode, emoji);
+          },
+          label: mode === "start" ? "INICIAR SETUP" : "VAI PASSAR EM SETUP",
+          before,
+        });
+      }
+      function applyAdjustment(tnl, reason, beforeOverride = null, devObsId = null) {
+        const before = beforeOverride || snapshotMachine(tnl);
+        startTransition({
+          tnl,
+          targetCategory: "adjustment",
+          applyTarget: () => {
+            if (devObsId) consumeDevObs(devObsId);
+            setAdjustment(tnl, reason);
+          },
+          label: `VAI PASSAR EM AJUSTE — ${reason}`,
+          before,
+        });
+      }
+      function applyMaintenance(tnl, reasons, producing, beforeOverride = null, devObsId = null) {
+        const list = normalizeReasonList(reasons), before = beforeOverride || snapshotMachine(tnl), summary = list.join(" + ") || "SEM MOTIVO INFORMADO";
+        startTransition({
+          tnl,
+          targetCategory: "maintenance",
+          applyTarget: () => {
+            if (devObsId) consumeDevObs(devObsId);
+            setMaintenance(tnl, list, producing);
+          },
+          label: producing ? `MANUTENÇÃO PRODUZINDO — ${summary}` : `VAI PASSAR EM MANUTENÇÃO — ${summary}`,
+          before,
+        });
+      }
+      function openReasonModal({ tnl, action, title, subtitle, before = null, devObsId = null }) {
+        pendingReason = { tnl: Number(tnl), action, before, devObsId };
+        el("reasonTitle").textContent = title;
+        el("reasonSubtitle").textContent = subtitle;
+        el("reasonInput").value = "";
+        el("reasonModal").classList.add("show");
+        setTimeout(() => el("reasonInput").focus(), 80);
+      }
+      function saveReason() {
+        if (!pendingReason) return;
+        const reason = el("reasonInput").value.trim();
+        if (!reason) {
+          toast("Digite o motivo");
+          return;
+        }
+        const { tnl, action, before, devObsId } = pendingReason;
+        closeReasonModal();
+        action === "adjustment" ? applyAdjustment(tnl, reason, before, devObsId) : applyMaintenance(tnl, [reason], action === "maintenance_prod", before, devObsId);
+      }
+      function removeMachineFromReport(tnl) {
+        const before = snapshotMachine(tnl);
+        removeAllActiveRecords(tnl);
+        removeFutureItemsByTnl(tnl);
+        devObsItemsOfTnl(tnl).forEach((x) => (x.status = "removed", x.reviewed = true));
+        ["maintenance", "setup", "adjustment"].forEach((c) => removeCompleted(tnl, c));
+        delete state.reasons.adjustment[String(tnl)];
+        delete state.reasons.maintenance[String(tnl)];
+        commitDecision(tnl, before, "REMOVIDA DO RELATÓRIO");
+      }
+      function saveManualMachine() {
+        const tnl = Number(String(el("addMachine").value).replace(/\D/g, "")), status = el("addStatus").value, reason = el("addReason").value.trim();
+        if (!Number.isInteger(tnl) || tnl < 1 || tnl > 999) {
+          toast("Informe uma TNL válida");
+          return;
+        }
+        closeAddModal();
+        if (status === "development" || status === "observation") {
+          const before = snapshotMachine(tnl);
+          addManualDevObs(tnl, status, reason);
+          commitDecision(tnl, before, status === "development" ? "DESENVOLVIMENTO" : "OBSERVAÇÃO");
+          return;
+        }
+        if (status === "adjustment") {
+          reason ? applyAdjustment(tnl, reason) : chooseAdjustment(tnl);
+          return;
+        }
+        if (status === "maintenance" || status === "maintenance_prod") {
+          reason ? applyMaintenance(tnl, [reason], status === "maintenance_prod") : openReasonModal({ tnl, action: status, title: `Motivo da manutenção — TNL ${pad(tnl)}`, subtitle: "Informe o motivo da manutenção." });
+          return;
+        }
+        if (status === "setup_future") {
+          const before = snapshotMachine(tnl);
+          addFutureItem({ heading: nextTurnHeading(), tnl, displayText: futureSetupText(tnl), rawText: futureSetupText(tnl), sourceSection: "manual_future", reviewed: true });
+          commitDecision(tnl, before, `SETUP ${currentNextTurn()}°T`);
+          return;
+        }
+        chooseSetup(tnl, status === "setup_start" ? "start" : "active");
+      }
+      function noteReason(item) {
+        return stripReason(String(item.displayText || item.rawText || "").split("\n")[0]);
+      }
+      function hasWord(item, words) {
+        const key = normalizedKey(`${item.rawText || ""} ${item.displayText || ""}`);
+        return words.some((w) => key.includes(normalizedKey(w)));
+      }
+      function buildQuestionForDevObs(item) {
+        const tnl = pad(item.tnl), reason = noteReason(item) || "informação registrada";
+        if (item.kind === "development") {
+          return hasWord(item, ["programação", "programacao"])
+            ? `A TNL ${tnl} ainda está com a Programação ou já voltou para o CNC?`
+            : `A TNL ${tnl} continua em desenvolvimento por “${reason}” ou já foi liberada para o CNC?`;
+        }
+        if (hasWord(item, ["programação", "programacao"])) return `A TNL ${tnl} ainda está rodando para a Programação ou já voltou para o CNC?`;
+        if (hasWord(item, ["teste"])) return `A TNL ${tnl} continua em ${reason.toLowerCase()} ou essa observação já foi resolvida?`;
+        if (hasWord(item, ["sem ordem"])) return `A TNL ${tnl} continua sem ordem ou essa observação já foi resolvida?`;
+        if (hasWord(item, ["variação", "variacao", "punção", "puncao", "medida", "acabamento", "ferramenta"])) return `A TNL ${tnl} ainda está com “${reason}” ou essa observação já foi resolvida?`;
+        return `A observação da TNL ${tnl} ainda continua válida para a passagem?`;
+      }
+      function keepDevObs(id) {
+        const item = findDevObsItem(id);
+        if (!item) return;
+        const before = snapshotMachine(item.tnl);
+        item.status = "kept";
+        item.reviewed = true;
+        commitDecision(item.tnl, before, item.kind === "development" ? "MANTER DESENVOLVIMENTO" : "MANTER OBSERVAÇÃO");
+      }
+      function resolveDevObs(id) {
+        const item = findDevObsItem(id);
+        if (!item) return;
+        const before = snapshotMachine(item.tnl);
+        item.status = "resolved";
+        item.reviewed = true;
+        commitDecision(item.tnl, before, item.kind === "development" ? "JÁ VOLTOU PARA O CNC" : "OBSERVAÇÃO RESOLVIDA");
+      }
+      function removeDevObs(id) {
+        const item = findDevObsItem(id);
+        if (!item) return;
+        const before = snapshotMachine(item.tnl);
+        item.status = "removed";
+        item.reviewed = true;
+        commitDecision(item.tnl, before, item.kind === "development" ? "DESENVOLVIMENTO REMOVIDO" : "OBSERVAÇÃO REMOVIDA");
+      }
+      function devObsToSetup(id) {
+        const item = findDevObsItem(id);
+        if (!item) return;
+        openSetupChoice(item.tnl, { before: snapshotMachine(item.tnl), devObsId: id });
+      }
+      function devObsToAdjustment(id) {
+        const item = findDevObsItem(id);
+        if (!item) return;
+        openReasonModal({ tnl: item.tnl, action: "adjustment", title: `Motivo do ajuste — TNL ${pad(item.tnl)}`, subtitle: "Informe o motivo técnico do ajuste. A informação sairá de Desenvolvimento/Observações.", before: snapshotMachine(item.tnl), devObsId: id });
+      }
+      function devObsToMaintenance(id) {
+        const item = findDevObsItem(id);
+        if (!item) return;
+        openReasonModal({ tnl: item.tnl, action: "maintenance", title: `Motivo da manutenção — TNL ${pad(item.tnl)}`, subtitle: "Informe o motivo da manutenção. A informação sairá de Desenvolvimento/Observações.", before: snapshotMachine(item.tnl), devObsId: id });
+      }
+      function activeGroupsForCell(cell) {
+        const machines = machinesForCell(cell), groups = new Map();
+        activeRecords().filter((r) => machines.includes(Number(r.tnl))).forEach((r) => {
+          if (!groups.has(r.tnl)) groups.set(r.tnl, []);
+          groups.get(r.tnl).push(r);
+        });
+        return [...groups.entries()].map(([tnl, records]) => ({ kind: "active", tnl: Number(tnl), records: sortByTnl(records) })).filter((g) => !state.reviewedTnls[String(g.tnl)] || (hasConflict(g.tnl) && !state.resolvedConflicts[String(g.tnl)]));
+      }
+      function futureGroupsForCell(cell) {
+        const machines = machinesForCell(cell);
+        return state.futureItems.filter((x) => machines.includes(Number(x.tnl)) && !x.reviewed).map((item) => ({ kind: "future", tnl: Number(item.tnl), item }));
+      }
+      function devObsGroupsForCell(cell) {
+        const machines = machinesForCell(cell);
+        return activeDevObsItems().filter((x) => machines.includes(Number(x.tnl)) && !x.reviewed).map((item) => ({ kind: "devobs", tnl: Number(item.tnl), item }));
+      }
+      function pendingGroupsForCell(cell) {
+        return [...activeGroupsForCell(cell), ...futureGroupsForCell(cell), ...devObsGroupsForCell(cell)].sort((a, b) => a.tnl - b.tnl || a.kind.localeCompare(b.kind));
+      }
+      function activeGroupsForSelectedCell() { return activeGroupsForCell(el("cellSelect").value); }
+      function futureGroupsForSelectedCell() { return futureGroupsForCell(el("cellSelect").value); }
+      function cellOverviewFor(cell) {
+        const pending = pendingGroupsForCell(cell), conflicts = pending.filter((g) => g.kind === "active" && hasConflict(g.tnl) && !state.resolvedConflicts[String(g.tnl)]).length;
+        return { pending: pending.length, conflicts };
+      }
+      function renderDevObsCard(group) {
+        const item = group.item, isDev = item.kind === "development", programming = hasWord(item, ["programação", "programacao"]);
+        const badgeText = isDev ? "DESENVOLVIMENTO" : "OBSERVAÇÃO";
+        const keepText = isDev ? (programming ? "AINDA ESTÁ COM A PROGRAMAÇÃO" : "MANTER DESENVOLVIMENTO") : "MANTER OBSERVAÇÃO";
+        const resolveText = isDev ? (programming ? "JÁ VOLTOU PARA O CNC" : "LIBERADA PARA O CNC") : "OBSERVAÇÃO RESOLVIDA";
+        return `<article class="machine-card devobs ${isDev ? "development" : ""}"><div class="machine-head"><div class="machine-number">TNL ${pad(item.tnl)}</div><span class="badge amber">${esc(badgeText)}</span></div><div class="source-block"><div class="source-name">${esc(badgeText)} INFORMADO</div><div class="source-line">${esc(item.rawText || item.displayText)}</div></div><div class="round-question"><div class="round-question-label">PERGUNTA PARA A RONDA</div><div class="round-question-text">${esc(buildQuestionForDevObs(item))}</div></div><div class="card-actions"><button class="devobs-btn keep" onclick="keepDevObs(${item.id})">${esc(keepText)}</button><button class="devobs-btn resolve" onclick="resolveDevObs(${item.id})">${esc(resolveText)}</button><button class="devobs-btn adjust" onclick="devObsToAdjustment(${item.id})">VAI PASSAR EM AJUSTE</button><button class="devobs-btn setup" onclick="devObsToSetup(${item.id})">VAI PASSAR EM SETUP</button><button class="devobs-btn maintenance" onclick="devObsToMaintenance(${item.id})">VAI PASSAR EM MANUTENÇÃO</button><button class="devobs-btn remove" onclick="removeDevObs(${item.id})">REMOVER DO RELATÓRIO</button></div></article>`;
+      }
+      function renderSelectedCell() {
+        syncUnmappedCellOption();
+        refreshMachineSelect();
+        const cards = pendingGroupsForCell(el("cellSelect").value), cell = el("cellSelect").value, machines = machinesForCell(cell);
+        const activeTnls = uniqueNumbers(activeRecords().filter((r) => machines.includes(Number(r.tnl))).map((r) => r.tnl));
+        const future = state.futureItems.filter((x) => machines.includes(Number(x.tnl)));
+        const devobs = activeDevObsItems().filter((x) => machines.includes(Number(x.tnl)));
+        const total = activeTnls.length + future.length + devobs.length;
+        const decided = activeTnls.filter((t) => state.reviewedTnls[String(t)]).length + future.filter((x) => x.reviewed).length + devobs.filter((x) => x.reviewed).length;
+        const percent = total ? Math.round((decided / total) * 100) : 100;
+        el("progressFill").style.width = `${percent}%`;
+        const cellLabel = cell === "SEM_MAPA" ? "Sem célula mapeada" : `Célula ${cell}`;
+        el("progressLabel").textContent = total ? `${cellLabel}: ${decided}/${total} decisões concluídas` : `${cellLabel}: nenhuma pendência registrada`;
+        el("machineList").innerHTML = cards.length
+          ? cards.map((c, i) => {
+              const html = c.kind === "active" ? renderActiveCard(c) : c.kind === "future" ? renderFutureCard(c) : renderDevObsCard(c);
+              return html.replace("<article ", `<article style="--card-i:${i}" `);
+            }).join("")
+          : `<div class="empty">Nenhuma pendência aguardando decisão nesta célula.</div>`;
+        renderCellOverview();
+      }
+      function formatList(lines) {
+        return lines.length ? uniqueStrings(lines).join("\n") : "N/A";
+      }
+      function reportDevLines() {
+        return uniqueStrings([...(state.generalDevelopmentLines || []), ...sortByTnl(devObsList().filter((x) => x.kind === "development" && !["resolved", "removed"].includes(x.status))).map((x) => x.displayText)]);
+      }
+      function reportObsLines() {
+        return uniqueStrings([...(state.generalObservationLines || []), ...sortByTnl(devObsList().filter((x) => x.kind === "observation" && !["resolved", "removed"].includes(x.status))).map((x) => x.displayText)]);
+      }
+      function generateReport() {
+        rebuildDevObsItemsFromFields();
+        const maint = sortByTnl(activeRecords().filter((r) => r.type === "maintenance")).map((r) => r.displayText),
+          prod = sortByTnl(activeRecords().filter((r) => r.type === "maintenance_prod")).map((r) => r.displayText),
+          setup = sortByTnl(activeRecords().filter((r) => r.type === "setup_active" || r.type === "setup_start")).map((r) => r.displayText),
+          adj = sortByTnl(activeRecords().filter((r) => r.type === "adjustment")).map((r) => r.displayText),
+          shift = `${el("currentShift").value}° TURNO`;
+        el("finalOutput").value =
+          `*${shift}*\n*SITUAÇÃO DO SETOR ⬇️⬇️⬇️*\n\n*BANCADA – CHECK POINT:*\n${el("checkpoint").value || "00"}\n\n*ORDENS PARA SELEÇÃO:*\n\nSeleção 1° turno: ${el("sel1").value || "00"}\nSeleção 2° turno: ${el("sel2").value || "00"}\nSeleção 3° turno: ${el("sel3").value || "00"}\nOs 3 turnos: ${el("selAll").value || "00"}\nSeleção TNC: ${el("selTnc").value || "00"}\n\n*CQ FECHAMENTO:*\n${el("cqFechamento").value || "00"}\n\n*CQ REINSPEÇÃO:*\n${el("cqReinspecao").value || "00"}\n\n*MÁQUINAS EM MANUTENÇÃO PARADA:*\n${formatList(maint)}\n\n*MÁQUINAS EM MANUTENÇÃO PRODUZINDO:*\n${formatList(prod)}\n\n*SETUP:*\n${formatList(setup)}\n\n*MAQUINAS EM AJUSTES:*\n${formatList(adj)}\n\n${renderFutureBlocks()}\n\n*AJUSTES CONCLUÍDOS:*\n${formatCompleted(state.completed.adjustments)}\n\n*SETUPS CONCLUÍDOS:*\n${formatCompleted(state.completed.setups)}\n\n*MANUTENÇÕES CONCLUÍDAS:*\n${formatCompleted(state.completed.maintenances)}\n\n*DESENVOLVIMENTO:*\n${formatList(reportDevLines())}\n\n*OBSERVAÇÕES:*\n${formatList(reportObsLines())}\n\n*RESTANTE OK !*`;
+        saveSession();
+      }
+      function setKpiValue(id, value) {
+        const node = el(id), text = String(value);
+        if (!node) return;
+        if (node.textContent !== text) {
+          node.textContent = text;
+          node.classList.remove("bump");
+          void node.offsetWidth;
+          node.classList.add("bump");
+        }
+      }
+      function updateKpis() {
+        const pendingActive = uniqueNumbers(activeRecords().filter((r) => !state.reviewedTnls[String(r.tnl)]).map((r) => r.tnl)).length,
+          pendingFuture = state.futureItems.filter((x) => !x.reviewed).length,
+          pendingDevObs = activeDevObsItems().filter((x) => !x.reviewed).length,
+          completed = Object.keys(state.confirmedDecisions || {}).length;
+        setKpiValue("kpiPending", pendingActive + pendingFuture + pendingDevObs);
+        setKpiValue("kpiConflicts", unresolvedConflicts().length);
+        setKpiValue("kpiCompleted", completed);
+      }
+      function fieldsSnapshot() {
+        return {
+          currentShift: el("currentShift").value,
+          checkpoint: el("checkpoint").value,
+          cqFechamento: el("cqFechamento").value,
+          cqReinspecao: el("cqReinspecao").value,
+          sel1: el("sel1").value,
+          sel2: el("sel2").value,
+          sel3: el("sel3").value,
+          selAll: el("selAll").value,
+          selTnc: el("selTnc").value,
+          development: el("development").value,
+          observations: el("observations").value,
+          selectedCell: el("cellSelect").value,
+          finalOutput: el("finalOutput").value,
+        };
+      }
+      function hydrate(saved) {
+        const b = blank(), s = saved || {}, maintenance = {};
+        Object.entries(s.reasons?.maintenance || {}).forEach(([k, v]) => (maintenance[k] = normalizeReasonList(v)));
+        return {
+          ...b,
+          ...s,
+          reasons: { maintenance, adjustment: { ...b.reasons.adjustment, ...(s.reasons?.adjustment || {}) } },
+          completed: { adjustments: [...(s.completed?.adjustments || [])], setups: [...(s.completed?.setups || [])], maintenances: [...(s.completed?.maintenances || [])] },
+          reviewedTnls: { ...(s.reviewedTnls || {}) },
+          resolvedConflicts: { ...(s.resolvedConflicts || {}) },
+          confirmedDecisions: { ...(s.confirmedDecisions || {}) },
+          actionHistory: [...(s.actionHistory || [])],
+          futureItems: [...(s.futureItems || [])],
+          records: [...(s.records || [])],
+          reviewLines: [...(s.reviewLines || [])],
+          devObsItems: [...(s.devObsItems || [])],
+          generalDevelopmentLines: [...(s.generalDevelopmentLines || [])],
+          generalObservationLines: [...(s.generalObservationLines || [])],
+        };
+      }
+      function restoreSession() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return false;
+          const p = JSON.parse(raw);
+          state = hydrate(p.state);
+          state.decisionOrder = Math.max(Number(state.decisionOrder || 0), ...Object.values(state.confirmedDecisions || {}).map((d) => Number(d.order || 0)));
+          el("rawInput").value = state.raw || "";
+          applyFields(p.fields);
+          rebuildDevObsItemsFromFields();
+          return true;
+        } catch (e) {
+          console.error(e);
+          return false;
+        }
+      }
+      function handleExtraInput() {
+        rebuildDevObsItemsFromFields();
+        updateEverything();
+        saveSession();
+      }
+      function clearSession() {
+        if (!window.confirm("Deseja limpar toda a sessão?")) return;
+        localStorage.removeItem(STORAGE_KEY);
+        state = blank();
+        el("rawInput").value = "";
+        applyFields({ currentShift: "2", checkpoint: "00", cqFechamento: "00", cqReinspecao: "00", sel1: "00", sel2: "00", sel3: "00", selAll: "00", selTnc: "00", development: "", observations: "", selectedCell: "01", finalOutput: "" });
+        updateEverything();
+        toast("Sessão limpa");
+      }
+      function bindEvents() {
+        el("btnImport").onclick = importReport;
+        el("btnClear").onclick = clearSession;
+        el("btnUndo").onclick = undoLastAction;
+        el("btnOpenAdd").onclick = openAddModal;
+        el("btnCloseAdd").onclick = closeAddModal;
+        el("btnSaveAdd").onclick = saveManualMachine;
+        el("btnSaveReason").onclick = saveReason;
+        el("btnCloseReason").onclick = closeReasonModal;
+        el("btnCloseTransition").onclick = closeTransitionModal;
+        el("btnConfirmEdit").onclick = confirmEdit;
+        el("btnCloseEdit").onclick = closeEditModal;
+        el("btnRefresh").onclick = () => { rebuildDevObsItemsFromFields(); generateReport(); renderSelectedCell(); toast("Relatório atualizado"); };
+        el("btnCopy").onclick = copyReport;
+        el("cellSelect").onchange = () => { renderSelectedCell(); saveSession(); };
+        el("rawInput").oninput = saveSession;
+        ["development", "observations"].forEach((id) => { el(id).oninput = handleExtraInput; el(id).onchange = handleExtraInput; });
+        ["currentShift", "checkpoint", "cqFechamento", "cqReinspecao", "sel1", "sel2", "sel3", "selAll", "selTnc"].forEach((id) => {
+          el(id).oninput = () => { generateReport(); saveSession(); };
+          el(id).onchange = () => { generateReport(); saveSession(); };
+        });
+        el("finalOutput").oninput = saveSession;
+        [["addModal", closeAddModal], ["reasonModal", closeReasonModal], ["transitionModal", closeTransitionModal], ["editModal", closeEditModal]].forEach(([id, close]) => (el(id).onclick = (e) => { if (e.target.id === id) close(); }));
+      }
+
+
+      // PATCH V22 — célula geral/sem máquina + TNL 006 e 144 na Célula 10.
+      const GENERAL_CELL = "GERAL";
+      CELULAS["10"] = uniqueNumbers([...(CELULAS["10"] || []), 6, 144]);
+
+      function blank() {
+        return {
+          raw: "",
+          records: [],
+          futureItems: [],
+          devObsItems: [],
+          generalInfoItems: [],
+          generalDevelopmentLines: [],
+          generalObservationLines: [],
+          reviewLines: [],
+          reasons: { maintenance: {}, adjustment: {} },
+          completed: { adjustments: [], setups: [], maintenances: [] },
+          reviewedTnls: {},
+          resolvedConflicts: {},
+          confirmedDecisions: {},
+          decisionOrder: 0,
+          actionHistory: [],
+          nextId: 1,
+          nextFutureId: 1,
+          nextDevObsId: 1,
+          nextGeneralId: 1,
+        };
+      }
+      function generalInfoList() {
+        if (!Array.isArray(state.generalInfoItems)) state.generalInfoItems = [];
+        if (!Number.isFinite(Number(state.nextGeneralId))) state.nextGeneralId = 1;
+        return state.generalInfoItems;
+      }
+      function visibleGeneralItems() {
+        return generalInfoList().filter((x) => x.status !== "removed");
+      }
+      function pendingGeneralItems() {
+        return visibleGeneralItems().filter((x) => !x.reviewed);
+      }
+      function hasGeneralInfoItems() {
+        return visibleGeneralItems().length > 0;
+      }
+      function makeGeneralInfoItem({ kind, text, previousItems }) {
+        const rawText = cleanLine(text);
+        const key = [kind, normalizedKey(rawText)].join("|");
+        const old = (previousItems || []).find((x) => [x.kind, normalizedKey(x.rawText || x.text)].join("|") === key);
+        return {
+          id: old?.id || state.nextGeneralId++,
+          kind,
+          text: rawText,
+          rawText,
+          reviewed: Boolean(old?.reviewed),
+          status: old?.status || "pending",
+        };
+      }
+      function isContinuationLine(line) {
+        const clean = cleanLine(line);
+        return /^\(.+\)$/.test(clean) || /^\d{4,}$/.test(clean) || /^OP\s*[:\-]?\s*\d+/i.test(clean) || /^ITEM\s*[:\-]?\s*/i.test(clean);
+      }
+      function parseDevObsText(text, kind, previousItems, previousGeneralItems = []) {
+        const entries = [];
+        const generalItems = [];
+        let current = null;
+        function pushCurrent() {
+          if (current) entries.push(current);
+          current = null;
+        }
+        String(text || "").split("\n").forEach((rawLine) => {
+          const line = String(rawLine || "").trim();
+          if (!line || isNA(line) || isDevObsHeader(line)) return;
+          const lineHasMachine = extractTnl(line) || /^TNL'?S?\s*-/i.test(cleanLine(line));
+          if (lineHasMachine) {
+            pushCurrent();
+            current = { line, extra: [] };
+            return;
+          }
+          if (current && isContinuationLine(line)) {
+            current.extra.push(line);
+            return;
+          }
+          pushCurrent();
+          generalItems.push(makeGeneralInfoItem({ kind, text: line, previousItems: previousGeneralItems }));
+        });
+        pushCurrent();
+        const items = [];
+        entries.forEach((entry) => {
+          const parsed = parseTnlsLine(entry.line, entry.extra, kind, previousItems);
+          if (parsed.length) items.push(...parsed);
+          else generalItems.push(makeGeneralInfoItem({ kind, text: [entry.line, ...(entry.extra || [])].join("\n"), previousItems: previousGeneralItems }));
+        });
+        return { items, generalItems };
+      }
+      function rebuildDevObsItemsFromFields() {
+        const previous = devObsList();
+        const previousGeneral = generalInfoList();
+        const dev = parseDevObsText(el("development").value, "development", previous, previousGeneral);
+        const obs = parseDevObsText(el("observations").value, "observation", previous, previousGeneral);
+        state.devObsItems = sortByTnl([...dev.items, ...obs.items]);
+        state.generalInfoItems = [...dev.generalItems, ...obs.generalItems].sort((a, b) =>
+          String(a.kind).localeCompare(String(b.kind), "pt-BR") || String(a.text).localeCompare(String(b.text), "pt-BR"),
+        );
+        state.generalDevelopmentLines = [];
+        state.generalObservationLines = [];
+      }
+      function syncUnmappedCellOption() {
+        const select = el("cellSelect");
+        const existingGeneral = select.querySelector('option[value="GERAL"]');
+        const existingUnmapped = select.querySelector('option[value="SEM_MAPA"]');
+        if (hasGeneralInfoItems() && !existingGeneral) {
+          select.insertAdjacentHTML("afterbegin", '<option value="GERAL">⚠ GERAL / SEM MÁQUINA</option>');
+        }
+        if (!hasGeneralInfoItems()) {
+          existingGeneral?.remove();
+          if (select.value === "GERAL") select.value = "01";
+        }
+        if (hasUnmappedTnls() && !existingUnmapped) {
+          select.insertAdjacentHTML("beforeend", '<option value="SEM_MAPA">⚠ SEM CÉLULA</option>');
+        }
+        if (!hasUnmappedTnls()) {
+          existingUnmapped?.remove();
+          if (select.value === "SEM_MAPA") select.value = "01";
+        }
+      }
+      function visibleCellOrder() {
+        const cells = [...CELL_ORDER];
+        if (hasUnmappedTnls()) cells.push("SEM_MAPA");
+        return hasGeneralInfoItems() ? [GENERAL_CELL, ...cells] : cells;
+      }
+      function machinesForCell(cell) {
+        if (cell === GENERAL_CELL) return [];
+        return cell === "SEM_MAPA" ? unmappedTnls() : CELULAS[cell] || [];
+      }
+      function generalGroupsForCell(cell) {
+        if (cell !== GENERAL_CELL) return [];
+        return pendingGeneralItems().map((item) => ({ kind: "general", tnl: 0, item }));
+      }
+      function pendingGroupsForCell(cell) {
+        if (cell === GENERAL_CELL) return generalGroupsForCell(cell);
+        return [...activeGroupsForCell(cell), ...futureGroupsForCell(cell), ...devObsGroupsForCell(cell)].sort((a, b) => a.tnl - b.tnl || a.kind.localeCompare(b.kind));
+      }
+      function cellOverviewFor(cell) {
+        if (cell === GENERAL_CELL) return { pending: pendingGeneralItems().length, conflicts: 0, future: 0 };
+        const pending = pendingGroupsForCell(cell),
+          conflicts = pending.filter((g) => g.kind === "active" && hasConflict(g.tnl) && !state.resolvedConflicts[String(g.tnl)]).length,
+          future = pending.filter((g) => g.kind === "future").length;
+        return { pending: pending.length, conflicts, future };
+      }
+      function renderGeneralInfoCard(group) {
+        const item = group.item;
+        const isDev = item.kind === "development";
+        const title = isDev ? "DESENVOLVIMENTO GERAL" : "OBSERVAÇÃO GERAL";
+        const question = isDev
+          ? "Essa informação geral de desenvolvimento ainda deve permanecer no relatório final?"
+          : "Essa observação geral ainda deve permanecer no relatório final?";
+        return `<article class="machine-card general-info"><div class="machine-head"><div class="machine-number">GERAL / SEM MÁQUINA</div><span class="badge general">${esc(title)}</span></div><div class="source-block"><div class="source-name">INFORMAÇÃO SEM TNL</div><div class="source-line">${esc(item.rawText || item.text)}</div></div><div class="round-question"><div class="round-question-label">PERGUNTA PARA A PASSAGEM</div><div class="round-question-text">${esc(question)}</div></div><div class="card-actions"><button class="future-btn setup" onclick="keepGeneralInfo(${item.id})">MANTER NO RELATÓRIO</button><button class="future-btn remove" onclick="removeGeneralInfo(${item.id})">REMOVER DO RELATÓRIO</button></div></article>`;
+      }
+      function snapshotGeneralInfo(id) {
+        const item = generalInfoList().find((x) => Number(x.id) === Number(id));
+        const key = `G${id}`;
+        return {
+          id: Number(id),
+          item: item ? JSON.parse(JSON.stringify(item)) : null,
+          confirmed: state.confirmedDecisions[key] ? JSON.parse(JSON.stringify(state.confirmedDecisions[key])) : null,
+        };
+      }
+      function restoreGeneralSnapshot(s) {
+        if (!s) return;
+        state.generalInfoItems = generalInfoList().filter((x) => Number(x.id) !== Number(s.id));
+        if (s.item) state.generalInfoItems.push(s.item);
+        const key = `G${s.id}`;
+        if (s.confirmed) state.confirmedDecisions[key] = s.confirmed;
+        else delete state.confirmedDecisions[key];
+      }
+      function commitGeneralInfoDecision(id, before, label) {
+        const item = generalInfoList().find((x) => Number(x.id) === Number(id));
+        if (!item) return;
+        const key = `G${id}`;
+        state.confirmedDecisions[key] = {
+          general: true,
+          key,
+          id: Number(id),
+          label,
+          time: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
+          before,
+          order: (state.decisionOrder = Number(state.decisionOrder || 0) + 1),
+        };
+        state.actionHistory.push({ kind: "general", before });
+        updateEverything();
+        saveSession();
+        toast("Informação geral atualizada");
+      }
+      function keepGeneralInfo(id) {
+        const item = generalInfoList().find((x) => Number(x.id) === Number(id));
+        if (!item) return;
+        const before = snapshotGeneralInfo(id);
+        item.reviewed = true;
+        item.status = "kept";
+        commitGeneralInfoDecision(id, before, `MANTIDO — ${item.rawText || item.text}`);
+      }
+      function removeGeneralInfo(id) {
+        const item = generalInfoList().find((x) => Number(x.id) === Number(id));
+        if (!item) return;
+        const before = snapshotGeneralInfo(id);
+        item.reviewed = true;
+        item.status = "removed";
+        commitGeneralInfoDecision(id, before, `REMOVIDO — ${item.rawText || item.text}`);
+      }
+      function undoLastAction() {
+        const last = state.actionHistory.pop();
+        if (!last) {
+          toast("Nenhuma ação para desfazer");
+          return;
+        }
+        if (last.kind === "general") restoreGeneralSnapshot(last.before);
+        else restoreSnapshot(last.before);
+        updateEverything();
+        saveSession();
+        toast("Última ação desfeita");
+      }
+      function renderCellOverview() {
+        const selected = el("cellSelect").value;
+        el("cellOverview").innerHTML = visibleCellOrder()
+          .map((cell) => {
+            const info = cellOverviewFor(cell),
+              name = cell === GENERAL_CELL ? "GERAL" : cell === "SEM_MAPA" ? "SEM CÉL." : `C${cell}`,
+              statusClass = cell === GENERAL_CELL ? (info.pending ? "pending general" : "clear general") : info.conflicts ? "conflict" : info.pending ? "pending" : allOperationalTnls().length || hasGeneralInfoItems() ? "clear" : "empty-cell",
+              count = info.conflicts ? `${info.pending} pend. · ${info.conflicts} confl.` : info.pending ? `${info.pending} pend.` : "OK";
+            return `<button class="cell-chip ${statusClass} ${cell === selected ? "selected" : ""}" onclick="selectCell('${cell}')"><span class="cell-chip-name">${esc(name)}</span><span class="cell-chip-count">${esc(count)}</span></button>`;
+          })
+          .join("");
+      }
+      function renderSelectedCell() {
+        syncUnmappedCellOption();
+        refreshMachineSelect();
+        const cell = el("cellSelect").value;
+        if (cell === GENERAL_CELL) {
+          const visible = visibleGeneralItems();
+          const cards = generalGroupsForCell(cell);
+          const total = visible.length;
+          const decided = visible.filter((x) => x.reviewed).length;
+          const percent = total ? Math.round((decided / total) * 100) : 100;
+          el("progressFill").style.width = `${percent}%`;
+          el("progressLabel").textContent = total ? `Geral / sem máquina: ${decided}/${total} decisões concluídas` : "Geral / sem máquina: nenhuma informação registrada";
+          el("machineList").innerHTML = cards.length ? cards.map(renderGeneralInfoCard).join("") : `<div class="empty">Nenhuma informação geral aguardando decisão.</div>`;
+          renderCellOverview();
+          requestAnimationFrame(() => document.querySelectorAll(".machine-card").forEach((card, index) => { card.style.animationDelay = `${Math.min(index * 35, 210)}ms`; }));
+          return;
+        }
+        const cards = pendingGroupsForCell(cell), machines = machinesForCell(cell),
+          activeTnls = uniqueNumbers(activeRecords().filter((r) => machines.includes(Number(r.tnl))).map((r) => r.tnl)),
+          future = state.futureItems.filter((x) => machines.includes(Number(x.tnl))),
+          devobs = activeDevObsItems().filter((x) => machines.includes(Number(x.tnl))),
+          total = activeTnls.length + future.length + devobs.length,
+          decided = activeTnls.filter((t) => state.reviewedTnls[String(t)]).length + future.filter((x) => x.reviewed).length + devobs.filter((x) => x.reviewed).length,
+          percent = total ? Math.round((decided / total) * 100) : 100;
+        el("progressFill").style.width = `${percent}%`;
+        const cellLabel = cell === "SEM_MAPA" ? "Sem célula mapeada" : `Célula ${cell}`;
+        el("progressLabel").textContent = total ? `${cellLabel}: ${decided}/${total} decisões concluídas` : `${cellLabel}: nenhuma pendência registrada`;
+        el("machineList").innerHTML = cards.length
+          ? cards.map((c) => c.kind === "active" ? renderActiveCard(c) : c.kind === "future" ? renderFutureCard(c) : renderDevObsCard(c)).join("")
+          : `<div class="empty">Nenhuma pendência aguardando decisão nesta célula.</div>`;
+        renderCellOverview();
+        requestAnimationFrame(() => document.querySelectorAll(".machine-card").forEach((card, index) => { card.style.animationDelay = `${Math.min(index * 35, 210)}ms`; }));
+      }
+      function renderConfirmedDecisions() {
+        const decisions = Object.values(state.confirmedDecisions || {}).sort((a, b) => {
+          const ao = Number(a.order || 0);
+          const bo = Number(b.order || 0);
+          if (ao || bo) return bo - ao;
+          const timeCompare = String(b.time || "").localeCompare(String(a.time || ""));
+          if (timeCompare) return timeCompare;
+          return Number(b.tnl || 0) - Number(a.tnl || 0);
+        });
+        el("confirmedCount").textContent = `— ${String(decisions.length).padStart(2, "0")}`;
+        el("confirmedList").innerHTML = decisions.length
+          ? decisions.map((d) => {
+              const title = d.general ? "GERAL / SEM MÁQUINA" : `TNL ${pad(d.tnl)}`;
+              const edit = d.general ? "" : `<button class="edit-btn" onclick="openEditModal(${d.tnl})">REEDITAR</button>`;
+              return `<div class="confirmed-item"><div class="confirmed-main"><div class="confirmed-title">${esc(title)}</div><div class="confirmed-sub">${esc(d.label)} · ${esc(d.time)}</div></div>${edit}</div>`;
+            }).join("")
+          : `<div class="empty">Nenhuma decisão confirmada.</div>`;
+      }
+      function reportGeneralLines(kind) {
+        return generalInfoList().filter((x) => x.kind === kind && x.status !== "removed").map((x) => x.rawText || x.text);
+      }
+      function reportDevLines() {
+        return uniqueStrings([...reportGeneralLines("development"), ...sortByTnl(devObsList().filter((x) => x.kind === "development" && !["resolved", "removed"].includes(x.status))).map((x) => x.displayText)]);
+      }
+      function reportObsLines() {
+        return uniqueStrings([...reportGeneralLines("observation"), ...sortByTnl(devObsList().filter((x) => x.kind === "observation" && !["resolved", "removed"].includes(x.status))).map((x) => x.displayText)]);
+      }
+      function updateKpis() {
+        const pendingActive = uniqueNumbers(activeRecords().filter((r) => !state.reviewedTnls[String(r.tnl)]).map((r) => r.tnl)).length,
+          pendingFuture = state.futureItems.filter((x) => !x.reviewed).length,
+          pendingDevObs = activeDevObsItems().filter((x) => !x.reviewed).length,
+          pendingGeneral = pendingGeneralItems().length,
+          completed = Object.keys(state.confirmedDecisions || {}).length;
+        setKpiValue("kpiPending", pendingActive + pendingFuture + pendingDevObs + pendingGeneral);
+        setKpiValue("kpiConflicts", unresolvedConflicts().length);
+        setKpiValue("kpiCompleted", completed);
+      }
+      function hydrate(saved) {
+        const b = blank(), s = saved || {}, maintenance = {};
+        Object.entries(s.reasons?.maintenance || {}).forEach(([k, v]) => (maintenance[k] = normalizeReasonList(v)));
+        return {
+          ...b,
+          ...s,
+          reasons: { maintenance, adjustment: { ...b.reasons.adjustment, ...(s.reasons?.adjustment || {}) } },
+          completed: { adjustments: [...(s.completed?.adjustments || [])], setups: [...(s.completed?.setups || [])], maintenances: [...(s.completed?.maintenances || [])] },
+          reviewedTnls: { ...(s.reviewedTnls || {}) },
+          resolvedConflicts: { ...(s.resolvedConflicts || {}) },
+          confirmedDecisions: { ...(s.confirmedDecisions || {}) },
+          actionHistory: [...(s.actionHistory || [])],
+          futureItems: [...(s.futureItems || [])],
+          records: [...(s.records || [])],
+          reviewLines: [...(s.reviewLines || [])],
+          devObsItems: [...(s.devObsItems || [])],
+          generalInfoItems: [...(s.generalInfoItems || [])],
+          generalDevelopmentLines: [...(s.generalDevelopmentLines || [])],
+          generalObservationLines: [...(s.generalObservationLines || [])],
+          nextGeneralId: Number(s.nextGeneralId || b.nextGeneralId),
+        };
+      }
+
+
+
+      // PATCH V25 — reedição de observação/desenvolvimento sem criar card duplicado.
+      // Também separa decisão operacional da decisão de informação, para uma não esconder a outra.
+      let pendingEditKey = null;
+      function decisionKeyForMachine(tnl) {
+        return String(Number(tnl));
+      }
+      function decisionKeyForDevObs(id) {
+        return `D${Number(id)}`;
+      }
+      function confirmedInfoEntriesForTnl(tnl) {
+        return Object.entries(state.confirmedDecisions || {}).filter(
+          ([, d]) => d && d.kind === "devobs" && Number(d.tnl) === Number(tnl),
+        );
+      }
+      function hasActiveDevObsForTnl(tnl) {
+        return devObsItemsOfTnl(tnl).some(
+          (x) => !["resolved", "removed"].includes(x.status),
+        );
+      }
+      function cleanupManualPendingDuplicates() {
+        state.records = state.records.filter((r) => {
+          if (r.type !== "manual_pending") return true;
+          const txt = `${r.rawText || ""} ${r.displayText || ""}`;
+          if (!/Nova informação durante a ronda/i.test(txt)) return true;
+          return !hasActiveDevObsForTnl(r.tnl);
+        });
+      }
+      function snapshotMachine(tnl) {
+        return {
+          tnl: Number(tnl),
+          records: JSON.parse(JSON.stringify(recordsOfTnl(tnl))),
+          future: JSON.parse(JSON.stringify(futureItemsOfTnl(tnl))),
+          devObs: JSON.parse(JSON.stringify(devObsItemsOfTnl(tnl))),
+          infoConfirmed: Object.fromEntries(
+            confirmedInfoEntriesForTnl(tnl).map(([key, value]) => [
+              key,
+              JSON.parse(JSON.stringify(value)),
+            ]),
+          ),
+          completed: {
+            maintenance: state.completed.maintenances.includes(Number(tnl)),
+            setup: state.completed.setups.includes(Number(tnl)),
+            adjustment: state.completed.adjustments.includes(Number(tnl)),
+          },
+          reviewed: Boolean(state.reviewedTnls[String(tnl)]),
+          resolved: Boolean(state.resolvedConflicts[String(tnl)]),
+          confirmed: state.confirmedDecisions[String(tnl)]
+            ? JSON.parse(JSON.stringify(state.confirmedDecisions[String(tnl)]))
+            : null,
+          reasons: {
+            maintenance: JSON.parse(JSON.stringify(state.reasons.maintenance[String(tnl)] || [])),
+            adjustment: state.reasons.adjustment[String(tnl)] || "",
+          },
+        };
+      }
+      function restoreSnapshot(s) {
+        if (!s) return;
+        const tnl = Number(s.tnl);
+        removeAllActiveRecords(tnl);
+        (s.records || []).forEach((r) => addRecord(r));
+        removeFutureItemsByTnl(tnl);
+        (s.future || []).forEach((x) => state.futureItems.push(x));
+        state.devObsItems = devObsList().filter((x) => Number(x.tnl) !== Number(tnl));
+        (s.devObs || []).forEach((x) => state.devObsItems.push(x));
+        confirmedInfoEntriesForTnl(tnl).forEach(([key]) => delete state.confirmedDecisions[key]);
+        Object.entries(s.infoConfirmed || {}).forEach(([key, value]) => {
+          state.confirmedDecisions[key] = value;
+        });
+        ["maintenance", "setup", "adjustment"].forEach((c) => {
+          removeCompleted(tnl, c);
+          if (s.completed?.[c]) addCompleted(tnl, c);
+        });
+        s.reviewed ? (state.reviewedTnls[String(tnl)] = true) : delete state.reviewedTnls[String(tnl)];
+        s.resolved ? (state.resolvedConflicts[String(tnl)] = true) : delete state.resolvedConflicts[String(tnl)];
+        s.confirmed ? (state.confirmedDecisions[String(tnl)] = s.confirmed) : delete state.confirmedDecisions[String(tnl)];
+        if (s.reasons) {
+          s.reasons.maintenance?.length ? (state.reasons.maintenance[String(tnl)] = s.reasons.maintenance) : delete state.reasons.maintenance[String(tnl)];
+          s.reasons.adjustment ? (state.reasons.adjustment[String(tnl)] = s.reasons.adjustment) : delete state.reasons.adjustment[String(tnl)];
+        }
+        state.futureItems = sortByTnl(state.futureItems);
+        state.devObsItems = sortByTnl(state.devObsItems);
+        cleanupManualPendingDuplicates();
+      }
+      function summarizeMachine(tnl, fallback) {
+        const lines = [
+          ...recordsOfTnl(tnl).map((r) => r.displayText),
+          ...futureItemsOfTnl(tnl).map((x) => x.displayText),
+          ...devObsItemsOfTnl(tnl)
+            .filter((x) => !["resolved", "removed"].includes(x.status))
+            .map((x) => x.displayText),
+        ];
+        return lines.length ? uniqueStrings(lines).join(" | ") : fallback;
+      }
+      function commitDecision(tnl, before, fallback) {
+        const key = decisionKeyForMachine(tnl);
+        state.reviewedTnls[String(tnl)] = true;
+        state.resolvedConflicts[String(tnl)] = true;
+        state.confirmedDecisions[key] = {
+          key,
+          kind: "machine",
+          tnl: Number(tnl),
+          label: summarizeMachine(tnl, fallback),
+          time: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
+          before,
+          order: (state.decisionOrder = Number(state.decisionOrder || 0) + 1),
+        };
+        state.actionHistory.push({ tnl: Number(tnl), before });
+        updateEverything();
+        saveSession();
+        toast(`TNL ${pad(tnl)} atualizada`);
+      }
+      function commitDevObsDecision(id, before, label) {
+        const item = findDevObsItem(id);
+        if (!item) return;
+        const key = decisionKeyForDevObs(id);
+        state.confirmedDecisions[key] = {
+          key,
+          kind: "devobs",
+          tnl: Number(item.tnl),
+          devObsId: Number(id),
+          label,
+          time: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
+          before,
+          order: (state.decisionOrder = Number(state.decisionOrder || 0) + 1),
+        };
+        state.actionHistory.push({ tnl: Number(item.tnl), before });
+        updateEverything();
+        saveSession();
+        toast(`TNL ${pad(item.tnl)} atualizada`);
+      }
+      function keepDevObs(id) {
+        const item = findDevObsItem(id);
+        if (!item) return;
+        const before = snapshotMachine(item.tnl);
+        item.status = "kept";
+        item.reviewed = true;
+        commitDevObsDecision(id, before, item.kind === "development" ? "MANTER DESENVOLVIMENTO" : "MANTER OBSERVAÇÃO");
+      }
+      function resolveDevObs(id) {
+        const item = findDevObsItem(id);
+        if (!item) return;
+        const before = snapshotMachine(item.tnl);
+        item.status = "resolved";
+        item.reviewed = true;
+        commitDevObsDecision(id, before, item.kind === "development" ? "JÁ VOLTOU PARA O CNC" : "OBSERVAÇÃO RESOLVIDA");
+      }
+      function removeDevObs(id) {
+        const item = findDevObsItem(id);
+        if (!item) return;
+        const before = snapshotMachine(item.tnl);
+        item.status = "removed";
+        item.reviewed = true;
+        commitDevObsDecision(id, before, item.kind === "development" ? "DESENVOLVIMENTO REMOVIDO" : "OBSERVAÇÃO REMOVIDA");
+      }
+      function openEditDecision(key) {
+        pendingEditKey = String(key);
+        const d = state.confirmedDecisions[pendingEditKey];
+        if (!d) return;
+        pendingEditTnl = d.tnl ? Number(d.tnl) : null;
+        el("editTitle").textContent = d.general
+          ? "Reeditar informação geral"
+          : d.tnl
+            ? `Reeditar TNL ${pad(d.tnl)}`
+            : "Reeditar decisão";
+        el("editModal").classList.add("show");
+      }
+      function openEditModal(tnl) {
+        openEditDecision(decisionKeyForMachine(tnl));
+      }
+      function closeEditModal() {
+        pendingEditTnl = null;
+        pendingEditKey = null;
+        el("editModal").classList.remove("show");
+      }
+      function confirmEdit() {
+        const key = pendingEditKey || (pendingEditTnl ? decisionKeyForMachine(pendingEditTnl) : "");
+        const d = state.confirmedDecisions[key];
+        if (!d) {
+          closeEditModal();
+          return;
+        }
+        if (d.general) {
+          restoreGeneralSnapshot(d.before);
+          delete state.confirmedDecisions[key];
+          closeEditModal();
+          updateEverything();
+          saveSession();
+          toast("Informação geral reaberta");
+          return;
+        }
+        const tnl = Number(d.tnl || pendingEditTnl);
+        const current = snapshotMachine(tnl);
+        restoreSnapshot(d.before);
+        delete state.confirmedDecisions[key];
+        if (!d.kind || d.kind === "machine") {
+          delete state.reviewedTnls[String(tnl)];
+          delete state.resolvedConflicts[String(tnl)];
+          if (!recordsOfTnl(tnl).length && !futureItemsOfTnl(tnl).length && !hasActiveDevObsForTnl(tnl)) {
+            addRecord(createRecord({
+              tnl,
+              type: "manual_pending",
+              displayText: `TNL ${pad(tnl)} - REDEFINIR STATUS`,
+              rawText: `TNL ${pad(tnl)} - Nova informação durante a ronda`,
+              sourceSection: "manual_pending",
+            }));
+          }
+        }
+        state.actionHistory.push({ tnl, before: current });
+        closeEditModal();
+        updateEverything();
+        saveSession();
+        toast(`TNL ${pad(tnl)} reaberta`);
+      }
+      function renderConfirmedDecisions() {
+        const decisions = Object.values(state.confirmedDecisions || {}).sort((a, b) => {
+          const ao = Number(a.order || 0);
+          const bo = Number(b.order || 0);
+          if (ao || bo) return bo - ao;
+          const timeCompare = String(b.time || "").localeCompare(String(a.time || ""));
+          if (timeCompare) return timeCompare;
+          return Number(b.tnl || 0) - Number(a.tnl || 0);
+        });
+        el("confirmedCount").textContent = `— ${String(decisions.length).padStart(2, "0")}`;
+        el("confirmedList").innerHTML = decisions.length
+          ? decisions.map((d) => {
+              const title = d.general ? "GERAL / SEM MÁQUINA" : `TNL ${pad(d.tnl)}`;
+              const key = d.key || (d.general ? `G${d.id}` : decisionKeyForMachine(d.tnl));
+              const canEdit = !d.general;
+              const edit = canEdit ? `<button class="edit-btn" onclick="openEditDecision('${esc(String(key))}')">REEDITAR</button>` : "";
+              return `<div class="confirmed-item"><div class="confirmed-main"><div class="confirmed-title">${esc(title)}</div><div class="confirmed-sub">${esc(d.label)} · ${esc(d.time)}</div></div>${edit}</div>`;
+            }).join("")
+          : `<div class="empty">Nenhuma decisão confirmada.</div>`;
+      }
+      const __v24UpdateEverything = updateEverything;
+      updateEverything = function () {
+        cleanupManualPendingDuplicates();
+        __v24UpdateEverything();
+      };
+
+
+
+      // PATCH V26 — decisões confirmadas limpas, minimizadas e com detalhe completo.
+      function compactDecisionAction(d) {
+        if (d?.action) return d.action;
+        const label = String(d?.label || "").trim();
+        if (!label) return "DECISÃO CONFIRMADA";
+        if (label.includes("|") || label.length > 46) return d?.kind === "devobs" ? "INFORMAÇÃO CONFIRMADA" : "DECISÃO CONFIRMADA";
+        return label;
+      }
+      function decisionDetail(d) {
+        const saved = String(d?.detail || d?.label || "DECISÃO REGISTRADA").trim();
+        if (!d?.general && d?.tnl) {
+          const live = summarizeMachine(d.tnl, saved);
+          return String(live || saved).trim();
+        }
+        return saved;
+      }
+      function summarizeMachine(tnl, fallback) {
+        const lines = [
+          ...recordsOfTnl(tnl).map((r) => r.displayText),
+          ...futureItemsOfTnl(tnl).map((x) => x.displayText),
+          ...devObsItemsOfTnl(tnl)
+            .filter((x) => !["resolved", "removed"].includes(x.status))
+            .map((x) => x.displayText),
+        ];
+        return lines.length ? uniqueStrings(lines).join(" | ") : fallback;
+      }
+      function commitDecision(tnl, before, fallback) {
+        const key = decisionKeyForMachine(tnl);
+        const detail = summarizeMachine(tnl, fallback);
+        state.reviewedTnls[String(tnl)] = true;
+        state.resolvedConflicts[String(tnl)] = true;
+        state.confirmedDecisions[key] = {
+          key,
+          kind: "machine",
+          tnl: Number(tnl),
+          action: String(fallback || "DECISÃO CONFIRMADA"),
+          label: detail,
+          detail,
+          time: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
+          before,
+          order: (state.decisionOrder = Number(state.decisionOrder || 0) + 1),
+        };
+        state.actionHistory.push({ tnl: Number(tnl), before });
+        updateEverything();
+        saveSession();
+        toast(`TNL ${pad(tnl)} atualizada`);
+      }
+      function commitDevObsDecision(id, before, label) {
+        const item = findDevObsItem(id);
+        if (!item) return;
+        const key = decisionKeyForDevObs(id);
+        const detail = summarizeMachine(item.tnl, label);
+        state.confirmedDecisions[key] = {
+          key,
+          kind: "devobs",
+          tnl: Number(item.tnl),
+          devObsId: Number(id),
+          action: String(label || "INFORMAÇÃO CONFIRMADA"),
+          label: detail,
+          detail,
+          time: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
+          before,
+          order: (state.decisionOrder = Number(state.decisionOrder || 0) + 1),
+        };
+        state.actionHistory.push({ tnl: Number(item.tnl), before });
+        updateEverything();
+        saveSession();
+        toast(`TNL ${pad(item.tnl)} atualizada`);
+      }
+      function renderConfirmedDecisions() {
+        const decisions = Object.values(state.confirmedDecisions || {}).sort((a, b) => {
+          const ao = Number(a.order || 0);
+          const bo = Number(b.order || 0);
+          if (ao || bo) return bo - ao;
+          const timeCompare = String(b.time || "").localeCompare(String(a.time || ""));
+          if (timeCompare) return timeCompare;
+          return Number(b.tnl || 0) - Number(a.tnl || 0);
+        });
+        el("confirmedCount").textContent = `— ${String(decisions.length).padStart(2, "0")}`;
+        el("confirmedList").innerHTML = decisions.length
+          ? decisions.map((d) => {
+              const title = d.general ? "GERAL / SEM MÁQUINA" : `TNL ${pad(d.tnl)}`;
+              const key = d.key || (d.general ? `G${d.id}` : decisionKeyForMachine(d.tnl));
+              const canEdit = !d.general;
+              const action = compactDecisionAction(d);
+              const detail = decisionDetail(d);
+              const edit = canEdit
+                ? `<button class="edit-btn" onclick="openEditDecision('${esc(String(key))}')">REEDITAR</button>`
+                : `<div class="decision-muted">Informação geral já decidida.</div>`;
+              return `<details class="confirmed-item decision-item"><summary class="decision-summary-line"><span class="decision-summary-text"><span class="confirmed-title">${esc(title)}</span><span class="decision-action">${esc(action)} · ${esc(d.time || "")}</span></span></summary><div class="decision-detail"><div class="source-block"><div class="source-name">INFORMAÇÕES DA DECISÃO</div><div class="source-line">${esc(detail)}</div></div><div class="decision-detail-actions">${edit}</div></div></details>`;
+            }).join("")
+          : `<div class="empty">Nenhuma decisão confirmada.</div>`;
+      }
+
       function init() {
         initAccessGate();
         bindEvents();
