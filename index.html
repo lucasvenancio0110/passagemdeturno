@@ -1117,6 +1117,14 @@
               </select>
             </div>
             <div class="field">
+              <label class="label" for="nextShift">Próximo turno</label
+              ><select id="nextShift" class="select">
+                <option value="1">1° TURNO</option>
+                <option value="2">2° TURNO</option>
+                <option value="3" selected>3° TURNO</option>
+              </select>
+            </div>
+            <div class="field">
               <label class="label" for="checkpoint">Bancada</label
               ><input id="checkpoint" class="input" value="00" />
             </div>
@@ -1617,9 +1625,22 @@ TNL's - 055 - 056 - Sem ordem"
             ),
         );
       }
-      function currentNextTurn() {
+      function defaultNextTurn() {
         const n = Number(el("currentShift").value || 2);
         return n === 1 ? 2 : n === 2 ? 3 : 1;
+      }
+      function currentNextTurn() {
+        const selected = Number(el("nextShift")?.value || 0);
+        return [1, 2, 3].includes(selected) ? selected : defaultNextTurn();
+      }
+      function syncNextShiftIfNeeded(force = false) {
+        const next = el("nextShift");
+        if (!next) return;
+        const current = Number(el("currentShift")?.value || 2);
+        const selected = Number(next.value || 0);
+        if (force || ![1, 2, 3].includes(selected) || selected === current) {
+          next.value = String(defaultNextTurn());
+        }
       }
       function nextTurnHeading() {
         return `SETUPS ${currentNextTurn()}°T`;
@@ -2885,6 +2906,7 @@ TNL's - 055 - 056 - Sem ordem"
       function fieldsSnapshot() {
         return {
           currentShift: el("currentShift").value,
+          nextShift: el("nextShift")?.value || String(defaultNextTurn()),
           checkpoint: el("checkpoint").value,
           cqFechamento: el("cqFechamento").value,
           cqReinspecao: el("cqReinspecao").value,
@@ -2903,6 +2925,7 @@ TNL's - 055 - 056 - Sem ordem"
         if (!f) return;
         [
           "currentShift",
+          "nextShift",
           "checkpoint",
           "cqFechamento",
           "cqReinspecao",
@@ -2985,6 +3008,7 @@ TNL's - 055 - 056 - Sem ordem"
         el("rawInput").value = "";
         applyFields({
           currentShift: "2",
+          nextShift: "3",
           checkpoint: "00",
           cqFechamento: "00",
           cqReinspecao: "00",
@@ -3032,6 +3056,7 @@ TNL's - 055 - 056 - Sem ordem"
         el("rawInput").oninput = saveSession;
         [
           "currentShift",
+          "nextShift",
           "checkpoint",
           "cqFechamento",
           "cqReinspecao",
@@ -3051,6 +3076,15 @@ TNL's - 055 - 056 - Sem ordem"
             generateReport();
             saveSession();
           };
+        });
+        el("currentShift").addEventListener("change", () => {
+          syncNextShiftIfNeeded(false);
+          updateEverything();
+          saveSession();
+        });
+        el("nextShift")?.addEventListener("change", () => {
+          updateEverything();
+          saveSession();
         });
         el("finalOutput").oninput = saveSession;
         [
@@ -3668,6 +3702,7 @@ TNL's - 055 - 056 - Sem ordem"
       function fieldsSnapshot() {
         return {
           currentShift: el("currentShift").value,
+          nextShift: el("nextShift")?.value || String(defaultNextTurn()),
           checkpoint: el("checkpoint").value,
           cqFechamento: el("cqFechamento").value,
           cqReinspecao: el("cqReinspecao").value,
@@ -3728,7 +3763,7 @@ TNL's - 055 - 056 - Sem ordem"
         localStorage.removeItem(STORAGE_KEY);
         state = blank();
         el("rawInput").value = "";
-        applyFields({ currentShift: "2", checkpoint: "00", cqFechamento: "00", cqReinspecao: "00", sel1: "00", sel2: "00", sel3: "00", selAll: "00", selTnc: "00", development: "", observations: "", selectedCell: "01", finalOutput: "" });
+        applyFields({ currentShift: "2", nextShift: "3", checkpoint: "00", cqFechamento: "00", cqReinspecao: "00", sel1: "00", sel2: "00", sel3: "00", selAll: "00", selTnc: "00", development: "", observations: "", selectedCell: "01", finalOutput: "" });
         updateEverything();
         toast("Sessão limpa");
       }
@@ -3749,9 +3784,18 @@ TNL's - 055 - 056 - Sem ordem"
         el("cellSelect").onchange = () => { renderSelectedCell(); saveSession(); };
         el("rawInput").oninput = saveSession;
         ["development", "observations"].forEach((id) => { el(id).oninput = handleExtraInput; el(id).onchange = handleExtraInput; });
-        ["currentShift", "checkpoint", "cqFechamento", "cqReinspecao", "sel1", "sel2", "sel3", "selAll", "selTnc"].forEach((id) => {
+        ["currentShift", "nextShift", "checkpoint", "cqFechamento", "cqReinspecao", "sel1", "sel2", "sel3", "selAll", "selTnc"].forEach((id) => {
           el(id).oninput = () => { generateReport(); saveSession(); };
           el(id).onchange = () => { generateReport(); saveSession(); };
+        });
+        el("currentShift").addEventListener("change", () => {
+          syncNextShiftIfNeeded(false);
+          updateEverything();
+          saveSession();
+        });
+        el("nextShift")?.addEventListener("change", () => {
+          updateEverything();
+          saveSession();
         });
         el("finalOutput").oninput = saveSession;
         [["addModal", closeAddModal], ["reasonModal", closeReasonModal], ["transitionModal", closeTransitionModal], ["editModal", closeEditModal]].forEach(([id, close]) => (el(id).onclick = (e) => { if (e.target.id === id) close(); }));
@@ -4422,6 +4466,7 @@ TNL's - 055 - 056 - Sem ordem"
         initAccessGate();
         bindEvents();
         restoreSession() ? toast("Sessão restaurada") : null;
+        syncNextShiftIfNeeded(false);
         updateEverything();
       }
       init();
