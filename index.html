@@ -3322,7 +3322,20 @@
         background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(241,245,249,.90)) !important;
       }
 
-    </style>
+    
+      /* V46 — nunca deixar detalhe de observação/desenvolvimento invisível */
+      .source-line-warning {
+        color: #fde68a !important;
+        border: 1px solid rgba(245, 158, 11, .28);
+        background: rgba(245, 158, 11, .08);
+        border-radius: 10px;
+        padding: 10px;
+        font-weight: 850;
+      }
+      .machine-card.missing-detail {
+        border-color: rgba(245, 158, 11, .38) !important;
+      }
+</style>
   </head>
   <body class="auth-locked">
 
@@ -6268,11 +6281,13 @@ TNL's - 055 - 056 - Sem ordem"
             current = { line, extra: [] };
             return;
           }
-          if (current && isContinuationLine(line)) {
+          // V46: em Desenvolvimento/Observações, qualquer linha abaixo de uma TNL pertence à própria TNL
+          // até aparecer outra TNL. Antes só aceitava parênteses/OP/ITEM como complemento,
+          // então a informação real podia cair como "geral" e o card da máquina ficava vazio.
+          if (current) {
             current.extra.push(line);
             return;
           }
-          pushCurrent();
           generalItems.push(makeGeneralInfoItem({ kind, text: line, previousItems: previousGeneralItems }));
         });
         pushCurrent();
@@ -6477,11 +6492,15 @@ TNL's - 055 - 056 - Sem ordem"
       function reportGeneralLines(kind) {
         return generalInfoList().filter((x) => x.kind === kind && x.status !== "removed").map((x) => x.rawText || x.text);
       }
+      function formatDevObsReportLine(item) {
+        const full = typeof devObsFullSourceText === 'function' ? devObsFullSourceText(item) : '';
+        return full || (item.displayText || item.rawText || '');
+      }
       function reportDevLines() {
-        return uniqueStrings([...reportGeneralLines("development"), ...sortByTnl(devObsList().filter((x) => x.kind === "development" && !["resolved", "removed"].includes(x.status))).map((x) => x.displayText)]);
+        return uniqueStrings([...reportGeneralLines("development"), ...sortByTnl(devObsList().filter((x) => x.kind === "development" && !["resolved", "removed"].includes(x.status))).map(formatDevObsReportLine).filter(Boolean)]);
       }
       function reportObsLines() {
-        return uniqueStrings([...reportGeneralLines("observation"), ...sortByTnl(devObsList().filter((x) => x.kind === "observation" && !["resolved", "removed"].includes(x.status))).map((x) => x.displayText)]);
+        return uniqueStrings([...reportGeneralLines("observation"), ...sortByTnl(devObsList().filter((x) => x.kind === "observation" && !["resolved", "removed"].includes(x.status))).map(formatDevObsReportLine).filter(Boolean)]);
       }
       function updateKpis() {
         const pendingActive = uniqueNumbers(activeRecords().filter((r) => !state.reviewedTnls[String(r.tnl)]).map((r) => r.tnl)).length,
@@ -6901,6 +6920,13 @@ TNL's - 055 - 056 - Sem ordem"
           toast("Informe uma TNL válida");
           return;
         }
+        if (status === "development" || status === "observation") {
+          if (isGenericDevObsDetail(reason, status)) {
+            toast(status === "development" ? "Preencha a informação do desenvolvimento" : "Preencha a observação da máquina");
+            el("addReason")?.focus();
+            return;
+          }
+        }
         closeAddModal();
         if (status === "development" || status === "observation") {
           addManualDevObs(tnl, status, reason, false, "pending");
@@ -7142,13 +7168,37 @@ TNL's - 055 - 056 - Sem ordem"
           chips: [turnLabel],
         };
       }
+      // V46 — detalhe confiável para Desenvolvimento/Observação.
+      // Remove o prefixo TNL e descarta textos genéricos como "OBSERVAÇÃO" sem detalhe.
+      function isGenericDevObsDetail(text, kind) {
+        const h = normalizeHeader(text);
+        if (!h) return true;
+        if (kind === 'development') return h === 'DESENVOLVIMENTO' || h === 'DESENVOLVIMENTO INFORMADO';
+        return h === 'OBSERVACAO' || h === 'OBSERVACOES' || h === 'OBSERVACAO INFORMADA';
+      }
+      function devObsDetailText(item) {
+        const kind = item?.kind || 'observation';
+        const raw = String(item?.rawText || item?.displayText || item?.text || '').replace(/\r/g, '').trim();
+        const tnl = Number(item?.tnl || 0);
+        let text = raw;
+        if (tnl) {
+          text = text.replace(new RegExp('^TNL\\s*0*' + tnl + '\\s*-?\\s*', 'i'), '').trim();
+        }
+        const lines = text.split('\n').map((line) => cleanLine(line)).filter(Boolean);
+        while (lines.length && isGenericDevObsDetail(lines[0], kind)) lines.shift();
+        return lines.join('\n').trim();
+      }
+      function devObsFullSourceText(item) {
+        const detail = devObsDetailText(item);
+        if (!detail) return '';
+        return `TNL ${pad(item.tnl)} - ${detail}`;
+      }
       function compactSummaryForDevObs(item) {
         const isDev = item.kind === 'development';
-        const text = item.rawText || item.displayText || '';
-        const title = text.replace(new RegExp('^TNL\\s*0*' + Number(item.tnl) + '\\s*-\\s*', 'i'), '').trim() || (isDev ? 'Desenvolvimento' : 'Observação');
+        const detail = devObsDetailText(item);
         return {
-          title,
-          sub: isDev ? 'Desenvolvimento informado' : 'Observação informada',
+          title: detail || 'Sem detalhe informado',
+          sub: detail ? (isDev ? 'Desenvolvimento informado' : 'Observação informada') : 'Falta preencher a informação',
           chips: [isDev ? 'Desenvolvimento' : 'Observação'],
         };
       }
@@ -7183,16 +7233,23 @@ TNL's - 055 - 056 - Sem ordem"
         const body = `<div class="machine-expanded-grid"><div class="machine-expanded-block"><div class="source-name">INFORMAÇÃO ORIGINAL DO GRUPO — ${esc(item.heading)}</div><div class="source-line">${esc(item.rawText || item.displayText)}</div></div><div class="machine-expanded-block attention"><div class="machine-expanded-label">PERGUNTA PARA A RONDA</div><div class="machine-expanded-text">${esc(buildQuestionForFuture(item))}</div></div><div class="card-actions future-actions"><button class="future-btn keep" onclick="keepFutureSetup(${item.id})">MANTER PARA ${esc(turnKeep)}</button><button class="future-btn setup" onclick="openFutureSetupChoice(${item.id})">VAI PASSAR EM SETUP</button><button class="future-btn remove" onclick="removeFutureSetup(${item.id})">REMOVER DO RELATÓRIO</button></div></div>`;
         return renderCompactShell({ key: cardKeyFuture(item.id), articleClass: 'future', badgeText: item.heading, badgeCss: 'blue', title: `TNL ${pad(item.tnl)}`, summary: compact.title, sub: compact.sub, previewChips: compact.chips, bodyHtml: body });
       }
-      function renderDevObsCard(item) {
+      function renderDevObsCard(input) {
+        const item = input?.item || input;
         const isDev = item.kind === 'development';
         const badgeText = isDev ? 'DESENVOLVIMENTO' : 'OBSERVAÇÃO';
+        const informedLabel = isDev ? 'DESENVOLVIMENTO INFORMADO' : 'OBSERVAÇÃO INFORMADA';
         const keepText = isDev ? 'MANTER DESENVOLVIMENTO' : 'MANTER OBSERVAÇÃO';
         const resolveText = isDev ? 'JÁ VOLTOU PARA O CNC' : 'OBSERVAÇÃO RESOLVIDA';
         const compact = compactSummaryForDevObs(item);
-        const body = `<div class="machine-expanded-grid"><div class="machine-expanded-block"><div class="source-name">${esc(badgeText)} INFORMADO</div><div class="source-line">${esc(item.rawText || item.displayText)}</div></div><div class="machine-expanded-block attention"><div class="machine-expanded-label">PERGUNTA PARA A RONDA</div><div class="machine-expanded-text">${esc(buildQuestionForDevObs(item))}</div></div><div class="card-actions devobs-actions"><button class="devobs-btn keep" onclick="keepDevObs(${item.id})">${esc(keepText)}</button><button class="devobs-btn resolve" onclick="resolveDevObs(${item.id})">${esc(resolveText)}</button><button class="devobs-btn adjust" onclick="devObsToAdjustment(${item.id})">VAI PASSAR EM AJUSTE</button><button class="devobs-btn setup" onclick="devObsToSetup(${item.id})">VAI PASSAR EM SETUP</button><button class="devobs-btn maintenance" onclick="devObsToMaintenance(${item.id})">VAI PASSAR EM MANUTENÇÃO</button><button class="devobs-btn remove" onclick="removeDevObs(${item.id})">REMOVER DO RELATÓRIO</button></div></div>`;
-        return renderCompactShell({ key: cardKeyDevObs(item.id), articleClass: `devobs ${isDev ? 'development' : ''}`, badgeText, badgeCss: 'amber', title: `TNL ${pad(item.tnl)}`, summary: compact.title, sub: compact.sub, previewChips: compact.chips, bodyHtml: body });
+        const sourceText = devObsFullSourceText(item);
+        const sourceHtml = sourceText
+          ? `<div class="source-line">${esc(sourceText)}</div>`
+          : `<div class="source-line source-line-warning">⚠ Sem detalhe informado. Volte em + ADICIONAR MÁQUINA ou edite o campo de Observações/Desenvolvimento e preencha a informação.</div>`;
+        const body = `<div class="machine-expanded-grid"><div class="machine-expanded-block"><div class="source-name">${esc(informedLabel)}</div>${sourceHtml}</div><div class="machine-expanded-block attention"><div class="machine-expanded-label">PERGUNTA PARA A RONDA</div><div class="machine-expanded-text">${esc(buildQuestionForDevObs(item))}</div></div><div class="card-actions devobs-actions"><button class="devobs-btn keep" onclick="keepDevObs(${item.id})">${esc(keepText)}</button><button class="devobs-btn resolve" onclick="resolveDevObs(${item.id})">${esc(resolveText)}</button><button class="devobs-btn adjust" onclick="devObsToAdjustment(${item.id})">VAI PASSAR EM AJUSTE</button><button class="devobs-btn setup" onclick="devObsToSetup(${item.id})">VAI PASSAR EM SETUP</button><button class="devobs-btn maintenance" onclick="devObsToMaintenance(${item.id})">VAI PASSAR EM MANUTENÇÃO</button><button class="devobs-btn remove" onclick="removeDevObs(${item.id})">REMOVER DO RELATÓRIO</button></div></div>`;
+        return renderCompactShell({ key: cardKeyDevObs(item.id), articleClass: `devobs ${isDev ? 'development' : ''} ${sourceText ? '' : 'missing-detail'}`, badgeText, badgeCss: 'amber', title: `TNL ${pad(item.tnl)}`, summary: compact.title, sub: compact.sub, previewChips: compact.chips, bodyHtml: body });
       }
-      function renderGeneralInfoCard(item) {
+      function renderGeneralInfoCard(input) {
+        const item = input?.item || input;
         const title = item.kind === 'development' ? 'DESENVOLVIMENTO' : 'OBSERVAÇÃO';
         const question = item.kind === 'development' ? 'Essa informação geral de desenvolvimento deve permanecer no relatório final?' : 'Essa observação geral deve permanecer no relatório final?';
         const compact = compactSummaryForGeneral(item);
