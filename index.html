@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="pt-BR">
-<!-- V45: Relatório direto WhatsApp, visão clean removida -->
+<!-- Passagem de Turno Beta V1.01: paleta oficial por status -->
   <head>
     <meta charset="UTF-8" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
-    <title>VENANC Tools - Passagem de turno</title>
+    <title>VENANC Tools - Passagem de Turno Beta V1.01</title>
     <style>
       :root {
         /* Paleta principal: industrial clean */
@@ -3322,19 +3322,534 @@
         background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(241,245,249,.90)) !important;
       }
 
+
+      /* PATCH V46 — relatório sem cabeçalho/indicadores extras: direto para copiar + prévia. */
+      #tabPanelRelatorio .report-shell {
+        padding-top: 14px !important;
+      }
+      #tabPanelRelatorio .report-main-actions {
+        margin-top: 0 !important;
+        margin-bottom: 12px !important;
+      }
+      #tabPanelRelatorio .report-copy-main {
+        min-height: 58px !important;
+      }
+      #tabPanelRelatorio #btnRefresh {
+        min-height: 50px !important;
+      }
+      #tabPanelRelatorio .premium-wa-wrap {
+        margin-top: 4px !important;
+      }
+
+
+      /* PATCH V47 — relatório em tela cheia: sem campo com rolagem interna e botão copiar flutuante. */
+      #tabPanelRelatorio {
+        gap: 0 !important;
+      }
+      #tabPanelRelatorio .report-shell {
+        padding: 0 !important;
+        margin: 0 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        min-height: calc(100dvh - 190px) !important;
+      }
+      #tabPanelRelatorio .report-main-actions {
+        display: none !important;
+      }
+      #tabPanelRelatorio #reportWhatsappView.report-view-panel,
+      #tabPanelRelatorio .report-whatsapp-only,
+      #tabPanelRelatorio .premium-wa-wrap {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      #tabPanelRelatorio .wa-phone {
+        width: 100% !important;
+        max-width: none !important;
+        overflow: visible !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+      #tabPanelRelatorio .wa-chat-title {
+        display: none !important;
+      }
+      #tabPanelRelatorio .wa-chat-area {
+        min-height: calc(100dvh - 190px) !important;
+        max-height: none !important;
+        height: auto !important;
+        overflow: visible !important;
+        padding: 0 0 calc(96px + env(safe-area-inset-bottom)) !important;
+        background: transparent !important;
+        background-size: auto !important;
+      }
+      #tabPanelRelatorio .wa-message {
+        width: 100% !important;
+        max-width: none !important;
+        min-height: calc(100dvh - 210px) !important;
+        margin: 0 !important;
+        padding: 20px 18px 26px !important;
+        border-radius: 22px !important;
+        background: linear-gradient(180deg, #006f5c, #005c4b) !important;
+        border: 1px solid rgba(255,255,255,.10) !important;
+        box-shadow: 0 18px 42px rgba(0,0,0,.30) !important;
+        font-size: clamp(15px, 4.05vw, 18px) !important;
+        line-height: 1.42 !important;
+      }
+      #tabPanelRelatorio .wa-message:after {
+        display: none !important;
+      }
+      #tabPanelRelatorio .wa-message.empty-preview {
+        min-height: calc(100dvh - 210px) !important;
+        display: grid !important;
+        place-items: center !important;
+        text-align: center !important;
+        color: rgba(233, 237, 239, .76) !important;
+        background: rgba(16, 28, 30, .88) !important;
+      }
+      #tabPanelRelatorio .report-return-actions {
+        margin-top: 10px !important;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+      }
+      .floating-copy-report {
+        position: fixed;
+        right: calc(14px + env(safe-area-inset-right));
+        bottom: calc(92px + env(safe-area-inset-bottom));
+        z-index: 120;
+        width: 50px;
+        height: 50px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255,255,255,.20);
+        border-radius: 999px;
+        color: #fff;
+        background: linear-gradient(180deg, rgba(42, 161, 152, .98), rgba(28, 116, 110, .98));
+        box-shadow: 0 16px 34px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.20);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        font-size: 20px;
+        font-weight: 950;
+        line-height: 1;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .floating-copy-report:active {
+        transform: scale(.94);
+      }
+      body.report-tab-active .floating-copy-report {
+        display: flex;
+      }
+      :root[data-theme="light"] #tabPanelRelatorio .wa-message {
+        color: #f8fafc !important;
+        border-color: rgba(15,23,42,.08) !important;
+        box-shadow: 0 16px 34px rgba(15,23,42,.16) !important;
+      }
+      :root[data-theme="light"] .floating-copy-report {
+        border-color: rgba(15,23,42,.08);
+        box-shadow: 0 14px 30px rgba(15,23,42,.18), inset 0 1px 0 rgba(255,255,255,.24);
+      }
+
+
     
-      /* V46 — nunca deixar detalhe de observação/desenvolvimento invisível */
-      .source-line-warning {
-        color: #fde68a !important;
-        border: 1px solid rgba(245, 158, 11, .28);
-        background: rgba(245, 158, 11, .08);
-        border-radius: 10px;
-        padding: 10px;
-        font-weight: 850;
-      }
-      .machine-card.missing-detail {
-        border-color: rgba(245, 158, 11, .38) !important;
-      }
+
+/* PATCH V48 — informação real visível nos cards da ronda */
+.machine-compact-sub {
+  white-space: normal !important;
+  line-height: 1.32 !important;
+  max-width: 100% !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.compact-card.expanded .machine-compact-sub {
+  display: block !important;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+.machine-expanded-block .source-line,
+.source-block .source-line {
+  white-space: pre-wrap;
+  line-height: 1.35;
+}
+.machine-expanded-block .source-name,
+.source-block .source-name {
+  letter-spacing: 0.08em;
+}
+
+
+/* PATCH V49 — card compacto sempre mostra a informação original do grupo */
+.machine-original-label {
+  margin-top: 2px;
+  color: color-mix(in srgb, var(--accent) 70%, var(--text));
+  font-size: .68rem;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: .95;
+}
+.machine-original-line {
+  color: var(--text);
+  font-size: .92rem;
+  line-height: 1.28;
+  font-weight: 650;
+  white-space: pre-line;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.compact-card.expanded .machine-original-line {
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+.machine-compact-summary {
+  color: var(--muted) !important;
+  font-weight: 750 !important;
+  font-size: .9rem !important;
+}
+.machine-compact-toggle {
+  gap: 10px !important;
+}
+
+
+/* PATCH V51 BETA — ronda compacta limpa + decisão em popup */
+.round-card-v51 {
+  position: relative;
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(255,255,255,.09);
+  border-left: 5px solid var(--round-accent, var(--accent));
+  border-radius: 20px;
+  padding: 16px;
+  margin: 12px 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.025)),
+    rgba(6, 15, 16, .88);
+  box-shadow: 0 14px 34px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.05);
+  color: var(--text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.round-card-v51:active {
+  transform: scale(.992);
+}
+.round-card-v51 .round-card-head-v51 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.round-card-v51 .round-card-title-v51 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.round-card-v51 .machine-number {
+  font-size: clamp(1.05rem, 5.1vw, 1.38rem) !important;
+  letter-spacing: .01em !important;
+}
+.round-card-v51 .badge {
+  flex: 0 0 auto;
+  font-size: .67rem !important;
+  padding: 6px 10px !important;
+  letter-spacing: .10em !important;
+}
+.round-card-v51 .round-card-action-v51 {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 86px;
+  min-height: 34px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--round-accent, var(--accent)) 50%, transparent);
+  background: color-mix(in srgb, var(--round-accent, var(--accent)) 18%, rgba(255,255,255,.04));
+  color: color-mix(in srgb, var(--round-accent, var(--accent)) 74%, #fff);
+  font-size: .70rem;
+  font-weight: 950;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.round-card-v51 .compact-source-v51 {
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 17px;
+  padding: 13px;
+  background: rgba(255,255,255,.035);
+}
+.round-card-v51 .compact-source-title-v51 {
+  margin: 0 0 10px;
+  color: color-mix(in srgb, var(--accent) 62%, #fff);
+  font-size: .70rem;
+  line-height: 1.1;
+  font-weight: 950;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.round-card-v51 .source-block {
+  margin: 0 !important;
+  border-radius: 14px !important;
+  padding: 11px 12px !important;
+  background: rgba(0,0,0,.20) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+}
+.round-card-v51 .source-block + .source-block {
+  margin-top: 8px !important;
+}
+.round-card-v51 .source-name {
+  color: rgba(255,255,255,.94) !important;
+  font-size: .77rem !important;
+  letter-spacing: .13em !important;
+  margin-bottom: 6px !important;
+}
+.round-card-v51 .source-line {
+  color: rgba(240,248,248,.92) !important;
+  font-size: clamp(.92rem, 4.1vw, 1.08rem) !important;
+  line-height: 1.28 !important;
+  font-weight: 650 !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: pre-wrap;
+}
+.round-card-v51.conflict {
+  border-color: rgba(239,68,68,.22);
+  border-left-color: #ef4444;
+  background: linear-gradient(180deg, rgba(239,68,68,.075), rgba(255,255,255,.025)), rgba(8, 10, 12, .9);
+}
+.round-card-v51 .conflict-note {
+  margin: 0 0 10px !important;
+  padding: 9px 11px !important;
+  border-radius: 13px !important;
+  color: #fde68a !important;
+  background: rgba(245,158,11,.10) !important;
+  border: 1px solid rgba(245,158,11,.18) !important;
+  font-size: .86rem !important;
+  line-height: 1.25 !important;
+}
+.round-card-v51 .machine-body,
+.round-card-v51 .machine-compact-summary,
+.round-card-v51 .machine-compact-sub,
+.round-card-v51 .machine-preview-chips,
+.round-card-v51 .machine-original-label,
+.round-card-v51 .machine-original-line,
+.round-card-v51 .machine-toggle-icon {
+  display: none !important;
+}
+#transitionModal.round-decision-v51 .modal-card {
+  max-height: min(82dvh, 720px);
+  overflow: auto;
+  padding-bottom: calc(18px + env(safe-area-inset-bottom));
+}
+#transitionModal.round-decision-v51 .modal-title {
+  letter-spacing: -.02em;
+}
+.round-modal-v51 {
+  display: grid;
+  gap: 12px;
+}
+.round-modal-v51 .compact-source-v51 {
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 18px;
+  padding: 13px;
+  background: rgba(255,255,255,.04);
+}
+.round-modal-question-v51 {
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  border-radius: 18px;
+  padding: 13px;
+  background: linear-gradient(180deg, rgba(0,179,164,.12), rgba(0,179,164,.045));
+}
+.round-modal-question-v51 .label {
+  display: block;
+  margin: 0 0 7px;
+  color: color-mix(in srgb, var(--accent) 66%, #fff);
+  font-size: .72rem;
+  font-weight: 950;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+.round-modal-question-v51 .text {
+  color: var(--text);
+  font-size: clamp(1rem, 4.6vw, 1.2rem);
+  line-height: 1.28;
+  font-weight: 850;
+}
+.round-modal-actions-v51 {
+  display: grid;
+  gap: 9px;
+}
+.round-modal-actions-v51.two {
+  grid-template-columns: 1fr 1fr;
+}
+.round-modal-actions-v51 .modal-btn {
+  min-height: 50px;
+  border-radius: 15px;
+  white-space: normal;
+  line-height: 1.12;
+}
+:root[data-theme="light"] .round-card-v51 {
+  background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(247,250,252,.92));
+  border-color: rgba(15,23,42,.09);
+  box-shadow: 0 12px 26px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.8);
+}
+:root[data-theme="light"] .round-card-v51 .compact-source-v51,
+:root[data-theme="light"] .round-modal-v51 .compact-source-v51 {
+  background: rgba(241,245,249,.75);
+  border-color: rgba(15,23,42,.08);
+}
+:root[data-theme="light"] .round-card-v51 .source-block {
+  background: rgba(255,255,255,.84) !important;
+  border-color: rgba(15,23,42,.08) !important;
+}
+:root[data-theme="light"] .round-card-v51 .source-name,
+:root[data-theme="light"] .round-card-v51 .source-line {
+  color: #0f172a !important;
+}
+
+
+
+/* PASSAGEM DE TURNO BETA V1.01 — PALETA OFICIAL POR STATUS
+   Regras do Lucas:
+   SETUP = azul | AJUSTE = laranja | MANUTENÇÃO = vermelho forte
+   CONFLITO = vermelho claro | LIBERADA = verde | OBSERVAÇÕES = branco
+*/
+:root {
+  --status-setup: #258cff;
+  --status-setup-soft: rgba(37, 140, 255, .18);
+  --status-adjust: #f97316;
+  --status-adjust-soft: rgba(249, 115, 22, .20);
+  --status-maintenance: #dc2626;
+  --status-maintenance-soft: rgba(220, 38, 38, .20);
+  --status-conflict: #ff8f8f;
+  --status-conflict-soft: rgba(255, 143, 143, .20);
+  --status-release: #22c55e;
+  --status-release-soft: rgba(34, 197, 94, .18);
+  --status-observation: #f8fafc;
+  --status-observation-soft: rgba(248, 250, 252, .10);
+}
+.badge.setup,
+.badge.blue {
+  color: #dbeafe !important;
+  background: var(--status-setup-soft) !important;
+  border-color: rgba(37, 140, 255, .34) !important;
+}
+.badge.adjust,
+.badge.amber {
+  color: #ffedd5 !important;
+  background: var(--status-adjust-soft) !important;
+  border-color: rgba(249, 115, 22, .34) !important;
+}
+.badge.maintenance,
+.badge.red {
+  color: #fee2e2 !important;
+  background: var(--status-maintenance-soft) !important;
+  border-color: rgba(220, 38, 38, .38) !important;
+}
+.badge.conflict {
+  color: #fff1f2 !important;
+  background: var(--status-conflict-soft) !important;
+  border-color: rgba(255, 143, 143, .46) !important;
+}
+.badge.release,
+.badge.green {
+  color: #dcfce7 !important;
+  background: var(--status-release-soft) !important;
+  border-color: rgba(34, 197, 94, .34) !important;
+}
+.badge.observation,
+.badge.general,
+.badge.white {
+  color: var(--status-observation) !important;
+  background: var(--status-observation-soft) !important;
+  border-color: rgba(248, 250, 252, .28) !important;
+}
+.round-card-v51.status-setup { --round-accent: var(--status-setup); }
+.round-card-v51.status-adjust { --round-accent: var(--status-adjust); }
+.round-card-v51.status-maintenance { --round-accent: var(--status-maintenance); }
+.round-card-v51.status-conflict {
+  --round-accent: var(--status-conflict);
+  border-color: rgba(255, 143, 143, .26) !important;
+  border-left-color: var(--status-conflict) !important;
+  background: linear-gradient(180deg, rgba(255, 143, 143, .075), rgba(255,255,255,.022)), rgba(8, 10, 12, .9) !important;
+}
+.round-card-v51.status-release { --round-accent: var(--status-release); }
+.round-card-v51.status-observation {
+  --round-accent: var(--status-observation);
+  border-left-color: rgba(248, 250, 252, .82) !important;
+}
+.round-card-v51.status-observation .compact-source-title-v51,
+.round-card-v51.status-observation .source-name {
+  color: rgba(248, 250, 252, .94) !important;
+}
+.round-card-v51.status-setup .compact-source-title-v51 { color: color-mix(in srgb, var(--status-setup) 72%, #fff) !important; }
+.round-card-v51.status-adjust .compact-source-title-v51 { color: color-mix(in srgb, var(--status-adjust) 72%, #fff) !important; }
+.round-card-v51.status-maintenance .compact-source-title-v51 { color: color-mix(in srgb, var(--status-maintenance) 72%, #fff) !important; }
+.round-card-v51.status-conflict .compact-source-title-v51 { color: color-mix(in srgb, var(--status-conflict) 78%, #fff) !important; }
+.round-card-v51 .round-card-action-v51 {
+  border-color: color-mix(in srgb, var(--round-accent, var(--accent)) 48%, transparent) !important;
+  background: color-mix(in srgb, var(--round-accent, var(--accent)) 16%, rgba(255,255,255,.04)) !important;
+  color: color-mix(in srgb, var(--round-accent, var(--accent)) 70%, #fff) !important;
+}
+.action-btn.adjust,
+.future-btn.adjust,
+.devobs-btn.adjust,
+#transitionModal.round-decision-v51 .modal-btn.status-adjust { background: var(--status-adjust) !important; color: #fff !important; }
+.action-btn.setup,
+.action-btn.start,
+.future-btn.setup,
+.future-btn.start,
+.devobs-btn.setup,
+#transitionModal.round-decision-v51 .modal-btn.status-setup { background: var(--status-setup) !important; color: #fff !important; }
+.action-btn.maintenance,
+.devobs-btn.maintenance,
+#transitionModal.round-decision-v51 .modal-btn.status-maintenance { background: var(--status-maintenance) !important; color: #fff !important; }
+.action-btn.release,
+#transitionModal.round-decision-v51 .modal-btn.status-release { background: var(--status-release) !important; color: #fff !important; }
+#transitionModal.round-decision-v51 .modal-btn.status-observation,
+.devobs-btn.keep,
+.devobs-btn.resolve {
+  background: rgba(248, 250, 252, .12) !important;
+  color: var(--status-observation) !important;
+  border-color: rgba(248, 250, 252, .24) !important;
+}
+#transitionModal.round-decision-v51 .modal-btn.status-remove,
+.action-btn.remove,
+.future-btn.remove,
+.devobs-btn.remove {
+  background: #33403d !important;
+  color: #f8fafc !important;
+}
+:root[data-theme="light"] .badge.observation,
+:root[data-theme="light"] .badge.general,
+:root[data-theme="light"] .badge.white {
+  color: #111827 !important;
+  background: rgba(17, 24, 39, .06) !important;
+  border-color: rgba(17, 24, 39, .18) !important;
+}
+:root[data-theme="light"] .round-card-v51.status-observation {
+  --round-accent: #111827;
+  border-left-color: rgba(17, 24, 39, .70) !important;
+}
+:root[data-theme="light"] #transitionModal.round-decision-v51 .modal-btn.status-observation,
+:root[data-theme="light"] .devobs-btn.keep,
+:root[data-theme="light"] .devobs-btn.resolve {
+  background: rgba(17, 24, 39, .08) !important;
+  color: #111827 !important;
+  border-color: rgba(17, 24, 39, .16) !important;
+}
+
 </style>
   </head>
   <body class="auth-locked">
@@ -3605,27 +4120,6 @@ TNL's - 055 - 056 - Sem ordem"
 
       <section class="tab-panel" id="tabPanelRelatorio" data-tab-panel="relatorio">
         <section class="report-shell glass">
-          <div class="report-hero">
-            <div class="report-hero-copy">
-              <div class="report-eyebrow">RELATÓRIO FINAL</div>
-              <h2 id="reportTitle">Passagem de turno</h2>
-              <p id="reportSubtitle">Prévia direta para copiar no WhatsApp.</p>
-            </div>
-            <div class="report-status-card" id="reportStatusCard">
-              <span class="report-status-icon">⏳</span>
-              <div>
-                <strong id="reportStatusTitle">Aguardando ronda</strong>
-                <small id="reportStatusSub">Prepare a passagem para gerar a conferência.</small>
-              </div>
-            </div>
-          </div>
-
-          <div class="report-metrics-grid" id="reportMetricsGrid">
-            <div class="report-metric"><span>Pendências</span><strong>0</strong></div>
-            <div class="report-metric"><span>Decisões</span><strong>0</strong></div>
-            <div class="report-metric"><span>Conflitos</span><strong>0</strong></div>
-          </div>
-
           <div class="report-main-actions">
             <button class="btn btn-primary report-copy-main" id="btnCopy">COPIAR RELATÓRIO</button>
             <button class="btn btn-soft" id="btnRefresh">ATUALIZAR PRÉVIA</button>
@@ -3651,6 +4145,8 @@ TNL's - 055 - 056 - Sem ordem"
         </div>
       </section>
     </main>
+
+    <button class="floating-copy-report" id="btnCopyFloating" type="button" aria-label="Copiar relatório" title="Copiar relatório">⧉</button>
 
     <div class="modal" id="addModal">
       <div class="modal-card">
@@ -6281,13 +6777,11 @@ TNL's - 055 - 056 - Sem ordem"
             current = { line, extra: [] };
             return;
           }
-          // V46: em Desenvolvimento/Observações, qualquer linha abaixo de uma TNL pertence à própria TNL
-          // até aparecer outra TNL. Antes só aceitava parênteses/OP/ITEM como complemento,
-          // então a informação real podia cair como "geral" e o card da máquina ficava vazio.
-          if (current) {
+          if (current && isContinuationLine(line)) {
             current.extra.push(line);
             return;
           }
+          pushCurrent();
           generalItems.push(makeGeneralInfoItem({ kind, text: line, previousItems: previousGeneralItems }));
         });
         pushCurrent();
@@ -6492,15 +6986,11 @@ TNL's - 055 - 056 - Sem ordem"
       function reportGeneralLines(kind) {
         return generalInfoList().filter((x) => x.kind === kind && x.status !== "removed").map((x) => x.rawText || x.text);
       }
-      function formatDevObsReportLine(item) {
-        const full = typeof devObsFullSourceText === 'function' ? devObsFullSourceText(item) : '';
-        return full || (item.displayText || item.rawText || '');
-      }
       function reportDevLines() {
-        return uniqueStrings([...reportGeneralLines("development"), ...sortByTnl(devObsList().filter((x) => x.kind === "development" && !["resolved", "removed"].includes(x.status))).map(formatDevObsReportLine).filter(Boolean)]);
+        return uniqueStrings([...reportGeneralLines("development"), ...sortByTnl(devObsList().filter((x) => x.kind === "development" && !["resolved", "removed"].includes(x.status))).map((x) => x.displayText)]);
       }
       function reportObsLines() {
-        return uniqueStrings([...reportGeneralLines("observation"), ...sortByTnl(devObsList().filter((x) => x.kind === "observation" && !["resolved", "removed"].includes(x.status))).map(formatDevObsReportLine).filter(Boolean)]);
+        return uniqueStrings([...reportGeneralLines("observation"), ...sortByTnl(devObsList().filter((x) => x.kind === "observation" && !["resolved", "removed"].includes(x.status))).map((x) => x.displayText)]);
       }
       function updateKpis() {
         const pendingActive = uniqueNumbers(activeRecords().filter((r) => !state.reviewedTnls[String(r.tnl)]).map((r) => r.tnl)).length,
@@ -6920,13 +7410,6 @@ TNL's - 055 - 056 - Sem ordem"
           toast("Informe uma TNL válida");
           return;
         }
-        if (status === "development" || status === "observation") {
-          if (isGenericDevObsDetail(reason, status)) {
-            toast(status === "development" ? "Preencha a informação do desenvolvimento" : "Preencha a observação da máquina");
-            el("addReason")?.focus();
-            return;
-          }
-        }
         closeAddModal();
         if (status === "development" || status === "observation") {
           addManualDevObs(tnl, status, reason, false, "pending");
@@ -7168,37 +7651,13 @@ TNL's - 055 - 056 - Sem ordem"
           chips: [turnLabel],
         };
       }
-      // V46 — detalhe confiável para Desenvolvimento/Observação.
-      // Remove o prefixo TNL e descarta textos genéricos como "OBSERVAÇÃO" sem detalhe.
-      function isGenericDevObsDetail(text, kind) {
-        const h = normalizeHeader(text);
-        if (!h) return true;
-        if (kind === 'development') return h === 'DESENVOLVIMENTO' || h === 'DESENVOLVIMENTO INFORMADO';
-        return h === 'OBSERVACAO' || h === 'OBSERVACOES' || h === 'OBSERVACAO INFORMADA';
-      }
-      function devObsDetailText(item) {
-        const kind = item?.kind || 'observation';
-        const raw = String(item?.rawText || item?.displayText || item?.text || '').replace(/\r/g, '').trim();
-        const tnl = Number(item?.tnl || 0);
-        let text = raw;
-        if (tnl) {
-          text = text.replace(new RegExp('^TNL\\s*0*' + tnl + '\\s*-?\\s*', 'i'), '').trim();
-        }
-        const lines = text.split('\n').map((line) => cleanLine(line)).filter(Boolean);
-        while (lines.length && isGenericDevObsDetail(lines[0], kind)) lines.shift();
-        return lines.join('\n').trim();
-      }
-      function devObsFullSourceText(item) {
-        const detail = devObsDetailText(item);
-        if (!detail) return '';
-        return `TNL ${pad(item.tnl)} - ${detail}`;
-      }
       function compactSummaryForDevObs(item) {
         const isDev = item.kind === 'development';
-        const detail = devObsDetailText(item);
+        const text = item.rawText || item.displayText || '';
+        const title = text.replace(new RegExp('^TNL\\s*0*' + Number(item.tnl) + '\\s*-\\s*', 'i'), '').trim() || (isDev ? 'Desenvolvimento' : 'Observação');
         return {
-          title: detail || 'Sem detalhe informado',
-          sub: detail ? (isDev ? 'Desenvolvimento informado' : 'Observação informada') : 'Falta preencher a informação',
+          title,
+          sub: isDev ? 'Desenvolvimento informado' : 'Observação informada',
           chips: [isDev ? 'Desenvolvimento' : 'Observação'],
         };
       }
@@ -7233,23 +7692,16 @@ TNL's - 055 - 056 - Sem ordem"
         const body = `<div class="machine-expanded-grid"><div class="machine-expanded-block"><div class="source-name">INFORMAÇÃO ORIGINAL DO GRUPO — ${esc(item.heading)}</div><div class="source-line">${esc(item.rawText || item.displayText)}</div></div><div class="machine-expanded-block attention"><div class="machine-expanded-label">PERGUNTA PARA A RONDA</div><div class="machine-expanded-text">${esc(buildQuestionForFuture(item))}</div></div><div class="card-actions future-actions"><button class="future-btn keep" onclick="keepFutureSetup(${item.id})">MANTER PARA ${esc(turnKeep)}</button><button class="future-btn setup" onclick="openFutureSetupChoice(${item.id})">VAI PASSAR EM SETUP</button><button class="future-btn remove" onclick="removeFutureSetup(${item.id})">REMOVER DO RELATÓRIO</button></div></div>`;
         return renderCompactShell({ key: cardKeyFuture(item.id), articleClass: 'future', badgeText: item.heading, badgeCss: 'blue', title: `TNL ${pad(item.tnl)}`, summary: compact.title, sub: compact.sub, previewChips: compact.chips, bodyHtml: body });
       }
-      function renderDevObsCard(input) {
-        const item = input?.item || input;
+      function renderDevObsCard(item) {
         const isDev = item.kind === 'development';
         const badgeText = isDev ? 'DESENVOLVIMENTO' : 'OBSERVAÇÃO';
-        const informedLabel = isDev ? 'DESENVOLVIMENTO INFORMADO' : 'OBSERVAÇÃO INFORMADA';
         const keepText = isDev ? 'MANTER DESENVOLVIMENTO' : 'MANTER OBSERVAÇÃO';
         const resolveText = isDev ? 'JÁ VOLTOU PARA O CNC' : 'OBSERVAÇÃO RESOLVIDA';
         const compact = compactSummaryForDevObs(item);
-        const sourceText = devObsFullSourceText(item);
-        const sourceHtml = sourceText
-          ? `<div class="source-line">${esc(sourceText)}</div>`
-          : `<div class="source-line source-line-warning">⚠ Sem detalhe informado. Volte em + ADICIONAR MÁQUINA ou edite o campo de Observações/Desenvolvimento e preencha a informação.</div>`;
-        const body = `<div class="machine-expanded-grid"><div class="machine-expanded-block"><div class="source-name">${esc(informedLabel)}</div>${sourceHtml}</div><div class="machine-expanded-block attention"><div class="machine-expanded-label">PERGUNTA PARA A RONDA</div><div class="machine-expanded-text">${esc(buildQuestionForDevObs(item))}</div></div><div class="card-actions devobs-actions"><button class="devobs-btn keep" onclick="keepDevObs(${item.id})">${esc(keepText)}</button><button class="devobs-btn resolve" onclick="resolveDevObs(${item.id})">${esc(resolveText)}</button><button class="devobs-btn adjust" onclick="devObsToAdjustment(${item.id})">VAI PASSAR EM AJUSTE</button><button class="devobs-btn setup" onclick="devObsToSetup(${item.id})">VAI PASSAR EM SETUP</button><button class="devobs-btn maintenance" onclick="devObsToMaintenance(${item.id})">VAI PASSAR EM MANUTENÇÃO</button><button class="devobs-btn remove" onclick="removeDevObs(${item.id})">REMOVER DO RELATÓRIO</button></div></div>`;
-        return renderCompactShell({ key: cardKeyDevObs(item.id), articleClass: `devobs ${isDev ? 'development' : ''} ${sourceText ? '' : 'missing-detail'}`, badgeText, badgeCss: 'amber', title: `TNL ${pad(item.tnl)}`, summary: compact.title, sub: compact.sub, previewChips: compact.chips, bodyHtml: body });
+        const body = `<div class="machine-expanded-grid"><div class="machine-expanded-block"><div class="source-name">${esc(badgeText)} INFORMADO</div><div class="source-line">${esc(item.rawText || item.displayText)}</div></div><div class="machine-expanded-block attention"><div class="machine-expanded-label">PERGUNTA PARA A RONDA</div><div class="machine-expanded-text">${esc(buildQuestionForDevObs(item))}</div></div><div class="card-actions devobs-actions"><button class="devobs-btn keep" onclick="keepDevObs(${item.id})">${esc(keepText)}</button><button class="devobs-btn resolve" onclick="resolveDevObs(${item.id})">${esc(resolveText)}</button><button class="devobs-btn adjust" onclick="devObsToAdjustment(${item.id})">VAI PASSAR EM AJUSTE</button><button class="devobs-btn setup" onclick="devObsToSetup(${item.id})">VAI PASSAR EM SETUP</button><button class="devobs-btn maintenance" onclick="devObsToMaintenance(${item.id})">VAI PASSAR EM MANUTENÇÃO</button><button class="devobs-btn remove" onclick="removeDevObs(${item.id})">REMOVER DO RELATÓRIO</button></div></div>`;
+        return renderCompactShell({ key: cardKeyDevObs(item.id), articleClass: `devobs ${isDev ? 'development' : ''}`, badgeText, badgeCss: 'amber', title: `TNL ${pad(item.tnl)}`, summary: compact.title, sub: compact.sub, previewChips: compact.chips, bodyHtml: body });
       }
-      function renderGeneralInfoCard(input) {
-        const item = input?.item || input;
+      function renderGeneralInfoCard(item) {
         const title = item.kind === 'development' ? 'DESENVOLVIMENTO' : 'OBSERVAÇÃO';
         const question = item.kind === 'development' ? 'Essa informação geral de desenvolvimento deve permanecer no relatório final?' : 'Essa observação geral deve permanecer no relatório final?';
         const compact = compactSummaryForGeneral(item);
@@ -7520,6 +7972,790 @@ TNL's - 055 - 056 - Sem ordem"
       };
       initReportWhatsappOnly();
 
-    </script>
+
+      // PATCH V46 — mantém o relatório direto, sem cabeçalho superior e sem métricas duplicadas.
+      function initReportDirectOnly() {
+        el("reportHero")?.remove();
+        el("reportMetricsGrid")?.remove();
+        el("reportCleanView")?.remove();
+        document.querySelectorAll("[data-report-view]").forEach((node) => node.remove());
+        el("reportWhatsappView")?.classList.add("active", "report-whatsapp-only");
+        renderWhatsAppPreview?.();
+      }
+      const setAppTabV46 = setAppTab;
+      setAppTab = function (tab, options = {}) {
+        setAppTabV46(tab, options);
+        if (tab === "relatorio") initReportDirectOnly();
+      };
+      const generateReportV46 = generateReport;
+      generateReport = function () {
+        generateReportV46();
+        initReportDirectOnly();
+      };
+      initReportDirectOnly();
+
+
+      // PATCH V47 — relatório usa a rolagem da página e cópia por botão flutuante.
+      function initReportFullscreenV47() {
+        const isReport = document.querySelector('#tabPanelRelatorio')?.classList.contains('active');
+        document.body.classList.toggle('report-tab-active', !!isReport);
+        const floatCopy = el('btnCopyFloating');
+        if (floatCopy) floatCopy.onclick = copyReport;
+        renderWhatsAppPreview?.();
+      }
+      const setAppTabV47 = setAppTab;
+      setAppTab = function (tab, options = {}) {
+        setAppTabV47(tab, options);
+        initReportFullscreenV47();
+      };
+      const generateReportV47 = generateReport;
+      generateReport = function () {
+        generateReportV47();
+        initReportFullscreenV47();
+      };
+      initReportFullscreenV47();
+
+    
+
+      // PATCH V48 — cards da ronda mostram a informação real do relatório, não texto genérico.
+      function sourceTextV48(value, fallback = "") {
+        const joined = String(value || "")
+          .replace(/\r/g, "")
+          .split("\n")
+          .map((line) => cleanLine(line))
+          .filter(Boolean)
+          .join(" ")
+          .replace(/\s+/g, " ")
+          .trim();
+        return joined || String(fallback || "").trim();
+      }
+      function recordSourceTextV48(record) {
+        return sourceTextV48(record?.rawText || record?.displayText || record?.text || "");
+      }
+      function looksGenericDevObsV48(text, item) {
+        const clean = sourceTextV48(text).toUpperCase();
+        if (!clean || !item?.tnl) return true;
+        const generic = item.kind === "development" ? "DESENVOLVIMENTO" : "OBSERVAÇÃO";
+        return clean === `TNL ${pad(item.tnl)} - ${generic}` || clean === `TNL ${pad(item.tnl)} - ${generic.normalize("NFD").replace(/[\u0300-\u036f]/g, "")}` || clean === generic;
+      }
+      function fieldSourceForDevObsV48(item) {
+        if (!item?.tnl || !item?.kind) return "";
+        const fieldId = item.kind === "development" ? "development" : "observations";
+        const lines = String(el(fieldId)?.value || "").split("\n");
+        const collected = [];
+        let current = null;
+        const flush = () => {
+          if (current) collected.push(current);
+          current = null;
+        };
+        lines.forEach((rawLine) => {
+          const line = cleanLine(rawLine || "");
+          if (!line || isNA(line) || isDevObsHeader(line)) return;
+          const hasTnl = extractTnl(line) || /^TNL'?S?\s*-/i.test(line);
+          if (hasTnl) {
+            flush();
+            current = { first: line, extra: [] };
+            return;
+          }
+          if (current && isContinuationLine(line)) current.extra.push(line);
+          else flush();
+        });
+        flush();
+        const tnl = Number(item.tnl);
+        const found = collected.find((entry) => parseTnlsLine(entry.first, entry.extra, item.kind, []).some((parsed) => Number(parsed.tnl) === tnl));
+        return found ? sourceTextV48([found.first, ...(found.extra || [])].join("\n")) : "";
+      }
+      function itemSourceTextV48(item) {
+        let direct = sourceTextV48(item?.rawText || item?.displayText || item?.text || "");
+        if (item?.kind && item?.tnl && looksGenericDevObsV48(direct, item)) {
+          const recovered = fieldSourceForDevObsV48(item);
+          if (recovered && !looksGenericDevObsV48(recovered, item)) direct = recovered;
+        }
+        return direct;
+      }
+      function removeTnlPrefixV48(text, tnl) {
+        let clean = sourceTextV48(text);
+        if (tnl) {
+          clean = clean.replace(new RegExp("^\\s*(?:🔴\\s*)?TNL\\s*0*" + Number(tnl) + "\\s*-?\\s*", "i"), "").trim();
+        } else {
+          clean = clean.replace(/^\s*(?:🔴\s*)?TNL\s*0*\d{1,3}\s*-?\s*/i, "").trim();
+        }
+        return clean;
+      }
+      function summaryTitleV48(fullText, tnl, fallback) {
+        const desc = removeTnlPrefixV48(fullText, tnl);
+        return desc || fallback || "Conferir informação";
+      }
+      function activeSourceTextV48(group) {
+        const records = group?.records || [];
+        const lines = uniqueStrings(records.map(recordSourceTextV48).filter(Boolean));
+        return lines.join(" • ");
+      }
+      function sourceBlocks(records) {
+        const groups = new Map();
+        (records || []).forEach((r) => {
+          const key = r.sourceSection || r.type;
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(r);
+        });
+        return [...groups.entries()]
+          .map(([section, items]) => {
+            const lines = uniqueStrings(items.map(recordSourceTextV48).filter(Boolean));
+            return `<div class="source-block"><div class="source-name">${esc(sourceLabel(section))}</div>${lines.map((line) => `<div class="source-line">${esc(line)}</div>`).join("")}</div>`;
+          })
+          .join("");
+      }
+      function compactSummaryForActive(group) {
+        const records = group.records || [];
+        const tnl = group.tnl;
+        const conflict = hasConflict(tnl) && !state.resolvedConflicts[String(tnl)];
+        const source = activeSourceTextV48(group);
+        if (conflict) {
+          return {
+            title: "Conflito entre blocos ativos",
+            sub: source || "Máquina aparece em mais de um bloco",
+            chips: uniqueStrings(records.map((r) => shortStatusLabel(r.type))).slice(0, 3),
+          };
+        }
+        const first = records[0] || {};
+        if (first.type === "maintenance") {
+          const reason = getPrimaryMaintenanceReason(records);
+          return { title: reason || summaryTitleV48(source, tnl, "Manutenção parada"), sub: source || "Informação não preenchida", chips: ["Manutenção"] };
+        }
+        if (first.type === "maintenance_prod") {
+          const reason = getPrimaryMaintenanceReason(records);
+          return { title: reason || summaryTitleV48(source, tnl, "Manutenção produzindo"), sub: source || "Informação não preenchida", chips: ["Manutenção produzindo"] };
+        }
+        if (first.type === "setup_start") {
+          const time = extractTime(first.rawText || first.displayText || "");
+          return { title: time ? `Setup previsto às ${time}` : summaryTitleV48(source, tnl, "Setup para iniciar"), sub: source || "Informação não preenchida", chips: ["Próximo setup"] };
+        }
+        if (first.type === "setup_active") {
+          return { title: summaryTitleV48(source, tnl, "Em setup"), sub: source || "Informação não preenchida", chips: ["Setup"] };
+        }
+        if (first.type === "adjustment") {
+          const reason = normalizeAdjustmentText(first.rawText || first.displayText || "");
+          return { title: reason || summaryTitleV48(source, tnl, "Ajuste"), sub: source || "Informação não preenchida", chips: ["Ajuste"] };
+        }
+        return { title: summaryTitleV48(source, tnl, shortStatusLabel(first.type)), sub: source || "Informação não preenchida", chips: [shortStatusLabel(first.type)] };
+      }
+      function compactSummaryForFuture(item) {
+        const source = itemSourceTextV48(item);
+        const afterMaint = /após manutenção/i.test(source);
+        const turnLabel = item.heading || "SETUP FUTURO";
+        return {
+          title: afterMaint ? "Setup após manutenção" : summaryTitleV48(source, item.tnl, turnLabel),
+          sub: source || "Informação não preenchida",
+          chips: [turnLabel],
+        };
+      }
+      function compactSummaryForDevObs(item) {
+        const isDev = item.kind === "development";
+        const source = itemSourceTextV48(item);
+        return {
+          title: summaryTitleV48(source, item.tnl, isDev ? "Desenvolvimento" : "Observação"),
+          sub: source || "Informação não preenchida",
+          chips: [isDev ? "Desenvolvimento" : "Observação"],
+        };
+      }
+      function compactSummaryForGeneral(item) {
+        const source = itemSourceTextV48(item);
+        return {
+          title: source || "Informação geral",
+          sub: "Sem TNL vinculada",
+          chips: [item.kind === "development" ? "Desenvolvimento" : "Observação"],
+        };
+      }
+      function renderFutureCard(group) {
+        const item = group.item;
+        const compact = compactSummaryForFuture(item);
+        const turnKeep = item.heading.replace("SETUPS ", "");
+        const source = itemSourceTextV48(item) || "Informação não preenchida";
+        const body = `<div class="machine-expanded-grid"><div class="machine-expanded-block"><div class="source-name">INFORMAÇÃO ORIGINAL — ${esc(item.heading)}</div><div class="source-line">${esc(source)}</div></div><div class="machine-expanded-block attention"><div class="machine-expanded-label">PERGUNTA PARA A RONDA</div><div class="machine-expanded-text">${esc(buildQuestionForFuture(item))}</div></div><div class="card-actions future-actions"><button class="future-btn keep" onclick="keepFutureSetup(${item.id})">MANTER PARA ${esc(turnKeep)}</button><button class="future-btn setup" onclick="openFutureSetupChoice(${item.id})">VAI PASSAR EM SETUP</button><button class="future-btn remove" onclick="removeFutureSetup(${item.id})">REMOVER DO RELATÓRIO</button></div></div>`;
+        return renderCompactShell({ key: cardKeyFuture(item.id), articleClass: "future", badgeText: item.heading, badgeCss: "blue", title: `TNL ${pad(item.tnl)}`, summary: compact.title, sub: compact.sub, previewChips: compact.chips, bodyHtml: body });
+      }
+      function renderDevObsCard(item) {
+        const isDev = item.kind === "development";
+        const badgeText = isDev ? "DESENVOLVIMENTO" : "OBSERVAÇÃO";
+        const keepText = isDev ? "MANTER DESENVOLVIMENTO" : "MANTER OBSERVAÇÃO";
+        const resolveText = isDev ? "JÁ VOLTOU PARA O CNC" : "OBSERVAÇÃO RESOLVIDA";
+        const compact = compactSummaryForDevObs(item);
+        const source = itemSourceTextV48(item) || "Informação não preenchida";
+        const body = `<div class="machine-expanded-grid"><div class="machine-expanded-block"><div class="source-name">INFORMAÇÃO ORIGINAL</div><div class="source-line">${esc(source)}</div></div><div class="machine-expanded-block attention"><div class="machine-expanded-label">PERGUNTA PARA A RONDA</div><div class="machine-expanded-text">${esc(buildQuestionForDevObs(item))}</div></div><div class="card-actions devobs-actions"><button class="devobs-btn keep" onclick="keepDevObs(${item.id})">${esc(keepText)}</button><button class="devobs-btn resolve" onclick="resolveDevObs(${item.id})">${esc(resolveText)}</button><button class="devobs-btn adjust" onclick="devObsToAdjustment(${item.id})">VAI PASSAR EM AJUSTE</button><button class="devobs-btn setup" onclick="devObsToSetup(${item.id})">VAI PASSAR EM SETUP</button><button class="devobs-btn maintenance" onclick="devObsToMaintenance(${item.id})">VAI PASSAR EM MANUTENÇÃO</button><button class="devobs-btn remove" onclick="removeDevObs(${item.id})">REMOVER DO RELATÓRIO</button></div></div>`;
+        return renderCompactShell({ key: cardKeyDevObs(item.id), articleClass: `devobs ${isDev ? "development" : ""}`, badgeText, badgeCss: "amber", title: `TNL ${pad(item.tnl)}`, summary: compact.title, sub: compact.sub, previewChips: compact.chips, bodyHtml: body });
+      }
+      function renderGeneralInfoCard(itemOrGroup) {
+        const item = itemOrGroup?.item || itemOrGroup;
+        const title = item.kind === "development" ? "DESENVOLVIMENTO" : "OBSERVAÇÃO";
+        const question = item.kind === "development" ? "Essa informação geral de desenvolvimento deve permanecer no relatório final?" : "Essa observação geral deve permanecer no relatório final?";
+        const compact = compactSummaryForGeneral(item);
+        const source = itemSourceTextV48(item) || "Informação não preenchida";
+        const body = `<div class="machine-expanded-grid"><div class="machine-expanded-block"><div class="source-name">INFORMAÇÃO SEM TNL</div><div class="source-line">${esc(source)}</div></div><div class="machine-expanded-block attention"><div class="machine-expanded-label">PERGUNTA PARA A PASSAGEM</div><div class="machine-expanded-text">${esc(question)}</div></div><div class="card-actions future-actions"><button class="future-btn setup" onclick="keepGeneralInfo(${item.id})">MANTER NO RELATÓRIO</button><button class="future-btn remove" onclick="removeGeneralInfo(${item.id})">REMOVER DO RELATÓRIO</button></div></div>`;
+        return renderCompactShell({ key: cardKeyGeneral(item.id), articleClass: "general-info", badgeText: title, badgeCss: "general", title: "GERAL / SEM MÁQUINA", summary: compact.title, sub: compact.sub, previewChips: compact.chips, bodyHtml: body });
+      }
+      updateEverything?.();
+      renderSelectedCell?.();
+      renderConfirmedDecisions?.();
+      saveSession?.();
+
+
+      // PATCH V49 — card compacto igual ao modelo da TNL 019:
+      // mostra primeiro o resumo operacional e logo abaixo a informação original do grupo.
+      function activeSourceTextV49(group) {
+        const records = group?.records || [];
+        return uniqueStrings(records.map(recordSourceTextV48).filter(Boolean)).join("\n");
+      }
+      function compactSummaryForActive(group) {
+        const records = group.records || [];
+        const tnl = group.tnl;
+        const conflict = hasConflict(tnl) && !state.resolvedConflicts[String(tnl)];
+        const source = activeSourceTextV49(group) || "Informação original não encontrada";
+        const first = records[0] || {};
+        if (conflict) {
+          return {
+            title: "Conflito entre blocos ativos",
+            sub: source,
+            chips: uniqueStrings(records.map((r) => shortStatusLabel(r.type))).slice(0, 3),
+          };
+        }
+        if (first.type === "maintenance") {
+          return { title: "Manutenção parada", sub: source, chips: ["Manutenção"] };
+        }
+        if (first.type === "maintenance_prod") {
+          return { title: "Manutenção produzindo", sub: source, chips: ["Manutenção produzindo"] };
+        }
+        if (first.type === "setup_start") {
+          const time = extractTime(first.rawText || first.displayText || source || "");
+          return { title: time ? `Setup previsto às ${time}` : "Setup previsto", sub: source, chips: ["Próximo setup"] };
+        }
+        if (first.type === "setup_active") {
+          return { title: "Setup informado no grupo", sub: source, chips: ["Setup"] };
+        }
+        if (first.type === "adjustment") {
+          return { title: "Ajuste informado no grupo", sub: source, chips: ["Ajuste"] };
+        }
+        return { title: shortStatusLabel(first.type) || "Informação original", sub: source, chips: [shortStatusLabel(first.type)] };
+      }
+      function compactSummaryForFuture(item) {
+        const source = itemSourceTextV48(item) || "Informação original não encontrada";
+        const time = extractTime(source);
+        const afterMaint = /após manutenção/i.test(source);
+        const turnLabel = item.heading || "SETUP FUTURO";
+        return {
+          title: afterMaint ? "Setup futuro após manutenção" : (time ? `Setup futuro às ${time}` : "Setup futuro informado no grupo"),
+          sub: source,
+          chips: [turnLabel],
+        };
+      }
+      function compactSummaryForDevObs(item) {
+        const isDev = item.kind === "development";
+        const source = itemSourceTextV48(item) || "Informação original não encontrada";
+        return {
+          title: isDev ? "Desenvolvimento informado" : "Observação informada",
+          sub: source,
+          chips: [isDev ? "Desenvolvimento" : "Observação"],
+        };
+      }
+      function compactSummaryForGeneral(item) {
+        const source = itemSourceTextV48(item) || "Informação geral não encontrada";
+        return {
+          title: "Informação geral",
+          sub: source,
+          chips: [item.kind === "development" ? "Desenvolvimento" : "Observação"],
+        };
+      }
+      function renderCompactShell({ key, articleClass, badgeText, badgeCss, title, summary, sub, previewChips, bodyHtml, note }) {
+        const expanded = isRoundCardOpen(key);
+        const originalLabel = String(title || "").includes("GERAL") ? "INFORMAÇÃO ORIGINAL" : "INFORMAÇÃO ORIGINAL DO GRUPO";
+        const originalHtml = sub ? `<div class="machine-original-label">${esc(originalLabel)}</div><div class="machine-original-line">${esc(sub)}</div>` : "";
+        return `<article class="machine-card compact-card ${articleClass || ''} ${expanded ? 'expanded' : ''}"><button type="button" class="machine-compact-toggle" onclick="toggleRoundCard('${esc(String(key))}')"><div class="machine-compact-top"><div class="machine-compact-main"><div class="machine-compact-title"><div class="machine-number">${esc(title)}</div><span class="badge ${esc(badgeCss || 'gray')}">${esc(badgeText || '')}</span></div><div class="machine-compact-summary">${esc(summary || '')}</div>${originalHtml}${note ? `<div class="machine-inline-note">${esc(note)}</div>` : ''}</div><div class="machine-compact-right"><span class="machine-toggle-icon">+</span></div></div>${previewChipsHtml(previewChips)}</button><div class="machine-body">${bodyHtml}</div></article>`;
+      }
+      updateEverything?.();
+      renderSelectedCell?.();
+      renderConfirmedDecisions?.();
+      saveSession?.();
+
+
+      // PATCH V50 BETA — correção geral das decisões da RONDA.
+      // Corrige cards de Observação/Desenvolvimento/Geral que recebiam o objeto errado
+      // e geravam botões com id indefinido. Também adiciona um controlador robusto
+      // por pointer/click para evitar falha de toque no mobile.
+      function roundItemV50(input) {
+        return input && input.item ? input.item : input;
+      }
+      function itemSourceTextV50(item) {
+        if (!item) return "Informação original não encontrada";
+        try {
+          if (typeof itemSourceTextV48 === "function") {
+            const fromV48 = itemSourceTextV48(item);
+            if (String(fromV48 || "").trim()) return String(fromV48).trim();
+          }
+        } catch (_err) {}
+        return String(item.rawText || item.displayText || item.text || "Informação original não encontrada").trim();
+      }
+      function buttonActionAttrsV50(action, valueName, value) {
+        const attrName = valueName === "tnl" ? "data-tnl" : "data-id";
+        return `type="button" data-round-action="${esc(action)}" ${attrName}="${esc(String(value))}"`;
+      }
+      function renderDevObsCard(input) {
+        const item = roundItemV50(input);
+        if (!item || item.id == null) {
+          return `<div class="empty">Informação inválida na ronda. Atualize a prévia ou importe novamente o relatório.</div>`;
+        }
+        const isDev = item.kind === "development";
+        const badgeText = isDev ? "DESENVOLVIMENTO" : "OBSERVAÇÃO";
+        const keepText = isDev ? "MANTER DESENVOLVIMENTO" : "MANTER OBSERVAÇÃO";
+        const resolveText = isDev ? "JÁ VOLTOU PARA O CNC" : "OBSERVAÇÃO RESOLVIDA";
+        const compact = compactSummaryForDevObs(item);
+        const source = itemSourceTextV50(item);
+        const body = `<div class="machine-expanded-grid"><div class="machine-expanded-block"><div class="source-name">INFORMAÇÃO ORIGINAL DO GRUPO</div><div class="source-line">${esc(source)}</div></div><div class="machine-expanded-block attention"><div class="machine-expanded-label">PERGUNTA PARA A RONDA</div><div class="machine-expanded-text">${esc(buildQuestionForDevObs(item))}</div></div><div class="card-actions devobs-actions"><button class="devobs-btn keep" ${buttonActionAttrsV50("keepDevObs", "id", item.id)}>${esc(keepText)}</button><button class="devobs-btn resolve" ${buttonActionAttrsV50("resolveDevObs", "id", item.id)}>${esc(resolveText)}</button><button class="devobs-btn adjust" ${buttonActionAttrsV50("devObsToAdjustment", "id", item.id)}>VAI PASSAR EM AJUSTE</button><button class="devobs-btn setup" ${buttonActionAttrsV50("devObsToSetup", "id", item.id)}>VAI PASSAR EM SETUP</button><button class="devobs-btn maintenance" ${buttonActionAttrsV50("devObsToMaintenance", "id", item.id)}>VAI PASSAR EM MANUTENÇÃO</button><button class="devobs-btn remove" ${buttonActionAttrsV50("removeDevObs", "id", item.id)}>REMOVER DO RELATÓRIO</button></div></div>`;
+        return renderCompactShell({ key: cardKeyDevObs(item.id), articleClass: `devobs ${isDev ? "development" : ""}`, badgeText, badgeCss: "amber", title: `TNL ${pad(item.tnl)}`, summary: compact.title, sub: compact.sub || source, previewChips: compact.chips, bodyHtml: body });
+      }
+      function renderGeneralInfoCard(input) {
+        const item = roundItemV50(input);
+        if (!item || item.id == null) {
+          return `<div class="empty">Informação geral inválida. Atualize a prévia ou importe novamente o relatório.</div>`;
+        }
+        const title = item.kind === "development" ? "DESENVOLVIMENTO" : "OBSERVAÇÃO";
+        const question = item.kind === "development" ? "Essa informação geral de desenvolvimento deve permanecer no relatório final?" : "Essa observação geral deve permanecer no relatório final?";
+        const compact = compactSummaryForGeneral(item);
+        const source = itemSourceTextV50(item);
+        const body = `<div class="machine-expanded-grid"><div class="machine-expanded-block"><div class="source-name">INFORMAÇÃO SEM TNL</div><div class="source-line">${esc(source)}</div></div><div class="machine-expanded-block attention"><div class="machine-expanded-label">PERGUNTA PARA A PASSAGEM</div><div class="machine-expanded-text">${esc(question)}</div></div><div class="card-actions future-actions"><button class="future-btn setup" ${buttonActionAttrsV50("keepGeneralInfo", "id", item.id)}>MANTER NO RELATÓRIO</button><button class="future-btn remove" ${buttonActionAttrsV50("removeGeneralInfo", "id", item.id)}>REMOVER DO RELATÓRIO</button></div></div>`;
+        return renderCompactShell({ key: cardKeyGeneral(item.id), articleClass: "general-info", badgeText: title, badgeCss: "general", title: "GERAL / SEM MÁQUINA", summary: compact.title, sub: compact.sub || source, previewChips: compact.chips, bodyHtml: body });
+      }
+      function renderActiveCard(group) {
+        const conflict = hasConflict(group.tnl) && !state.resolvedConflicts[String(group.tnl)];
+        const first = group.records[0]?.type || "adjustment";
+        const badge = conflict ? { text: "CONFLITO", css: "red" } : { text: TYPE_CONFIG[first]?.short || first, css: TYPE_CONFIG[first]?.badge || "amber" };
+        const compact = compactSummaryForActive(group);
+        const body = `${conflict ? `<div class="conflict-note">A máquina aparece em mais de um bloco. Confirme como ela passará.</div>` : ""}<div class="machine-expanded-grid"><div class="machine-expanded-block"><div class="source-name">INFORMAÇÃO ORIGINAL DO GRUPO</div>${sourceBlocks(group.records)}</div><div class="machine-expanded-block attention"><div class="machine-expanded-label">PERGUNTA PARA A RONDA</div><div class="machine-expanded-text">${esc(buildQuestionForActive(group))}</div></div><div class="card-actions"><button class="action-btn adjust" ${buttonActionAttrsV50("chooseAdjustment", "tnl", group.tnl)}>VAI PASSAR EM AJUSTE</button><button class="action-btn setup" ${buttonActionAttrsV50("openSetupChoice", "tnl", group.tnl)}>VAI PASSAR EM SETUP</button><button class="action-btn maintenance" ${buttonActionAttrsV50("chooseMaintenance", "tnl", group.tnl)}>VAI PASSAR EM MANUTENÇÃO</button><button class="action-btn release" ${buttonActionAttrsV50("releaseMachine", "tnl", group.tnl)}>LIBERADA</button><button class="action-btn remove" ${buttonActionAttrsV50("removeMachineFromReport", "tnl", group.tnl)}>REMOVER DO RELATÓRIO</button></div></div>`;
+        return renderCompactShell({ key: cardKeyActive(group.tnl), articleClass: conflict ? "conflict" : "", badgeText: badge.text, badgeCss: badge.css, title: `TNL ${pad(group.tnl)}`, summary: compact.title, sub: compact.sub, previewChips: compact.chips, bodyHtml: body, note: conflict ? "Máquina com mais de um bloco ativo" : "" });
+      }
+      function renderFutureCard(input) {
+        const group = input && input.item ? input : { item: input };
+        const item = group.item;
+        if (!item || item.id == null) return `<div class="empty">Setup futuro inválido. Atualize a prévia ou importe novamente o relatório.</div>`;
+        const compact = compactSummaryForFuture(item);
+        const turnKeep = String(item.heading || "SETUPS").replace("SETUPS ", "");
+        const source = itemSourceTextV50(item);
+        const body = `<div class="machine-expanded-grid"><div class="machine-expanded-block"><div class="source-name">INFORMAÇÃO ORIGINAL DO GRUPO — ${esc(item.heading)}</div><div class="source-line">${esc(source)}</div></div><div class="machine-expanded-block attention"><div class="machine-expanded-label">PERGUNTA PARA A RONDA</div><div class="machine-expanded-text">${esc(buildQuestionForFuture(item))}</div></div><div class="card-actions future-actions"><button class="future-btn keep" ${buttonActionAttrsV50("keepFutureSetup", "id", item.id)}>MANTER PARA ${esc(turnKeep)}</button><button class="future-btn setup" ${buttonActionAttrsV50("openFutureSetupChoice", "id", item.id)}>VAI PASSAR EM SETUP</button><button class="future-btn remove" ${buttonActionAttrsV50("removeFutureSetup", "id", item.id)}>REMOVER DO RELATÓRIO</button></div></div>`;
+        return renderCompactShell({ key: cardKeyFuture(item.id), articleClass: "future", badgeText: item.heading, badgeCss: "blue", title: `TNL ${pad(item.tnl)}`, summary: compact.title, sub: compact.sub || source, previewChips: compact.chips, bodyHtml: body });
+      }
+      function executeRoundActionV50(action, id, tnl) {
+        const nId = Number(id);
+        const nTnl = Number(tnl);
+        const actions = {
+          chooseAdjustment: () => chooseAdjustment(nTnl),
+          openSetupChoice: () => openSetupChoice(nTnl),
+          chooseMaintenance: () => chooseMaintenance(nTnl),
+          releaseMachine: () => releaseMachine(nTnl),
+          removeMachineFromReport: () => removeMachineFromReport(nTnl),
+          keepFutureSetup: () => keepFutureSetup(nId),
+          openFutureSetupChoice: () => openFutureSetupChoice(nId),
+          removeFutureSetup: () => removeFutureSetup(nId),
+          keepDevObs: () => keepDevObs(nId),
+          resolveDevObs: () => resolveDevObs(nId),
+          devObsToAdjustment: () => devObsToAdjustment(nId),
+          devObsToSetup: () => devObsToSetup(nId),
+          devObsToMaintenance: () => devObsToMaintenance(nId),
+          removeDevObs: () => removeDevObs(nId),
+          keepGeneralInfo: () => keepGeneralInfo(nId),
+          removeGeneralInfo: () => removeGeneralInfo(nId),
+        };
+        if (!actions[action]) return false;
+        actions[action]();
+        return true;
+      }
+      var lastRoundActionV50 = { key: "", time: 0 };
+      function handleRoundActionV50(event) {
+        const button = event.target?.closest?.("[data-round-action]");
+        const list = el("machineList");
+        if (!button || (list && !list.contains(button))) return;
+        const action = button.dataset.roundAction || "";
+        const key = `${action}|${button.dataset.id || ""}|${button.dataset.tnl || ""}`;
+        const now = Date.now();
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation?.();
+        if (lastRoundActionV50.key === key && now - lastRoundActionV50.time < 450) return;
+        lastRoundActionV50 = { key, time: now };
+        executeRoundActionV50(action, button.dataset.id, button.dataset.tnl);
+      }
+      function initBetaRoundActionsV50() {
+        const list = el("machineList");
+        if (!list || list.dataset.v50BetaActions === "1") return;
+        list.dataset.v50BetaActions = "1";
+        list.addEventListener("pointerup", handleRoundActionV50, true);
+        list.addEventListener("click", handleRoundActionV50, true);
+      }
+      const renderSelectedCellV50 = renderSelectedCell;
+      renderSelectedCell = function () {
+        renderSelectedCellV50();
+        initBetaRoundActionsV50();
+      };
+      const updateEverythingV50 = updateEverything;
+      updateEverything = function () {
+        updateEverythingV50();
+        initBetaRoundActionsV50();
+      };
+      initBetaRoundActionsV50();
+      updateEverything?.();
+      renderSelectedCell?.();
+      renderConfirmedDecisions?.();
+      saveSession?.();
+
+
+
+      /* PATCH V51 BETA — card compacto só com informação original + decisão em popup */
+      function roundAccentForV51(kind, subtype) {
+        const key = String(subtype || kind || '').toLowerCase();
+        if (/conflict|conflito|maintenance|manutenção|manutencao|red/.test(key)) return '#ef4444';
+        if (/adjust|ajuste|amber|yellow|observ/.test(key)) return '#f59e0b';
+        if (/development|desenvolvimento|blue/.test(key)) return '#60a5fa';
+        if (/release|liber|green|ok|produzindo/.test(key)) return '#22c55e';
+        return 'var(--accent)';
+      }
+      function sourceBlockFromTextV51(label, text) {
+        const clean = String(text || '').trim() || 'Informação original não encontrada';
+        return `<div class="source-block"><div class="source-name">${esc(label || 'INFORMAÇÃO')}</div><div class="source-line">${esc(clean)}</div></div>`;
+      }
+      function compactOriginalBoxV51(innerHtml) {
+        return `<div class="compact-source-v51"><div class="compact-source-title-v51">INFORMAÇÃO ORIGINAL DO GRUPO</div>${innerHtml}</div>`;
+      }
+      function cardKeyForInputV51(kind, value) {
+        return `${String(kind || 'X').slice(0,1).toUpperCase()}-${String(value)}`;
+      }
+      function openOnKeyboardV51(event, kind, value) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openRoundDecisionModalV51(kind, value);
+        }
+      }
+      function renderRoundCardV51({ kind, value, title, badgeText, badgeCss, accent, sourceHtml, conflictNote }) {
+        const safeKind = esc(String(kind));
+        const safeValue = esc(String(value));
+        return `<article class="round-card-v51 ${badgeCss === 'red' ? 'conflict' : ''}" style="--round-accent:${accent || 'var(--accent)'}" role="button" tabindex="0" onclick="openRoundDecisionModalV51('${safeKind}','${safeValue}')" onkeydown="openOnKeyboardV51(event,'${safeKind}','${safeValue}')"><div class="round-card-head-v51"><div class="round-card-title-v51"><div class="machine-number">${esc(title)}</div><span class="badge ${esc(badgeCss || 'gray')}">${esc(badgeText || 'PENDÊNCIA')}</span></div><div class="round-card-action-v51">DECIDIR</div></div>${conflictNote ? `<div class="conflict-note">${esc(conflictNote)}</div>` : ''}${compactOriginalBoxV51(sourceHtml)}</article>`;
+      }
+      function activeGroupByTnlV51(tnl) {
+        const records = activeRecords().filter((r) => Number(r.tnl) === Number(tnl));
+        return { kind: 'active', tnl: Number(tnl), records: sortByTnl(records) };
+      }
+      function renderActiveCard(group) {
+        const conflict = hasConflict(group.tnl) && !state.resolvedConflicts[String(group.tnl)];
+        const first = group.records?.[0]?.type || 'adjustment';
+        const badge = conflict ? { text: 'CONFLITO', css: 'red' } : { text: TYPE_CONFIG[first]?.short || first, css: TYPE_CONFIG[first]?.badge || 'amber' };
+        return renderRoundCardV51({
+          kind: 'active',
+          value: group.tnl,
+          title: `TNL ${pad(group.tnl)}`,
+          badgeText: badge.text,
+          badgeCss: badge.css,
+          accent: conflict ? '#ef4444' : roundAccentForV51(first, badge.css),
+          sourceHtml: sourceBlocks(group.records || []),
+          conflictNote: conflict ? 'A máquina aparece em mais de um bloco. Toque para resolver no popup.' : ''
+        });
+      }
+      function renderFutureCard(input) {
+        const item = input && input.item ? input.item : input;
+        if (!item || item.id == null) return `<div class="empty">Setup futuro inválido. Atualize a prévia ou importe novamente o relatório.</div>`;
+        const source = itemSourceTextV50(item);
+        return renderRoundCardV51({
+          kind: 'future',
+          value: item.id,
+          title: `TNL ${pad(item.tnl)}`,
+          badgeText: item.heading || `SETUPS ${currentNextTurn()}°T`,
+          badgeCss: 'blue',
+          accent: 'var(--accent)',
+          sourceHtml: sourceBlockFromTextV51(item.heading || 'SETUP FUTURO', source)
+        });
+      }
+      function renderDevObsCard(input) {
+        const item = roundItemV50(input);
+        if (!item || item.id == null) return `<div class="empty">Informação inválida na ronda. Atualize a prévia ou importe novamente o relatório.</div>`;
+        const isDev = item.kind === 'development';
+        const source = itemSourceTextV50(item);
+        const badgeText = isDev ? 'DESENVOLVIMENTO' : 'OBSERVAÇÃO';
+        return renderRoundCardV51({
+          kind: 'devobs',
+          value: item.id,
+          title: `TNL ${pad(item.tnl)}`,
+          badgeText,
+          badgeCss: isDev ? 'blue' : 'amber',
+          accent: isDev ? '#60a5fa' : '#f59e0b',
+          sourceHtml: sourceBlockFromTextV51(badgeText, source)
+        });
+      }
+      function renderGeneralInfoCard(input) {
+        const item = roundItemV50(input);
+        if (!item || item.id == null) return `<div class="empty">Informação geral inválida. Atualize a prévia ou importe novamente o relatório.</div>`;
+        const isDev = item.kind === 'development';
+        const source = itemSourceTextV50(item);
+        const badgeText = isDev ? 'DESENVOLVIMENTO' : 'OBSERVAÇÃO';
+        return renderRoundCardV51({
+          kind: 'general',
+          value: item.id,
+          title: 'GERAL / SEM MÁQUINA',
+          badgeText,
+          badgeCss: 'general',
+          accent: isDev ? '#60a5fa' : '#f59e0b',
+          sourceHtml: sourceBlockFromTextV51('INFORMAÇÃO SEM TNL', source)
+        });
+      }
+      function roundModalHtmlV51({ sourceHtml, question, actionsHtml }) {
+        return `<div class="round-modal-v51">${compactOriginalBoxV51(sourceHtml)}<div class="round-modal-question-v51"><span class="label">PERGUNTA PARA A RONDA</span><div class="text">${esc(question || 'Confirme como essa informação vai passar para o próximo turno.')}</div></div><div class="round-modal-actions-v51">${actionsHtml}</div></div>`;
+      }
+      function closeDecisionAndRunV51(fn) {
+        closeTransitionModal();
+        setTimeout(() => { try { fn?.(); } catch (err) { console.error(err); toast('Erro ao aplicar decisão'); } }, 0);
+      }
+      function openRoundDecisionModalV51(kind, value) {
+        kind = String(kind || '');
+        const id = Number(value);
+        el('transitionModal').classList.add('round-decision-v51');
+        if (kind === 'active') {
+          const group = activeGroupByTnlV51(id);
+          if (!group.records.length) { toast('Essa TNL não tem pendência ativa.'); return; }
+          const conflict = hasConflict(group.tnl) && !state.resolvedConflicts[String(group.tnl)];
+          const first = group.records[0]?.type || 'adjustment';
+          const badge = conflict ? 'CONFLITO' : (TYPE_CONFIG[first]?.short || first);
+          el('transitionTitle').textContent = `TNL ${pad(group.tnl)} · ${badge}`;
+          el('transitionSubtitle').textContent = conflict ? 'Resolva a passagem sem rolar o card.' : 'Escolha a decisão para essa máquina.';
+          const actions = `<button class="modal-btn special" onclick="closeDecisionAndRunV51(() => chooseAdjustment(${group.tnl}))">VAI PASSAR EM AJUSTE</button><button class="modal-btn yes" onclick="closeDecisionAndRunV51(() => openSetupChoice(${group.tnl}))">VAI PASSAR EM SETUP</button><button class="modal-btn no" onclick="closeDecisionAndRunV51(() => chooseMaintenance(${group.tnl}))">VAI PASSAR EM MANUTENÇÃO</button><button class="modal-btn keep" onclick="closeDecisionAndRunV51(() => releaseMachine(${group.tnl}))">LIBERADA</button><button class="modal-btn remove" onclick="closeDecisionAndRunV51(() => removeMachineFromReport(${group.tnl}))">REMOVER DO RELATÓRIO</button>`;
+          el('transitionOptions').innerHTML = roundModalHtmlV51({ sourceHtml: sourceBlocks(group.records), question: buildQuestionForActive(group), actionsHtml: actions });
+          el('transitionModal').classList.add('show');
+          return;
+        }
+        if (kind === 'future') {
+          const item = findFutureItem(id);
+          if (!item) { toast('Setup futuro não encontrado.'); return; }
+          const turnKeep = String(item.heading || 'SETUPS').replace('SETUPS ', '');
+          el('transitionTitle').textContent = `TNL ${pad(item.tnl)} · ${item.heading || 'SETUP FUTURO'}`;
+          el('transitionSubtitle').textContent = 'Confirme se mantém ou muda a programação.';
+          const source = itemSourceTextV50(item);
+          const actions = `<button class="modal-btn keep" onclick="closeDecisionAndRunV51(() => keepFutureSetup(${item.id}))">MANTER PARA ${esc(turnKeep)}</button><button class="modal-btn yes" onclick="closeDecisionAndRunV51(() => openFutureSetupChoice(${item.id}))">VAI PASSAR EM SETUP</button><button class="modal-btn remove" onclick="closeDecisionAndRunV51(() => removeFutureSetup(${item.id}))">REMOVER DO RELATÓRIO</button>`;
+          el('transitionOptions').innerHTML = roundModalHtmlV51({ sourceHtml: sourceBlockFromTextV51(item.heading || 'SETUP FUTURO', source), question: buildQuestionForFuture(item), actionsHtml: actions });
+          el('transitionModal').classList.add('show');
+          return;
+        }
+        if (kind === 'devobs') {
+          const item = findDevObsItem(id);
+          if (!item) { toast('Informação não encontrada.'); return; }
+          const isDev = item.kind === 'development';
+          const badgeText = isDev ? 'DESENVOLVIMENTO' : 'OBSERVAÇÃO';
+          const keepText = isDev ? 'MANTER DESENVOLVIMENTO' : 'MANTER OBSERVAÇÃO';
+          const resolveText = isDev ? 'JÁ VOLTOU PARA O CNC' : 'OBSERVAÇÃO RESOLVIDA';
+          const source = itemSourceTextV50(item);
+          el('transitionTitle').textContent = `TNL ${pad(item.tnl)} · ${badgeText}`;
+          el('transitionSubtitle').textContent = 'Decida essa informação sem abrir o card inteiro.';
+          const actions = `<button class="modal-btn keep" onclick="closeDecisionAndRunV51(() => keepDevObs(${item.id}))">${esc(keepText)}</button><button class="modal-btn yes" onclick="closeDecisionAndRunV51(() => resolveDevObs(${item.id}))">${esc(resolveText)}</button><button class="modal-btn special" onclick="closeDecisionAndRunV51(() => devObsToAdjustment(${item.id}))">VAI PASSAR EM AJUSTE</button><button class="modal-btn yes" onclick="closeDecisionAndRunV51(() => devObsToSetup(${item.id}))">VAI PASSAR EM SETUP</button><button class="modal-btn no" onclick="closeDecisionAndRunV51(() => devObsToMaintenance(${item.id}))">VAI PASSAR EM MANUTENÇÃO</button><button class="modal-btn remove" onclick="closeDecisionAndRunV51(() => removeDevObs(${item.id}))">REMOVER DO RELATÓRIO</button>`;
+          el('transitionOptions').innerHTML = roundModalHtmlV51({ sourceHtml: sourceBlockFromTextV51(badgeText, source), question: buildQuestionForDevObs(item), actionsHtml: actions });
+          el('transitionModal').classList.add('show');
+          return;
+        }
+        if (kind === 'general') {
+          const item = generalInfoList().find((x) => Number(x.id) === Number(id));
+          if (!item) { toast('Informação geral não encontrada.'); return; }
+          const isDev = item.kind === 'development';
+          const title = isDev ? 'DESENVOLVIMENTO GERAL' : 'OBSERVAÇÃO GERAL';
+          const question = isDev ? 'Essa informação geral de desenvolvimento deve permanecer no relatório final?' : 'Essa observação geral deve permanecer no relatório final?';
+          const source = itemSourceTextV50(item);
+          el('transitionTitle').textContent = title;
+          el('transitionSubtitle').textContent = 'Informação sem TNL vinculada.';
+          const actions = `<button class="modal-btn keep" onclick="closeDecisionAndRunV51(() => keepGeneralInfo(${item.id}))">MANTER NO RELATÓRIO</button><button class="modal-btn remove" onclick="closeDecisionAndRunV51(() => removeGeneralInfo(${item.id}))">REMOVER DO RELATÓRIO</button>`;
+          el('transitionOptions').innerHTML = roundModalHtmlV51({ sourceHtml: sourceBlockFromTextV51('INFORMAÇÃO SEM TNL', source), question, actionsHtml: actions });
+          el('transitionModal').classList.add('show');
+          return;
+        }
+      }
+      const closeTransitionModalV51 = closeTransitionModal;
+      closeTransitionModal = function () {
+        el('transitionModal')?.classList.remove('round-decision-v51');
+        closeTransitionModalV51();
+      };
+      currentOpenRoundCard = null;
+      updateEverything?.();
+      renderSelectedCell?.();
+      saveSession?.();
+
+
+
+      /* PASSAGEM DE TURNO BETA V1.01 — regra única de cores por status */
+      Object.assign(TYPE_CONFIG.maintenance, { badge: 'maintenance' });
+      Object.assign(TYPE_CONFIG.maintenance_prod, { badge: 'maintenance' });
+      Object.assign(TYPE_CONFIG.setup_active, { badge: 'setup' });
+      Object.assign(TYPE_CONFIG.setup_start, { badge: 'setup' });
+      Object.assign(TYPE_CONFIG.adjustment, { badge: 'adjust' });
+      Object.assign(TYPE_CONFIG.manual_pending, { badge: 'adjust' });
+      const STATUS_PALETTE_V101 = {
+        setup: '#258cff',
+        adjust: '#f97316',
+        maintenance: '#dc2626',
+        conflict: '#ff8f8f',
+        release: '#22c55e',
+        observation: '#f8fafc',
+      };
+      roundAccentForV51 = function(kind, subtype) {
+        const key = String(subtype || kind || '').toLowerCase();
+        if (/conflict|conflito/.test(key)) return STATUS_PALETTE_V101.conflict;
+        if (/maintenance|manutenção|manutencao|manut/.test(key)) return STATUS_PALETTE_V101.maintenance;
+        if (/setup|future|futuro|blue/.test(key)) return STATUS_PALETTE_V101.setup;
+        if (/adjust|ajuste|amber|manual/.test(key)) return STATUS_PALETTE_V101.adjust;
+        if (/release|liber|green|ok/.test(key)) return STATUS_PALETTE_V101.release;
+        if (/observ|general|white|branco/.test(key)) return STATUS_PALETTE_V101.observation;
+        return 'var(--accent)';
+      };
+      function statusClassForV101(kind, type, badgeCss, conflict) {
+        const key = `${kind || ''} ${type || ''} ${badgeCss || ''}`.toLowerCase();
+        if (conflict || /conflict|conflito/.test(key)) return 'status-conflict';
+        if (/maintenance|manutenção|manutencao|manut|red/.test(key)) return 'status-maintenance';
+        if (/setup|future|futuro|blue/.test(key)) return 'status-setup';
+        if (/adjust|ajuste|amber|manual/.test(key)) return 'status-adjust';
+        if (/release|liber|green|ok/.test(key)) return 'status-release';
+        if (/observ|general|white|branco/.test(key)) return 'status-observation';
+        return '';
+      }
+      renderRoundCardV51 = function({ kind, value, title, badgeText, badgeCss, accent, sourceHtml, conflictNote, statusClass }) {
+        const safeKind = esc(String(kind));
+        const safeValue = esc(String(value));
+        const cssStatus = statusClass || statusClassForV101(kind, '', badgeCss, badgeCss === 'conflict');
+        const isConflict = cssStatus === 'status-conflict';
+        return `<article class="round-card-v51 ${isConflict ? 'conflict' : ''} ${esc(cssStatus)}" style="--round-accent:${accent || 'var(--accent)'}" role="button" tabindex="0" onclick="openRoundDecisionModalV51('${safeKind}','${safeValue}')" onkeydown="openOnKeyboardV51(event,'${safeKind}','${safeValue}')"><div class="round-card-head-v51"><div class="round-card-title-v51"><div class="machine-number">${esc(title)}</div><span class="badge ${esc(badgeCss || 'gray')}">${esc(badgeText || 'PENDÊNCIA')}</span></div><div class="round-card-action-v51">DECIDIR</div></div>${conflictNote ? `<div class="conflict-note">${esc(conflictNote)}</div>` : ''}${compactOriginalBoxV51(sourceHtml)}</article>`;
+      };
+      renderActiveCard = function(group) {
+        const conflict = hasConflict(group.tnl) && !state.resolvedConflicts[String(group.tnl)];
+        const first = group.records?.[0]?.type || 'adjustment';
+        const badge = conflict ? { text: 'CONFLITO', css: 'conflict' } : { text: TYPE_CONFIG[first]?.short || first, css: TYPE_CONFIG[first]?.badge || 'adjust' };
+        const statusClass = conflict ? 'status-conflict' : statusClassForV101('active', first, badge.css, false);
+        return renderRoundCardV51({
+          kind: 'active',
+          value: group.tnl,
+          title: `TNL ${pad(group.tnl)}`,
+          badgeText: badge.text,
+          badgeCss: badge.css,
+          accent: conflict ? STATUS_PALETTE_V101.conflict : roundAccentForV51(first, badge.css),
+          sourceHtml: sourceBlocks(group.records || []),
+          conflictNote: conflict ? 'A máquina aparece em mais de um bloco. Toque para resolver no popup.' : '',
+          statusClass
+        });
+      };
+      renderFutureCard = function(input) {
+        const item = input && input.item ? input.item : input;
+        if (!item || item.id == null) return `<div class="empty">Setup futuro inválido. Atualize a prévia ou importe novamente o relatório.</div>`;
+        const source = itemSourceTextV50(item);
+        return renderRoundCardV51({
+          kind: 'future',
+          value: item.id,
+          title: `TNL ${pad(item.tnl)}`,
+          badgeText: item.heading || `SETUPS ${currentNextTurn()}°T`,
+          badgeCss: 'setup',
+          accent: STATUS_PALETTE_V101.setup,
+          sourceHtml: sourceBlockFromTextV51(item.heading || 'SETUP FUTURO', source),
+          statusClass: 'status-setup'
+        });
+      };
+      renderDevObsCard = function(input) {
+        const item = roundItemV50(input);
+        if (!item || item.id == null) return `<div class="empty">Informação inválida na ronda. Atualize a prévia ou importe novamente o relatório.</div>`;
+        const isDev = item.kind === 'development';
+        const source = itemSourceTextV50(item);
+        const badgeText = isDev ? 'DESENVOLVIMENTO' : 'OBSERVAÇÃO';
+        const badgeCss = isDev ? 'setup' : 'observation';
+        const statusClass = isDev ? 'status-setup' : 'status-observation';
+        return renderRoundCardV51({
+          kind: 'devobs',
+          value: item.id,
+          title: `TNL ${pad(item.tnl)}`,
+          badgeText,
+          badgeCss,
+          accent: isDev ? STATUS_PALETTE_V101.setup : STATUS_PALETTE_V101.observation,
+          sourceHtml: sourceBlockFromTextV51(badgeText, source),
+          statusClass
+        });
+      };
+      renderGeneralInfoCard = function(input) {
+        const item = roundItemV50(input);
+        if (!item || item.id == null) return `<div class="empty">Informação geral inválida. Atualize a prévia ou importe novamente o relatório.</div>`;
+        const isDev = item.kind === 'development';
+        const source = itemSourceTextV50(item);
+        const badgeText = isDev ? 'DESENVOLVIMENTO' : 'OBSERVAÇÃO';
+        const badgeCss = isDev ? 'setup' : 'observation';
+        const statusClass = isDev ? 'status-setup' : 'status-observation';
+        return renderRoundCardV51({
+          kind: 'general',
+          value: item.id,
+          title: 'GERAL / SEM MÁQUINA',
+          badgeText,
+          badgeCss,
+          accent: isDev ? STATUS_PALETTE_V101.setup : STATUS_PALETTE_V101.observation,
+          sourceHtml: sourceBlockFromTextV51('INFORMAÇÃO SEM TNL', source),
+          statusClass
+        });
+      };
+      openRoundDecisionModalV51 = function(kind, value) {
+        kind = String(kind || '');
+        const id = Number(value);
+        el('transitionModal').classList.add('round-decision-v51');
+        if (kind === 'active') {
+          const group = activeGroupByTnlV51(id);
+          if (!group.records.length) { toast('Essa TNL não tem pendência ativa.'); return; }
+          const conflict = hasConflict(group.tnl) && !state.resolvedConflicts[String(group.tnl)];
+          const first = group.records[0]?.type || 'adjustment';
+          const badge = conflict ? 'CONFLITO' : (TYPE_CONFIG[first]?.short || first);
+          el('transitionTitle').textContent = `TNL ${pad(group.tnl)} · ${badge}`;
+          el('transitionSubtitle').textContent = conflict ? 'Resolva a passagem sem rolar o card.' : 'Escolha a decisão para essa máquina.';
+          const actions = `<button class="modal-btn status-adjust" onclick="closeDecisionAndRunV51(() => chooseAdjustment(${group.tnl}))">VAI PASSAR EM AJUSTE</button><button class="modal-btn status-setup" onclick="closeDecisionAndRunV51(() => openSetupChoice(${group.tnl}))">VAI PASSAR EM SETUP</button><button class="modal-btn status-maintenance" onclick="closeDecisionAndRunV51(() => chooseMaintenance(${group.tnl}))">VAI PASSAR EM MANUTENÇÃO</button><button class="modal-btn status-release" onclick="closeDecisionAndRunV51(() => releaseMachine(${group.tnl}))">LIBERADA</button><button class="modal-btn status-remove" onclick="closeDecisionAndRunV51(() => removeMachineFromReport(${group.tnl}))">REMOVER DO RELATÓRIO</button>`;
+          el('transitionOptions').innerHTML = roundModalHtmlV51({ sourceHtml: sourceBlocks(group.records), question: buildQuestionForActive(group), actionsHtml: actions });
+          el('transitionModal').classList.add('show');
+          return;
+        }
+        if (kind === 'future') {
+          const item = findFutureItem(id);
+          if (!item) { toast('Setup futuro não encontrado.'); return; }
+          const turnKeep = String(item.heading || 'SETUPS').replace('SETUPS ', '');
+          el('transitionTitle').textContent = `TNL ${pad(item.tnl)} · ${item.heading || 'SETUP FUTURO'}`;
+          el('transitionSubtitle').textContent = 'Confirme se mantém ou muda a programação.';
+          const source = itemSourceTextV50(item);
+          const actions = `<button class="modal-btn status-setup" onclick="closeDecisionAndRunV51(() => keepFutureSetup(${item.id}))">MANTER PARA ${esc(turnKeep)}</button><button class="modal-btn status-setup" onclick="closeDecisionAndRunV51(() => openFutureSetupChoice(${item.id}))">VAI PASSAR EM SETUP</button><button class="modal-btn status-remove" onclick="closeDecisionAndRunV51(() => removeFutureSetup(${item.id}))">REMOVER DO RELATÓRIO</button>`;
+          el('transitionOptions').innerHTML = roundModalHtmlV51({ sourceHtml: sourceBlockFromTextV51(item.heading || 'SETUP FUTURO', source), question: buildQuestionForFuture(item), actionsHtml: actions });
+          el('transitionModal').classList.add('show');
+          return;
+        }
+        if (kind === 'devobs') {
+          const item = findDevObsItem(id);
+          if (!item) { toast('Informação não encontrada.'); return; }
+          const isDev = item.kind === 'development';
+          const badgeText = isDev ? 'DESENVOLVIMENTO' : 'OBSERVAÇÃO';
+          const keepText = isDev ? 'MANTER DESENVOLVIMENTO' : 'MANTER OBSERVAÇÃO';
+          const resolveText = isDev ? 'JÁ VOLTOU PARA O CNC' : 'OBSERVAÇÃO RESOLVIDA';
+          const source = itemSourceTextV50(item);
+          el('transitionTitle').textContent = `TNL ${pad(item.tnl)} · ${badgeText}`;
+          el('transitionSubtitle').textContent = 'Decida essa informação sem abrir o card inteiro.';
+          const keepClass = isDev ? 'status-setup' : 'status-observation';
+          const actions = `<button class="modal-btn ${keepClass}" onclick="closeDecisionAndRunV51(() => keepDevObs(${item.id}))">${esc(keepText)}</button><button class="modal-btn ${keepClass}" onclick="closeDecisionAndRunV51(() => resolveDevObs(${item.id}))">${esc(resolveText)}</button><button class="modal-btn status-adjust" onclick="closeDecisionAndRunV51(() => devObsToAdjustment(${item.id}))">VAI PASSAR EM AJUSTE</button><button class="modal-btn status-setup" onclick="closeDecisionAndRunV51(() => devObsToSetup(${item.id}))">VAI PASSAR EM SETUP</button><button class="modal-btn status-maintenance" onclick="closeDecisionAndRunV51(() => devObsToMaintenance(${item.id}))">VAI PASSAR EM MANUTENÇÃO</button><button class="modal-btn status-remove" onclick="closeDecisionAndRunV51(() => removeDevObs(${item.id}))">REMOVER DO RELATÓRIO</button>`;
+          el('transitionOptions').innerHTML = roundModalHtmlV51({ sourceHtml: sourceBlockFromTextV51(badgeText, source), question: buildQuestionForDevObs(item), actionsHtml: actions });
+          el('transitionModal').classList.add('show');
+          return;
+        }
+        if (kind === 'general') {
+          const item = generalInfoList().find((x) => Number(x.id) === Number(id));
+          if (!item) { toast('Informação geral não encontrada.'); return; }
+          const isDev = item.kind === 'development';
+          const title = isDev ? 'DESENVOLVIMENTO GERAL' : 'OBSERVAÇÃO GERAL';
+          const question = isDev ? 'Essa informação geral de desenvolvimento deve permanecer no relatório final?' : 'Essa observação geral deve permanecer no relatório final?';
+          const source = itemSourceTextV50(item);
+          el('transitionTitle').textContent = title;
+          el('transitionSubtitle').textContent = 'Informação sem TNL vinculada.';
+          const keepClass = isDev ? 'status-setup' : 'status-observation';
+          const actions = `<button class="modal-btn ${keepClass}" onclick="closeDecisionAndRunV51(() => keepGeneralInfo(${item.id}))">MANTER NO RELATÓRIO</button><button class="modal-btn status-remove" onclick="closeDecisionAndRunV51(() => removeGeneralInfo(${item.id}))">REMOVER DO RELATÓRIO</button>`;
+          el('transitionOptions').innerHTML = roundModalHtmlV51({ sourceHtml: sourceBlockFromTextV51('INFORMAÇÃO SEM TNL', source), question, actionsHtml: actions });
+          el('transitionModal').classList.add('show');
+          return;
+        }
+      };
+      updateEverything?.();
+      renderSelectedCell?.();
+      saveSession?.();
+
+</script>
   </body>
 </html>
