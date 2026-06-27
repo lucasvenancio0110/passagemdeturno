@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="pt-BR">
-<!-- Passagem de Turno Beta V1.01: paleta oficial por status -->
+<!-- Passagem de Turno Beta V1.02 Cloud: histórico em nuvem Cloudflare D1 -->
   <head>
     <meta charset="UTF-8" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
-    <title>VENANC Tools - Passagem de Turno Beta V1.01</title>
+    <title>VENANC Tools - Passagem de Turno Beta V1.02 Cloud</title>
     <style>
       :root {
         /* Paleta principal: industrial clean */
@@ -3720,7 +3720,7 @@
 
 
 
-/* PASSAGEM DE TURNO BETA V1.01 — PALETA OFICIAL POR STATUS
+/* PASSAGEM DE TURNO BETA V1.02 CLOUD — PALETA OFICIAL + HISTÓRICO EM NUVEM
    Regras do Lucas:
    SETUP = azul | AJUSTE = laranja | MANUTENÇÃO = vermelho forte
    CONFLITO = vermelho claro | LIBERADA = verde | OBSERVAÇÕES = branco
@@ -3850,6 +3850,54 @@
   border-color: rgba(17, 24, 39, .16) !important;
 }
 
+
+
+/* PASSAGEM DE TURNO BETA V1.02 CLOUD — indicador de nuvem discreto */
+.cloud-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  width: fit-content;
+  margin-top: 10px;
+  padding: 8px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(43, 191, 177, .35);
+  background: rgba(6, 20, 19, .62);
+  color: rgba(232, 246, 244, .92);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  box-shadow: inset 0 1px rgba(255,255,255,.08), 0 10px 28px rgba(0,0,0,.18);
+  touch-action: manipulation;
+}
+.cloud-status-chip::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #6b7280;
+  box-shadow: 0 0 0 4px rgba(107,114,128,.13);
+}
+.cloud-status-chip.cloud-ok::before {
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34,197,94,.14), 0 0 18px rgba(34,197,94,.32);
+}
+.cloud-status-chip.cloud-pending::before {
+  background: #f59e0b;
+  box-shadow: 0 0 0 4px rgba(245,158,11,.15), 0 0 18px rgba(245,158,11,.28);
+}
+.cloud-status-chip.cloud-error::before {
+  background: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239,68,68,.15), 0 0 18px rgba(239,68,68,.25);
+}
+body.theme-light .cloud-status-chip {
+  background: rgba(255,255,255,.82);
+  border-color: rgba(0, 139, 128, .24);
+  color: #0f172a;
+}
+
 </style>
   </head>
   <body class="auth-locked">
@@ -3924,6 +3972,7 @@
               <span class="theme-toggle-icon" id="themeIcon">🌙</span>
               <span class="theme-toggle-label" id="themeLabel">Escuro</span>
             </button>
+            <button class="cloud-status-chip cloud-pending" id="cloudStatus" type="button" aria-label="Sincronizar histórico na nuvem" title="Sincronizar histórico na nuvem">☁ Nuvem</button>
           </div>
         </div>
         <div class="kpi-row">
@@ -8579,7 +8628,7 @@ TNL's - 055 - 056 - Sem ordem"
 
 
 
-      /* PASSAGEM DE TURNO BETA V1.01 — regra única de cores por status */
+      /* PASSAGEM DE TURNO BETA V1.02 CLOUD — regra única de cores por status + sync */
       Object.assign(TYPE_CONFIG.maintenance, { badge: 'maintenance' });
       Object.assign(TYPE_CONFIG.maintenance_prod, { badge: 'maintenance' });
       Object.assign(TYPE_CONFIG.setup_active, { badge: 'setup' });
@@ -8755,6 +8804,247 @@ TNL's - 055 - 056 - Sem ordem"
       updateEverything?.();
       renderSelectedCell?.();
       saveSession?.();
+
+
+
+      /* PASSAGEM DE TURNO BETA V1.02 CLOUD — histórico local + Cloudflare Worker/D1 */
+      const CLOUD_API_URL_V102 = "https://passagem-turno-api.lucassantanals0110.workers.dev";
+      const CLOUD_QUEUE_KEY_V102 = "passagem_turno_beta_cloud_queue_v102";
+      const CLOUD_DEVICE_KEY_V102 = "passagem_turno_beta_device_id_v102";
+      const APP_VERSION_V102 = "Passagem de Turno Beta V1.02 Cloud";
+
+      function cloudUuidV102() {
+        try {
+          if (crypto && crypto.randomUUID) return crypto.randomUUID();
+        } catch (e) {}
+        return `id_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+      }
+      function cloudDeviceIdV102() {
+        let id = localStorage.getItem(CLOUD_DEVICE_KEY_V102);
+        if (!id) {
+          id = `iphone_${cloudUuidV102()}`;
+          localStorage.setItem(CLOUD_DEVICE_KEY_V102, id);
+        }
+        return id;
+      }
+      function cloudQueueV102() {
+        try { return JSON.parse(localStorage.getItem(CLOUD_QUEUE_KEY_V102) || "[]"); }
+        catch (e) { return []; }
+      }
+      function saveCloudQueueV102(queue) {
+        localStorage.setItem(CLOUD_QUEUE_KEY_V102, JSON.stringify(queue || []));
+        updateCloudStatusV102();
+      }
+      function updateCloudStatusV102(mode, text) {
+        const badge = el("cloudStatus");
+        if (!badge) return;
+        const queue = cloudQueueV102();
+        let cls = mode || (queue.length ? "pending" : "ok");
+        badge.classList.remove("cloud-ok", "cloud-pending", "cloud-error");
+        badge.classList.add(`cloud-${cls}`);
+        if (text) badge.textContent = text;
+        else if (queue.length) badge.textContent = `☁ ${queue.length} pend.`;
+        else badge.textContent = "☁ Nuvem";
+      }
+      function inferCloudStatusV102(text, fallback) {
+        const value = String(text || "").toUpperCase();
+        if (value.includes("CONFLITO")) return "CONFLITO";
+        if (value.includes("MANUT")) return "MANUTENÇÃO";
+        if (value.includes("AJUST")) return "AJUSTE";
+        if (value.includes("SETUP")) return "SETUP";
+        if (value.includes("LIBER")) return "LIBERADA";
+        if (value.includes("OBSERV")) return "OBSERVAÇÃO";
+        if (value.includes("DESENV") || value.includes("PROGRAMA")) return "DESENVOLVIMENTO";
+        if (value.includes("REMOVID")) return "REMOVIDO";
+        return fallback || "INFORMAÇÃO";
+      }
+      function cloudMachineRowsFromStateV102() {
+        const rows = [];
+        const push = (row) => rows.push({
+          tnl: row.tnl != null && row.tnl !== "" ? pad(row.tnl) : "",
+          celula: row.celula || (row.tnl ? cellOf(row.tnl) : ""),
+          categoria: row.categoria || "",
+          status_final: row.status_final || inferCloudStatusV102(`${row.categoria || ""} ${row.decisao || ""} ${row.origem || ""}`, "INFORMAÇÃO"),
+          decisao: row.decisao || "",
+          origem: row.origem || "",
+          texto_original: row.texto_original || row.origem || "",
+          payload_json: row.payload_json || "",
+        });
+        try {
+          if (typeof activeRecords === "function") {
+            activeRecords().forEach((r) => push({
+              tnl: r.tnl,
+              celula: cellOf(r.tnl),
+              categoria: r.type || r.sourceSection || "REGISTRO_ATIVO",
+              status_final: inferCloudStatusV102(`${r.type || ""} ${r.sourceSection || ""} ${r.displayText || ""}`, "ATIVO"),
+              decisao: "NO_RELATORIO_FINAL",
+              origem: r.displayText || "",
+              texto_original: r.rawText || r.displayText || "",
+              payload_json: JSON.stringify(r),
+            }));
+          }
+          (state.futureItems || []).filter((x) => x.status !== "removed").forEach((x) => push({
+            tnl: x.tnl,
+            celula: cellOf(x.tnl),
+            categoria: x.heading || "SETUP_FUTURO",
+            status_final: "SETUP",
+            decisao: x.reviewed ? "CONFIRMADO_NA_RONDA" : "PENDENTE",
+            origem: x.displayText || x.rawText || "",
+            texto_original: x.rawText || x.displayText || "",
+            payload_json: JSON.stringify(x),
+          }));
+          if (typeof devObsList === "function") {
+            devObsList().filter((x) => !["removed", "resolved"].includes(x.status)).forEach((x) => push({
+              tnl: x.tnl,
+              celula: cellOf(x.tnl),
+              categoria: x.kind === "development" ? "DESENVOLVIMENTO" : "OBSERVAÇÃO",
+              status_final: x.kind === "development" ? "DESENVOLVIMENTO" : "OBSERVAÇÃO",
+              decisao: x.reviewed ? "CONFIRMADO_NA_RONDA" : "PENDENTE",
+              origem: x.displayText || x.rawText || "",
+              texto_original: x.rawText || x.displayText || "",
+              payload_json: JSON.stringify(x),
+            }));
+          }
+          Object.values(state.confirmedDecisions || {}).forEach((d) => push({
+            tnl: d.tnl || "",
+            celula: d.tnl ? cellOf(d.tnl) : "",
+            categoria: d.kind || (d.general ? "GERAL" : "DECISÃO"),
+            status_final: inferCloudStatusV102(`${d.action || ""} ${d.label || ""} ${d.detail || ""}`, "DECISÃO"),
+            decisao: d.action || d.label || "DECISÃO CONFIRMADA",
+            origem: d.detail || d.label || "",
+            texto_original: d.detail || d.label || "",
+            payload_json: JSON.stringify(d),
+          }));
+        } catch (err) {
+          console.warn("Falha ao montar máquinas para nuvem", err);
+        }
+        const seen = new Set();
+        return rows.filter((r) => {
+          const key = `${r.tnl}|${r.categoria}|${r.status_final}|${r.origem}|${r.decisao}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+      }
+      function buildCloudPayloadV102(trigger) {
+        generateReport?.();
+        const now = new Date();
+        const day = now.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" }).split("/").reverse().join("-");
+        const hour = now.toLocaleTimeString("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+        if (!state.cloudPassageIdV102) state.cloudPassageIdV102 = cloudUuidV102();
+        const payload = {
+          id: state.cloudPassageIdV102,
+          trigger: trigger || "manual",
+          data_turno: day,
+          hora_envio: hour,
+          turno_atual: `${el("currentShift")?.value || ""}° TURNO`,
+          proximo_turno: `${el("nextShift")?.value || ""}° TURNO`,
+          app_version: APP_VERSION_V102,
+          device_id: cloudDeviceIdV102(),
+          pendencias: Number(el("kpiPending")?.textContent || 0),
+          conflitos: Number(el("kpiConflicts")?.textContent || 0),
+          decisoes: Object.values(state.confirmedDecisions || {}).length,
+          relatorio_final: el("finalOutput")?.value || "",
+          relatorio_bruto: el("rawInput")?.value || "",
+          fields: typeof fieldsSnapshot === "function" ? fieldsSnapshot() : {},
+          maquinas: cloudMachineRowsFromStateV102(),
+          confirmed_decisions: Object.values(state.confirmedDecisions || {}),
+          completed: state.completed || {},
+          saved_at_client: now.toISOString(),
+        };
+        saveSession?.();
+        return payload;
+      }
+      async function sendCloudPayloadV102(payload) {
+        const res = await fetch(`${CLOUD_API_URL_V102}/salvar-passagem`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) throw new Error(data.error || `Erro HTTP ${res.status}`);
+        return data;
+      }
+      function queueCloudPayloadV102(payload) {
+        const queue = cloudQueueV102();
+        const same = queue.findIndex((x) => x && x.id === payload.id);
+        if (same >= 0) queue[same] = payload;
+        else queue.push(payload);
+        saveCloudQueueV102(queue);
+      }
+      async function syncCurrentPassageCloudV102(trigger) {
+        const payload = buildCloudPayloadV102(trigger || "manual");
+        updateCloudStatusV102("pending", "☁ Enviando");
+        try {
+          const data = await sendCloudPayloadV102(payload);
+          state.lastCloudSyncV102 = { id: payload.id, at: new Date().toISOString(), result: data };
+          saveSession?.();
+          updateCloudStatusV102("ok", "☁ Salvo");
+          toast?.("Histórico salvo na nuvem");
+          await flushCloudQueueV102(false);
+          setTimeout(() => updateCloudStatusV102(), 1800);
+          return data;
+        } catch (err) {
+          console.warn("Falha no envio para nuvem", err);
+          queueCloudPayloadV102(payload);
+          updateCloudStatusV102("error", "☁ Pendente");
+          toast?.("Sem nuvem agora: ficou pendente");
+          return null;
+        }
+      }
+      async function flushCloudQueueV102(showToast = true) {
+        let queue = cloudQueueV102();
+        if (!queue.length) { updateCloudStatusV102("ok"); return; }
+        updateCloudStatusV102("pending", `☁ ${queue.length} pend.`);
+        const remaining = [];
+        for (const payload of queue) {
+          try { await sendCloudPayloadV102(payload); }
+          catch (err) { remaining.push(payload); }
+        }
+        saveCloudQueueV102(remaining);
+        if (remaining.length) {
+          updateCloudStatusV102("error", `☁ ${remaining.length} pend.`);
+          if (showToast) toast?.(`${remaining.length} envio(s) pendente(s)`);
+        } else {
+          updateCloudStatusV102("ok", "☁ Salvo");
+          if (showToast) toast?.("Pendências enviadas para a nuvem");
+          setTimeout(() => updateCloudStatusV102(), 1500);
+        }
+      }
+      const copyReportV102Cloud = copyReport;
+      copyReport = function () {
+        const conflicts = typeof unresolvedConflicts === "function" ? unresolvedConflicts() : [];
+        const result = copyReportV102Cloud.apply(this, arguments);
+        if (!conflicts.length && (el("finalOutput")?.value || "").trim()) {
+          setTimeout(() => syncCurrentPassageCloudV102("copiar_relatorio"), 650);
+        }
+        return result;
+      };
+      const clearSessionV102Cloud = clearSession;
+      clearSession = function () {
+        const result = clearSessionV102Cloud.apply(this, arguments);
+        if (state && !state.cloudPassageIdV102) state.cloudPassageIdV102 = cloudUuidV102();
+        updateCloudStatusV102();
+        return result;
+      };
+      const importReportV102Cloud = importReport;
+      importReport = function () {
+        if (state) state.cloudPassageIdV102 = cloudUuidV102();
+        const result = importReportV102Cloud.apply(this, arguments);
+        saveSession?.();
+        updateCloudStatusV102();
+        return result;
+      };
+      try {
+        ["btnCopy", "btnCopyFloating"].forEach((id) => { if (el(id)) el(id).onclick = copyReport; });
+        if (el("cloudStatus")) el("cloudStatus").onclick = () => flushCloudQueueV102(true);
+        window.addEventListener("online", () => flushCloudQueueV102(false));
+        setTimeout(() => flushCloudQueueV102(false), 1200);
+        updateCloudStatusV102();
+      } catch (err) {
+        console.warn("Cloud init falhou", err);
+      }
+
 
 </script>
   </body>
