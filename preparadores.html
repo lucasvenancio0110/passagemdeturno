@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>VENANC Tools - Preparadores Cockpit V1.01</title>
+  <style>
+    :root{
+      --bg:#090f0e;--deep:#050706;--card:rgba(12,18,17,.88);--card2:rgba(255,255,255,.045);--line:rgba(255,255,255,.11);--soft:rgba(255,255,255,.07);--text:#f8fafc;--muted:#aebbb6;--accent:#2aa198;--accent2:#23857f;--setup:#2563eb;--ajuste:#f97316;--manut:#dc2626;--conflito:#fca5a5;--liberada:#22c55e;--obs:#f8fafc;--gray:#34403d;--apoio:#eab308;--shadow:0 20px 58px rgba(0,0,0,.42);--radius:22px;--radius2:16px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0} html{scroll-behavior:smooth;touch-action:manipulation;-webkit-text-size-adjust:100%} body,button,input,textarea,select{-webkit-tap-highlight-color:transparent;font:inherit} input,textarea,select{font-size:16px} button{cursor:pointer;border:none;color:inherit} body{min-height:100dvh;padding:calc(12px + env(safe-area-inset-top)) 12px calc(26px + env(safe-area-inset-bottom));color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px),radial-gradient(circle at 14% 0%, rgba(42,161,152,.16), transparent 34%),linear-gradient(145deg,var(--deep),var(--bg));background-size:34px 34px,34px 34px,auto,auto;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overscroll-behavior-y:contain}.app{width:min(100%,1080px);margin:0 auto;display:grid;gap:12px}.glass{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+    .hero{padding:16px;position:relative;overflow:hidden;background:linear-gradient(120deg,rgba(42,161,152,.18),rgba(255,255,255,.04) 42%,rgba(255,255,255,.02))}.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.hero h1{font-size:clamp(1.7rem,7.6vw,3.4rem);line-height:.92;letter-spacing:-.055em;font-weight:950}.hero p{margin-top:7px;color:var(--muted);font-size:.93rem;font-weight:750;line-height:1.35}.cloud-pill{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);font-weight:950;font-size:.75rem;white-space:nowrap}.dot{width:9px;height:9px;border-radius:50%;background:#64748b;box-shadow:0 0 0 3px rgba(100,116,139,.18)}.dot.ok{background:var(--liberada);box-shadow:0 0 0 3px rgba(34,197,94,.18)}.dot.bad{background:var(--manut);box-shadow:0 0 0 3px rgba(220,38,38,.18)}.dot.warn{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18)}.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}.kpi{padding:11px;border-radius:17px;background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.08)}.kpi span{display:block;color:var(--muted);font-size:.68rem;font-weight:850}.kpi strong{display:block;margin-top:5px;font-size:1.38rem;line-height:1;font-weight:950}.tabs{position:sticky;top:calc(8px + env(safe-area-inset-top));z-index:30;display:grid;grid-template-columns:repeat(5,1fr);gap:7px;padding:8px;border-radius:20px;background:rgba(9,15,14,.86);border:1px solid var(--line);box-shadow:0 18px 42px rgba(0,0,0,.28);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}.tab{min-height:52px;border-radius:15px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);font-size:.70rem;font-weight:950;letter-spacing:.06em;text-transform:uppercase;color:#eaf2f2}.tab.active{background:linear-gradient(180deg,rgba(42,161,152,.95),rgba(35,133,127,.95));box-shadow:0 0 0 3px rgba(42,161,152,.15)}@media(max-width:520px){.tabs{grid-template-columns:repeat(3,1fr)}.tab{font-size:.68rem}.kpis{grid-template-columns:repeat(2,1fr)}}.panel{display:none}.panel.active{display:grid;gap:12px}.card{padding:14px}.card h2{font-size:1.34rem;letter-spacing:-.035em;line-height:1.05;font-weight:950}.sub{margin-top:5px;color:var(--muted);font-size:.88rem;line-height:1.35;font-weight:730}.grid{display:grid;gap:10px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}@media(max-width:720px){.grid.two,.grid.three,.grid.four{grid-template-columns:1fr}}
+    .field{display:grid;gap:7px}.field label{color:#d9e5e4;font-size:.84rem;font-weight:850}.input,.select,.textarea{width:100%;border:1px solid rgba(255,255,255,.1);outline:none;border-radius:16px;background:rgba(0,0,0,.34);color:var(--text);transition:.15s ease}.input,.select{min-height:52px;padding:0 13px}.textarea{min-height:98px;padding:12px;line-height:1.45;resize:vertical}.input:focus,.select:focus,.textarea:focus{border-color:rgba(42,161,152,.7);box-shadow:0 0 0 4px rgba(42,161,152,.13)}.check-row{display:flex;gap:10px;align-items:center;padding:11px;border-radius:15px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.075);font-weight:850}.check-row input{width:22px;height:22px}.btn{min-height:52px;border-radius:16px;padding:9px 13px;font-weight:950;letter-spacing:.02em;transition:.15s ease}.btn:active{transform:scale(.985)}.btn.primary{background:var(--accent2)}.btn.soft{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1)}.btn.red{background:var(--manut)}.btn.green{background:var(--liberada);color:#06210f}.btn.blue{background:var(--setup)}.btn.orange{background:var(--ajuste)}.btn.yellow{background:var(--apoio);color:#171303}.btn.white{background:#f8fafc;color:#111827}.btn.full{width:100%}.btn.ghost{background:transparent;border:1px dashed rgba(255,255,255,.16);color:var(--muted)}.quick-status{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.status-choice{min-height:55px;border-radius:16px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.055);font-size:.72rem;font-weight:950;line-height:1.1;text-transform:uppercase}.status-choice.active{box-shadow:0 0 0 3px rgba(255,255,255,.12);filter:brightness(1.08)}.status-choice.setup{background:rgba(37,99,235,.28);border-color:rgba(37,99,235,.46)}.status-choice.ajuste{background:rgba(249,115,22,.28);border-color:rgba(249,115,22,.46)}.status-choice.manut{background:rgba(220,38,38,.3);border-color:rgba(220,38,38,.56)}.status-choice.liberada{background:rgba(34,197,94,.26);border-color:rgba(34,197,94,.46)}.status-choice.obs{background:rgba(248,250,252,.16);border-color:rgba(248,250,252,.36)}@media(max-width:640px){.quick-status{grid-template-columns:repeat(2,minmax(0,1fr))}.status-choice:nth-child(5){grid-column:1/-1}}
+    .chip-row{display:flex;gap:7px;overflow-x:auto;padding:2px 0 6px}.filter-chip{flex:0 0 auto;min-height:38px;border-radius:999px;padding:0 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-weight:950;font-size:.75rem;color:#d9e5e4}.filter-chip.active{background:rgba(42,161,152,.22);border-color:rgba(42,161,152,.5);color:#fff}.machine-list{display:grid;gap:10px}.machine-card{position:relative;overflow:hidden;display:grid;gap:11px;padding:13px;border-radius:20px;background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.08);border-left:5px solid var(--gray)}.machine-card.setup{border-left-color:var(--setup)}.machine-card.ajuste{border-left-color:var(--ajuste)}.machine-card.manut{border-left-color:var(--manut)}.machine-card.liberada{border-left-color:var(--liberada)}.machine-card.obs{border-left-color:var(--obs)}.machine-card.apoio{border-left-color:var(--apoio);box-shadow:0 0 0 1px rgba(234,179,8,.16),var(--shadow)}.machine-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.machine-title{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.machine-title strong{font-size:1.28rem;font-weight:950}.badge{display:inline-flex;align-items:center;justify-content:center;min-height:28px;padding:6px 10px;border-radius:999px;font-size:.68rem;font-weight:950;letter-spacing:.1em;text-transform:uppercase;border:1px solid rgba(255,255,255,.12)}.badge.setup{background:rgba(37,99,235,.24);color:#dbeafe}.badge.ajuste{background:rgba(249,115,22,.22);color:#ffedd5}.badge.manut{background:rgba(220,38,38,.25);color:#fee2e2}.badge.liberada{background:rgba(34,197,94,.18);color:#bbf7d0}.badge.obs{background:rgba(248,250,252,.13);color:#fff}.badge.apoio{background:rgba(234,179,8,.18);color:#fef3c7}.machine-meta{color:var(--muted);font-weight:750;line-height:1.35;overflow-wrap:anywhere}.machine-obs{padding:11px;border-radius:15px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.075);line-height:1.42;font-weight:750;white-space:pre-wrap;overflow-wrap:anywhere}.machine-actions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.mini{min-height:43px;border-radius:13px;font-size:.66rem;font-weight:950;text-transform:uppercase}.mini.setup{background:var(--setup)}.mini.ajuste{background:var(--ajuste)}.mini.manut{background:var(--manut)}.mini.liberada{background:var(--liberada);color:#052e16}.mini.obs{background:#f8fafc;color:#111827}.mini.hist{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.09)}.mini.apoio{background:var(--apoio);color:#171303}@media(max-width:640px){.machine-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.mini.hist{grid-column:1/-1}}
+    .empty{padding:18px;border:1px dashed rgba(255,255,255,.16);border-radius:18px;background:rgba(255,255,255,.035);color:var(--muted);text-align:center;font-weight:800;line-height:1.35}.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));z-index:200;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;max-width:min(92vw,420px);padding:12px 14px;border-radius:999px;background:rgba(12,18,17,.92);border:1px solid rgba(255,255,255,.11);box-shadow:0 14px 42px rgba(0,0,0,.42);font-weight:850;transition:.22s ease}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}.modal{position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;justify-content:center;padding:12px;background:rgba(0,0,0,.64)}.modal.show{display:flex}.modal-card{width:min(100%,620px);max-height:86dvh;overflow:auto;padding:16px;border-radius:22px;border:1px solid var(--line);background:#101615;box-shadow:0 22px 70px rgba(0,0,0,.58)}.modal-handle{width:52px;height:5px;border-radius:999px;margin:0 auto 14px;background:rgba(255,255,255,.2)}.modal-title{font-size:1.28rem;font-weight:950}.modal-sub{margin-top:5px;color:var(--muted);font-size:.88rem;line-height:1.35;font-weight:760}.history-list{display:grid;gap:9px;margin-top:12px}.history-row{padding:11px;border-radius:15px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.075)}.history-top{display:flex;justify-content:space-between;gap:10px}.history-top strong{font-size:.92rem}.history-top span{color:var(--muted);font-size:.76rem;font-weight:800}.history-row p{margin-top:6px;color:#e4eeec;line-height:1.38;white-space:pre-wrap;overflow-wrap:anywhere}.small-note{color:var(--muted);font-size:.78rem;line-height:1.35;font-weight:730}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}.preview{white-space:pre-wrap;line-height:1.38;padding:13px;border-radius:18px;background:rgba(0,0,0,.34);border:1px solid rgba(255,255,255,.1);font-weight:760;min-height:120px}.line-result{padding:12px;border-radius:16px;background:rgba(42,161,152,.08);border:1px solid rgba(42,161,152,.18);line-height:1.45}.line-result strong{font-size:1.1rem}.line-result.warn{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.18)}.line-result.bad{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.18)}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="hero glass">
+      <div class="hero-top">
+        <div><h1>Preparadores<br/>Cockpit</h1><p>Atualização oficial das TNLs: ocorrência, apoio, setup, tempo de linha e situação da célula.</p></div>
+        <button class="cloud-pill" onclick="checkCloud(true)"><span id="cloudDot" class="dot"></span><span id="cloudText">Nuvem</span></button>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><span>Ocorrências</span><strong id="kpiAtivas">0</strong></div>
+        <div class="kpi"><span>Precisa apoio</span><strong id="kpiApoio">0</strong></div>
+        <div class="kpi"><span>Setup</span><strong id="kpiSetup">0</strong></div>
+        <div class="kpi"><span>Manutenção</span><strong id="kpiManut">0</strong></div>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="painel" onclick="switchTab('painel')">Painel</button>
+      <button class="tab" data-tab="nova" onclick="switchTab('nova')">Ocorrência</button>
+      <button class="tab" data-tab="linha" onclick="switchTab('linha')">Linha</button>
+      <button class="tab" data-tab="relatorio" onclick="switchTab('relatorio')">Célula</button>
+      <button class="tab" data-tab="consulta" onclick="switchTab('consulta')">Consulta</button>
+    </nav>
+
+    <section id="painel" class="panel active">
+      <div class="card glass">
+        <h2>Painel oficial</h2>
+        <p class="sub">Mostra as máquinas abertas no banco. Preparador pode atualizar qualquer TNL, não fica preso à célula.</p>
+        <div class="chip-row" style="margin-top:12px">
+          <button class="filter-chip active" data-filter="TODOS" onclick="setFilter('TODOS')">Todos</button>
+          <button class="filter-chip" data-filter="APOIO" onclick="setFilter('APOIO')">Precisa apoio</button>
+          <button class="filter-chip" data-filter="SETUP" onclick="setFilter('SETUP')">Setup</button>
+          <button class="filter-chip" data-filter="AJUSTE" onclick="setFilter('AJUSTE')">Ajuste</button>
+          <button class="filter-chip" data-filter="MANUTENÇÃO" onclick="setFilter('MANUTENÇÃO')">Manutenção</button>
+          <button class="filter-chip" data-filter="OBSERVAÇÃO" onclick="setFilter('OBSERVAÇÃO')">Observação</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px">
+          <input id="searchPanel" class="input" inputmode="numeric" placeholder="Filtrar TNL, motivo, preparador..." oninput="renderPanel()" />
+          <button class="btn soft" onclick="loadPanel(true)">Atualizar</button>
+        </div>
+      </div>
+      <div id="machineList" class="machine-list"></div>
+    </section>
+
+    <section id="nova" class="panel">
+      <div class="card glass">
+        <h2>Nova ocorrência</h2>
+        <p class="sub">Digite do jeito do chão de fábrica. Exemplo: <b>Ajuste TNL 067 - Quebra de bedame</b>.</p>
+        <div class="grid" style="margin-top:12px">
+          <div class="field"><label>Frase rápida</label><textarea id="quickPhrase" class="textarea" placeholder="Ajuste TNL 067 - Quebra de bedame"></textarea></div>
+          <button class="btn soft" onclick="parseQuickPhrase()">Ler frase e preencher</button>
+        </div>
+      </div>
+      <div class="card glass">
+        <div class="grid three">
+          <div class="field"><label>TNL</label><input id="occTnl" class="input" inputmode="numeric" placeholder="067" /></div>
+          <div class="field"><label>Célula</label><input id="occCelula" class="input" placeholder="C07" /></div>
+          <div class="field"><label>Status</label><select id="occStatus" class="select" onchange="syncStatusButtons()"><option>AJUSTE</option><option>SETUP</option><option>MANUTENÇÃO</option><option>OBSERVAÇÃO</option><option>DESENVOLVIMENTO</option><option>SEM_ORDEM</option></select></div>
+        </div>
+        <div class="quick-status" style="margin-top:10px">
+          <button class="status-choice ajuste active" onclick="chooseOccStatus('AJUSTE')">Ajuste</button>
+          <button class="status-choice setup" onclick="chooseOccStatus('SETUP')">Setup</button>
+          <button class="status-choice manut" onclick="chooseOccStatus('MANUTENÇÃO')">Manutenção</button>
+          <button class="status-choice obs" onclick="chooseOccStatus('OBSERVAÇÃO')">Observação</button>
+          <button class="status-choice obs" onclick="chooseOccStatus('DESENVOLVIMENTO')">Desenv.</button>
+        </div>
+        <div class="grid two" style="margin-top:10px">
+          <div class="field"><label>Motivo</label><input id="occMotivo" class="input" placeholder="Quebra de bedame" /></div>
+          <div class="field"><label>Item / OP</label><input id="occItemOp" class="input" placeholder="Item 327161 / OP..." /></div>
+        </div>
+        <div class="field" style="margin-top:10px"><label>Detalhe / observação</label><textarea id="occDetalhe" class="textarea" placeholder="Detalhe curto para virar histórico e relatório"></textarea></div>
+        <div class="grid two" style="margin-top:10px">
+          <label class="check-row"><input id="occApoio" type="checkbox" /> Precisa apoio / alguém disponível?</label>
+          <button class="btn primary" onclick="openOccurrence()">Abrir ocorrência</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="linha" class="panel">
+      <div class="card glass">
+        <h2>Tempo de linha</h2>
+        <p class="sub">Motor igual ao tempo de linha: calcula se encerra no turno, próximo turno ou não encerra.</p>
+        <div class="grid four" style="margin-top:12px">
+          <div class="field"><label>TNL</label><input id="ltTnl" class="input" inputmode="numeric" placeholder="096" /></div>
+          <div class="field"><label>Célula</label><input id="ltCelula" class="input" placeholder="C08" /></div>
+          <div class="field"><label>Turno</label><select id="ltTurno" class="select"><option>1ºT</option><option selected>2ºT</option><option>3ºT</option></select></div>
+          <div class="field"><label>Preparador</label><input id="ltPrep" class="input" placeholder="Wendel" /></div>
+        </div>
+        <div class="grid four" style="margin-top:10px">
+          <div class="field"><label>Item</label><input id="ltItem" class="input" placeholder="327161" /></div>
+          <div class="field"><label>OP</label><input id="ltOp" class="input" placeholder="OP" /></div>
+          <div class="field"><label>Ciclo</label><input id="ltCiclo" class="input" placeholder="06:37,2" /></div>
+          <div class="field"><label>Produzido</label><input id="ltProd" class="input" type="number" value="0" /></div>
+        </div>
+        <div class="grid four" style="margin-top:10px">
+          <div class="field"><label>Meta / OP</label><input id="ltMeta" class="input" type="number" value="0" /></div>
+          <div class="field"><label>Barras</label><input id="ltBarras" class="input" type="number" value="0" /></div>
+          <div class="field"><label>Peças por barra</label><input id="ltPecasBarra" class="input" type="number" value="0" /></div>
+          <div class="field"><label>MP status</label><select id="ltMp" class="select"><option>OK</option><option>FALTA MP</option><option>BARRA PARCIAL</option><option>SEM INFORMAÇÃO</option></select></div>
+        </div>
+        <div class="field" style="margin-top:10px"><label>Observação</label><textarea id="ltObs" class="textarea" placeholder="Sem ordem, preset trouxe OP, falta MP, etc."></textarea></div>
+        <div class="grid two" style="margin-top:10px">
+          <button class="btn soft" onclick="calculateLineTime(true)">Calcular</button>
+          <button class="btn primary" onclick="saveLineTime()">Salvar tempo de linha</button>
+        </div>
+        <div id="lineResult" style="margin-top:12px"></div>
+      </div>
+    </section>
+
+    <section id="relatorio" class="panel">
+      <div class="card glass">
+        <h2>Situação da célula</h2>
+        <p class="sub">Gera o textão de início de turno com base nas leituras e ocorrências salvas neste celular.</p>
+        <div class="grid three" style="margin-top:12px">
+          <div class="field"><label>Célula</label><input id="repCelula" class="input" placeholder="C08" /></div>
+          <div class="field"><label>Turno</label><select id="repTurno" class="select"><option>1ºT</option><option selected>2ºT</option><option>3ºT</option></select></div>
+          <div class="field"><label>Preparador</label><input id="repPrep" class="input" placeholder="Wendel" /></div>
+        </div>
+        <div class="grid two" style="margin-top:10px">
+          <button class="btn soft" onclick="generateCellReport()">Gerar prévia</button>
+          <button class="btn primary" onclick="saveCellReport()">Enviar para painel</button>
+        </div>
+        <div id="reportPreview" class="preview" style="margin-top:12px">A prévia aparecerá aqui.</div>
+      </div>
+    </section>
+
+    <section id="consulta" class="panel">
+      <div class="card glass">
+        <h2>Consulta inteligente</h2>
+        <p class="sub">Busque uma TNL para enxergar histórico, ocorrências, setup liberado, ciclos e padrões.</p>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px">
+          <input id="consultaTnl" class="input" inputmode="numeric" placeholder="145" />
+          <button class="btn primary" onclick="consultTnl()">Consultar</button>
+        </div>
+      </div>
+      <div id="consultaResult" class="card glass"><div class="empty">Informe uma TNL para consultar.</div></div>
+    </section>
+  </div>
+
+  <div id="historyModal" class="modal" onclick="if(event.target===this) closeHistory()">
+    <div class="modal-card"><div class="modal-handle"></div><div class="modal-title" id="historyTitle">TNL</div><div class="modal-sub" id="historySub">Histórico</div><div id="historyList" class="history-list"></div><button class="btn soft full" style="margin-top:12px" onclick="closeHistory()">Fechar</button></div>
+  </div>
+  <div id="actionModal" class="modal" onclick="if(event.target===this) closeActionModal()">
+    <div class="modal-card"><div class="modal-handle"></div><div class="modal-title" id="actionTitle">Ação</div><div class="modal-sub" id="actionSub">Preencha os dados</div><div id="actionBody" class="grid" style="margin-top:12px"></div></div>
+  </div>
+  <div id="toast" class="toast"></div>
+
+<script>
+  const DEFAULT_API = 'https://passagem-turno-api.lucassantanals0110.workers.dev';
+  const LS = { api:'venanc_cockpit_api', user:'venanc_cockpit_user', turn:'venanc_cockpit_turn', cell:'venanc_cockpit_cell', localReadings:'venanc_cockpit_readings_v101', localOccs:'venanc_cockpit_occs_v101' };
+  let painelData = { ocorrencias:[], status_atual:[], relatorios_celula:[] };
+  let filter = 'TODOS';
+  let lastLineCalc = null;
+  let currentActionOcc = null;
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const padTnl = v => { const n=String(v||'').replace(/\D/g,''); return n ? n.padStart(3,'0') : ''; };
+  const apiBase = () => (localStorage.getItem(LS.api)||DEFAULT_API).replace(/\/+$/,'');
+  const userName = () => localStorage.getItem(LS.user) || $('ltPrep')?.value || $('repPrep')?.value || 'Preparador';
+  const userTurn = () => localStorage.getItem(LS.turn) || '2ºT';
+  const userCell = () => localStorage.getItem(LS.cell) || '';
+  function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(window.__toast); window.__toast=setTimeout(()=>t.classList.remove('show'),2600); }
+  function switchTab(tab){ document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab)); document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===tab)); if(tab==='painel') loadPanel(false); }
+  function inferClass(status){ const s=String(status||'').toUpperCase(); if(s.includes('MANUT')) return 'manut'; if(s.includes('AJUST')) return 'ajuste'; if(s.includes('SETUP')) return 'setup'; if(s.includes('LIBER')) return 'liberada'; return 'obs'; }
+  function updateCloud(ok,text){ $('cloudDot').className='dot '+(ok?'ok':'bad'); $('cloudText').textContent=text; }
+  async function apiGet(path){ const r=await fetch(apiBase()+path,{cache:'no-store'}); const j=await r.json(); if(!j.ok) throw new Error(j.error||'Erro'); return j; }
+  async function apiPost(path,payload){ const r=await fetch(apiBase()+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const j=await r.json(); if(!j.ok) throw new Error(j.error||'Erro'); return j; }
+  async function checkCloud(show=false){ try{ const j=await apiGet('/status'); updateCloud(true,'V3 conectado'); if(show) toast(j.version||'Conectado'); }catch(e){ updateCloud(false,'Offline/API'); if(show) toast(e.message); } }
+  function normalizeStatusLabel(s){ s=String(s||'').toUpperCase(); if(s.includes('MANUT')) return 'MANUTENÇÃO'; if(s.includes('AJUST')) return 'AJUSTE'; if(s.includes('SETUP')) return 'SETUP'; if(s.includes('LIBER')) return 'LIBERADA'; if(s.includes('DESENV')) return 'DESENVOLVIMENTO'; if(s.includes('SEM')) return 'SEM_ORDEM'; return s||'OBSERVAÇÃO'; }
+  function setFilter(f){ filter=f; document.querySelectorAll('.filter-chip').forEach(b=>b.classList.toggle('active',b.dataset.filter===f)); renderPanel(); }
+  async function loadPanel(show=true){ try{ const j=await apiGet('/painel-geral'); painelData=j; renderPanel(); updateCloud(true,'V3 conectado'); if(show) toast('Painel atualizado'); }catch(e){ updateCloud(false,'Offline/API'); $('machineList').innerHTML='<div class="empty">Não consegui carregar o painel. Confere internet/API.</div>'; } }
+  function renderPanel(){
+    const occs = painelData.ocorrencias || [];
+    const q = ($('searchPanel').value||'').toUpperCase().trim();
+    let data = occs.filter(o=>{
+      const s=normalizeStatusLabel(o.status); const needs=Number(o.precisa_apoio)===1 && String(o.apoio_status)==='AGUARDANDO_APOIO';
+      if(filter==='APOIO' && !needs) return false; if(!['TODOS','APOIO'].includes(filter) && s!==filter) return false;
+      if(q){ const blob=[o.tnl,o.celula,o.status,o.motivo,o.detalhe,o.aberto_por,o.assumido_por,o.observacao].join(' ').toUpperCase(); if(!blob.includes(q)) return false; }
+      return true;
+    });
+    data.sort((a,b)=>{ const aa=(Number(a.precisa_apoio)===1&&a.apoio_status==='AGUARDANDO_APOIO')?-1:0; const bb=(Number(b.precisa_apoio)===1&&b.apoio_status==='AGUARDANDO_APOIO')?-1:0; if(aa!==bb) return aa-bb; return String(b.atualizado_em||b.aberto_em).localeCompare(String(a.atualizado_em||a.aberto_em)); });
+    $('kpiAtivas').textContent=occs.length; $('kpiApoio').textContent=occs.filter(o=>Number(o.precisa_apoio)===1&&o.apoio_status==='AGUARDANDO_APOIO').length; $('kpiSetup').textContent=ocsCount('SETUP',occs); $('kpiManut').textContent=occs.filter(o=>normalizeStatusLabel(o.status)==='MANUTENÇÃO').length;
+    if(!data.length){ $('machineList').innerHTML='<div class="empty">Nenhuma ocorrência ativa neste filtro.</div>'; return; }
+    $('machineList').innerHTML=data.map(renderOccCard).join('');
+  }
+  function ocsCount(st,occs){ return occs.filter(o=>normalizeStatusLabel(o.status)===st).length; }
+  function renderOccCard(o){
+    const status=normalizeStatusLabel(o.status); const cls=inferClass(status); const apoio=Number(o.precisa_apoio)===1&&String(o.apoio_status)==='AGUARDANDO_APOIO'; const opened=o.aberto_em?new Date(o.aberto_em).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):'';
+    const meta=[o.celula&&`Célula ${o.celula}`,o.aberto_por&&`Aberto por ${o.aberto_por}`,o.assumido_por&&`Assumido por ${o.assumido_por}`,opened&&`Aberto ${opened}`,o.item&&`Item ${o.item}`,o.op&&`OP ${o.op}`].filter(Boolean).join(' · ');
+    const obs=[o.motivo,o.detalhe,o.observacao].filter(Boolean).join('\n');
+    return `<article class="machine-card ${apoio?'apoio':cls}"><div class="machine-head"><div><div class="machine-title"><strong>TNL ${esc(padTnl(o.tnl))}</strong><span class="badge ${apoio?'apoio':cls}">${apoio?'PRECISA APOIO':esc(status)}</span></div><div class="machine-meta">${esc(meta||'Sem detalhes')}</div></div></div>${obs?`<div class="machine-obs">${esc(obs)}</div>`:''}<div class="machine-actions"><button class="mini apoio" onclick="assumeOcc('${esc(o.id)}')">Assumir</button><button class="mini liberada" onclick="openConcludeModal('${esc(o.id)}')">Concluir</button><button class="mini setup" onclick="openSetupRelease('${esc(o.id)}')">Lib. setup</button><button class="mini ajuste" onclick="changeOccStatus('${esc(o.id)}','AJUSTE')">Ajuste</button><button class="mini manut" onclick="changeOccStatus('${esc(o.id)}','MANUTENÇÃO')">Manut.</button><button class="mini hist" onclick="openHistory('${esc(o.tnl)}')">Histórico</button></div></article>`;
+  }
+  function getOcc(id){ return (painelData.ocorrencias||[]).find(o=>String(o.id)===String(id)); }
+  async function assumeOcc(id){ try{ await apiPost('/assumir-ocorrencia',{id,assumido_por:userName(),usuario:userName()}); toast('Ocorrência assumida'); await loadPanel(false); }catch(e){ toast(e.message); } }
+  async function changeOccStatus(id,status){ const occ=getOcc(id); try{ await apiPost('/mudar-status',{id,status,criado_por:userName(),responsavel:userName(),motivo:occ?.motivo}); toast('Status alterado'); await loadPanel(false); }catch(e){ toast(e.message); } }
+  function openConcludeModal(id){ currentActionOcc=getOcc(id); if(!currentActionOcc) return toast('Ocorrência não encontrada'); $('actionTitle').textContent=`Concluir TNL ${padTnl(currentActionOcc.tnl)}`; $('actionSub').textContent='Registre o que foi feito antes de encerrar.'; $('actionBody').innerHTML=`<div class="field"><label>Status final</label><select id="finalStatus" class="select"><option>LIBERADA</option><option>SETUP</option><option>AJUSTE</option><option>MANUTENÇÃO</option><option>OBSERVAÇÃO</option></select></div><div class="field"><label>Observação final</label><textarea id="finalObs" class="textarea" placeholder="O que foi feito?"></textarea></div><button class="btn green" onclick="concludeOcc()">Concluir</button><button class="btn soft" onclick="closeActionModal()">Cancelar</button>`; $('actionModal').classList.add('show'); }
+  async function concludeOcc(){ try{ await apiPost('/concluir-ocorrencia',{id:currentActionOcc.id,status_final:$('finalStatus').value,concluido_por:userName(),observacao:$('finalObs').value}); closeActionModal(); toast('Ocorrência concluída'); await loadPanel(false); }catch(e){ toast(e.message); } }
+  function openSetupRelease(id){ currentActionOcc=getOcc(id); if(!currentActionOcc) return toast('Ocorrência não encontrada'); $('actionTitle').textContent=`Liberar setup TNL ${padTnl(currentActionOcc.tnl)}`; $('actionSub').textContent='Obrigatório informar ciclo 100%, igual relatório do grupo.'; $('actionBody').innerHTML=`<div class="grid two"><div class="field"><label>Item</label><input id="setupItem" class="input" value="${esc(currentActionOcc.item||'')}" /></div><div class="field"><label>OP</label><input id="setupOp" class="input" value="${esc(currentActionOcc.op||'')}" /></div></div><div class="field"><label>Ciclo 100%</label><input id="setupCiclo" class="input" placeholder="06:37,2" value="${esc(currentActionOcc.ciclo_100||'')}" /></div><div class="field"><label>Observação</label><textarea id="setupObs" class="textarea" placeholder="Setup liberado 100%"></textarea></div><button class="btn blue" onclick="releaseSetup()">Liberar setup</button><button class="btn soft" onclick="closeActionModal()">Cancelar</button>`; $('actionModal').classList.add('show'); }
+  async function releaseSetup(){ if(!$('setupCiclo').value.trim()) return toast('Informe o ciclo 100%'); try{ await apiPost('/liberar-setup',{id:currentActionOcc.id,liberado_por:userName(),item:$('setupItem').value,op:$('setupOp').value,ciclo_100:$('setupCiclo').value,observacao:$('setupObs').value}); closeActionModal(); toast('Setup liberado'); await loadPanel(false); }catch(e){ toast(e.message); } }
+  function closeActionModal(){ $('actionModal').classList.remove('show'); currentActionOcc=null; }
+
+  function chooseOccStatus(status){ $('occStatus').value=status; syncStatusButtons(); }
+  function syncStatusButtons(){ const s=$('occStatus').value; document.querySelectorAll('.status-choice').forEach(b=>b.classList.toggle('active',b.textContent.toUpperCase().includes(s.split('_')[0]) || (s==='MANUTENÇÃO'&&b.classList.contains('manut')))); }
+  function parseQuickPhrase(){ const text=$('quickPhrase').value.trim(); if(!text) return toast('Digite a frase'); const tnl=padTnl(text.match(/TNL\s*0*(\d{1,3})/i)?.[1]); if(tnl) $('occTnl').value=tnl; const upper=text.toUpperCase(); let status='OBSERVAÇÃO'; if(upper.includes('AJUST')) status='AJUSTE'; else if(upper.includes('MANUT')) status='MANUTENÇÃO'; else if(upper.includes('SETUP')) status='SETUP'; else if(upper.includes('DESENV')) status='DESENVOLVIMENTO'; $('occStatus').value=status; const reason=text.replace(/^(ajuste|setup|manuten[cç][aã]o|observa[cç][aã]o|desenvolvimento)\s*/i,'').replace(/TNL\s*0*\d{1,3}\s*[-–]?\s*/i,'').trim(); $('occMotivo').value=reason; syncStatusButtons(); toast('Frase lida'); }
+  async function openOccurrence(){ const tnl=padTnl($('occTnl').value); if(!tnl) return toast('Informe a TNL'); const status=$('occStatus').value; const motivo=$('occMotivo').value || status; const payload={tnl,celula:$('occCelula').value,status,motivo,detalhe:$('occDetalhe').value,observacao:$('occDetalhe').value,item:$('occItemOp').value,precisa_apoio:$('occApoio').checked,aberto_por:userName(),preparador:userName(),origem:'APP_PREPARADORES_V101'}; try{ const j=await apiPost('/abrir-ocorrencia',payload); saveLocalOcc({...payload,id:j.id,aberto_em:new Date().toISOString()}); toast('Ocorrência aberta'); clearOccurrenceForm(); await loadPanel(false); switchTab('painel'); }catch(e){ toast(e.message); } }
+  function clearOccurrenceForm(){ ['quickPhrase','occTnl','occCelula','occMotivo','occItemOp','occDetalhe'].forEach(id=>$(id).value=''); $('occApoio').checked=false; }
+
+  function parseCycleToSeconds(raw){ let s=String(raw||'').trim().replace(',',':'); if(!s) return 0; const parts=s.split(':').map(x=>x.trim()); if(parts.length===1) return Number(parts[0])||0; const min=Number(parts[0])||0; const sec=Number(String(parts[1]).replace(/[^0-9.]/g,''))||0; return min*60+sec; }
+  function addMinutes(date,min){ return new Date(date.getTime()+min*60000); }
+  function turnEndDate(turn, now=new Date()){ const d=new Date(now); let h=22,m=40; if(turn.includes('1')){h=14;m=40}else if(turn.includes('2')){h=22;m=40}else{h=6;m=30} const end=new Date(d); end.setHours(h,m,0,0); if(turn.includes('3') && now.getHours()>=22) end.setDate(end.getDate()+1); if(end<=now) end.setDate(end.getDate()+1); return end; }
+  function calculateLineTime(show=false){ const cycle=parseCycleToSeconds($('ltCiclo').value); const meta=Number($('ltMeta').value||0); const prod=Number($('ltProd').value||0); const saldo=Math.max(meta-prod,0); const remainingMin=Math.ceil((saldo*cycle)/60); const forecast=addMinutes(new Date(),remainingMin); const end=turnEndDate($('ltTurno').value); const nextEnd=addMinutes(end, 8*60); let status='NÃO ENCERRA'; if(saldo===0) status='JÁ FECHOU'; else if(forecast<=end) status='ENCERRA NESTE TURNO'; else if(forecast<=nextEnd) status='ENCERRA NO PRÓXIMO TURNO'; const mp=$('ltMp').value; if(mp==='FALTA MP') status='FALTA MP'; const cls=status.includes('NÃO')||status.includes('FALTA')?'bad':(status.includes('PRÓXIMO')?'warn':''); lastLineCalc={tnl:padTnl($('ltTnl').value),celula:$('ltCelula').value,turno:$('ltTurno').value,preparador:$('ltPrep').value,item:$('ltItem').value,op:$('ltOp').value,ciclo:$('ltCiclo').value,produzido:prod,meta,saldo,barras:Number($('ltBarras').value||0),pecas_por_barra:Number($('ltPecasBarra').value||0),mp_status:mp,tempo_restante_min:remainingMin,previsao_encerramento:forecast.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),encerramento_status:status,observacao:$('ltObs').value}; $('lineResult').innerHTML=`<div class="line-result ${cls}"><strong>${esc(status)}</strong><br/>Saldo: ${saldo} peça(s)<br/>Tempo restante: ${remainingMin} min<br/>Previsão: ${lastLineCalc.previsao_encerramento}</div>`; if(show) toast('Calculado'); return lastLineCalc; }
+  async function saveLineTime(){ const calc=calculateLineTime(false); if(!calc.tnl) return toast('Informe a TNL'); try{ await apiPost('/salvar-tempo-linha',calc); saveLocalReading(calc); toast('Tempo de linha salvo'); }catch(e){ toast(e.message); } }
+  function localReadings(){ try{return JSON.parse(localStorage.getItem(LS.localReadings)||'[]')}catch{return[]} }
+  function saveLocalReading(r){ const arr=localReadings().filter(x=>!(x.tnl===r.tnl && x.turno===r.turno)); arr.unshift({...r,created_at:new Date().toISOString()}); localStorage.setItem(LS.localReadings,JSON.stringify(arr.slice(0,250))); }
+  function localOccs(){ try{return JSON.parse(localStorage.getItem(LS.localOccs)||'[]')}catch{return[]} }
+  function saveLocalOcc(o){ const arr=localOccs(); arr.unshift(o); localStorage.setItem(LS.localOccs,JSON.stringify(arr.slice(0,250))); }
+  function linesForStatusFromLocal(status, celula){ const occs=localOccs().filter(o=>(!celula||String(o.celula).toUpperCase()===String(celula).toUpperCase()) && normalizeStatusLabel(o.status)===status); return occs.map(o=>`TNL ${padTnl(o.tnl)} - ${o.motivo||o.detalhe||o.observacao||o.status}`); }
+  function generateCellReport(){ const cel=$('repCelula').value.trim(); const turno=$('repTurno').value; const prep=$('repPrep').value.trim()||userName(); const reads=localReadings().filter(r=>(!cel||String(r.celula).toUpperCase()===cel.toUpperCase()) && r.turno===turno); const setups=[...linesForStatusFromLocal('SETUP',cel), ...reads.filter(r=>String(r.encerramento_status).includes('ENCERRA')).map(r=>`TNL ${padTnl(r.tnl)} - ${r.encerramento_status} (${r.previsao_encerramento})`)]; const ajustes=linesForStatusFromLocal('AJUSTE',cel); const manut=linesForStatusFromLocal('MANUTENÇÃO',cel); const obs=[...linesForStatusFromLocal('OBSERVAÇÃO',cel), ...reads.filter(r=>r.observacao).map(r=>`TNL ${padTnl(r.tnl)} - ${r.observacao}`)]; const semOrdem=reads.filter(r=>r.sem_ordem||String(r.observacao).toUpperCase().includes('SEM ORDEM')).map(r=>`TNL ${padTnl(r.tnl)}`); const block=(title,arr)=>`${title}:\n${arr.length?arr.map(x=>'• '+x).join('\n'):'• N/A'}`; const text=`BOA TARDE\n${cel?`CÉLULA ${cel}`:'LINHA'} - INÍCIO DE TURNO\n\nPREPARADOR: ${prep}\n\n${block('PREPARAÇÃO '+turno,setups)}\n\n${block('AJUSTE',ajustes)}\n\n${block('SELEÇÃO DE ORDENS',semOrdem)}\n\n${block('MANUTENÇÃO',manut)}\n\n${block('DESENVOLVIMENTO',linesForStatusFromLocal('DESENVOLVIMENTO',cel))}\n\n${block('FALTA/ATRASO',[])}\n\n${block('OPERADOR COM 4 MÁQUINA',[])}\n\n${block('OBSERVAÇÕES',obs)}`; $('reportPreview').textContent=text; return {celula:cel,turno,preparador:prep,texto_gerado:text,preparacao:setups.join('\n'),ajustes:ajustes.join('\n'),manutencao:manut.join('\n'),selecao_ordens:semOrdem.join('\n'),desenvolvimento:linesForStatusFromLocal('DESENVOLVIMENTO',cel).join('\n'),observacoes:obs.join('\n')}; }
+  async function saveCellReport(){ const payload=generateCellReport(); if(!payload.celula) return toast('Informe a célula'); try{ await apiPost('/gerar-relatorio-celula',payload); toast('Situação da célula enviada'); }catch(e){ toast(e.message); } }
+
+  async function openHistory(tnl){ $('historyModal').classList.add('show'); $('historyTitle').textContent=`TNL ${padTnl(tnl)}`; $('historySub').textContent='Buscando histórico...'; $('historyList').innerHTML='<div class="empty">Carregando...</div>'; try{ const j=await apiGet(`/historico-maquina?tnl=${padTnl(tnl)}&limit=80`); const eventos=j.eventos||[]; const pass=j.decisoes_passagem||[]; $('historySub').textContent=`${eventos.length} evento(s), ${pass.length} passagem(ns)`; $('historyList').innerHTML=(eventos.length?eventos.map(ev=>`<div class="history-row"><div class="history-top"><strong>${esc(ev.tipo_evento||ev.status_novo||'EVENTO')}</strong><span>${esc(new Date(ev.created_at).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}))}</span></div><p>${esc([ev.status_novo&&`Status: ${ev.status_novo}`, ev.motivo, ev.observacao, ev.item&&`Item ${ev.item}`, ev.responsavel&&`Resp. ${ev.responsavel}`].filter(Boolean).join('\n'))}</p></div>`).join(''):'<div class="empty">Sem histórico ainda.</div>'); }catch(e){ $('historySub').textContent='Erro'; $('historyList').innerHTML=`<div class="empty">${esc(e.message)}</div>`; } }
+  function closeHistory(){ $('historyModal').classList.remove('show'); }
+  async function consultTnl(){ const tnl=padTnl($('consultaTnl').value); if(!tnl) return toast('Informe a TNL'); $('consultaResult').innerHTML='<div class="empty">Consultando...</div>'; try{ const j=await apiGet(`/consulta-maquina?tnl=${tnl}`); const eventos=j.eventos||[]; const atual=j.status_atual||j.status_atual; const resumo=(j.resumo_status||[]).slice(0,4).map(x=>`<div class="kpi"><span>${esc(x.status_novo||'STATUS')}</span><strong>${esc(x.total)}</strong></div>`).join('')||'<div class="empty">Sem ranking ainda.</div>'; const hist=eventos.slice(0,14).map(ev=>`<div class="history-row"><div class="history-top"><strong>${esc(ev.status_novo||ev.tipo_evento||'EVENTO')}</strong><span>${esc(new Date(ev.created_at).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}))}</span></div><p>${esc([ev.motivo,ev.observacao,ev.item&&`Item ${ev.item}`,ev.responsavel&&`Resp. ${ev.responsavel}`].filter(Boolean).join('\n'))}</p></div>`).join('')||'<div class="empty">Sem eventos.</div>'; $('consultaResult').innerHTML=`<h2>TNL ${tnl}</h2><p class="sub">Prontuário inicial da máquina.</p><div class="kpis" style="margin-top:12px">${resumo}</div><h2 style="margin-top:16px;font-size:1.1rem">Últimos eventos</h2><div class="history-list">${hist}</div>`; }catch(e){ $('consultaResult').innerHTML=`<div class="empty">${esc(e.message)}</div>`; } }
+  function prefill(){ const n=localStorage.getItem(LS.user)||''; ['ltPrep','repPrep'].forEach(id=>$(id).value=n); const c=localStorage.getItem(LS.cell)||''; ['occCelula','ltCelula','repCelula'].forEach(id=>$(id).value=c); const t=localStorage.getItem(LS.turn)||'2ºT'; ['ltTurno','repTurno'].forEach(id=>$(id).value=t); }
+  function saveUserDefaults(){ if($('ltPrep').value) localStorage.setItem(LS.user,$('ltPrep').value); if($('ltCelula').value) localStorage.setItem(LS.cell,$('ltCelula').value); if($('ltTurno').value) localStorage.setItem(LS.turn,$('ltTurno').value); }
+  ['ltPrep','repPrep'].forEach(id=>document.addEventListener('input',e=>{ if(e.target.id===id&&e.target.value) localStorage.setItem(LS.user,e.target.value); }));
+  ['ltCelula','repCelula','occCelula'].forEach(id=>document.addEventListener('input',e=>{ if(e.target.id===id&&e.target.value) localStorage.setItem(LS.cell,e.target.value); }));
+  ['ltTurno','repTurno'].forEach(id=>document.addEventListener('change',e=>{ if(e.target.id===id) localStorage.setItem(LS.turn,e.target.value); }));
+  window.addEventListener('online',()=>{checkCloud(false);loadPanel(false)}); prefill(); checkCloud(false); loadPanel(false); setInterval(loadPanel,20000);
+</script>
+</body>
+</html>
